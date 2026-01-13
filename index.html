@@ -1,1 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEURAL V1.0 - Crypto Intelligence System</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Share+Tech+Mono&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg: #f4eee1;
+            --bg-dark: #e4dfd2;
+            --border: #2b2f2b;
+            --text: #0a0f0a;
+            --text-dim: #5a5f5a;
+            --accent-green: #7ac396;
+            --accent-teal: #6eb5a0;
+            --accent-coral: #d47d7d;
+            --shadow: rgba(0, 0, 0, 0.15);
+        }
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            cursor: none;
+        }
+        
+        /* Matrix rain overlay */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        /* Scanlines */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.03),
+                rgba(0, 0, 0, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 10;
+            animation: scanlines 8s linear infinite;
+        }
+        
+        @keyframes scanlines {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(10px); }
+        }
+        
+        /* Custom cursor */
+        #cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--accent-teal);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transition: all 0.1s ease;
+            box-shadow: 0 0 15px var(--accent-teal);
+        }
+        
+        #cursor::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background: var(--accent-teal);
+            border-radius: 50%;
+        }
+        
+        /* Header */
+        #header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--bg-dark);
+            border-bottom: 4px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+            box-shadow: 0 4px 10px var(--shadow);
+        }
+        
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            animation: spin 20s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+        
+        .stat-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 0 8px var(--accent-green);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        /* Main layout */
+        #main {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: 320px 1fr 380px;
+            height: calc(100vh - 90px);
+            gap: 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .panel {
+            background: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .panel-header {
+            padding: 12px 16px;
+            background: var(--border);
+            color: var(--bg);
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-bottom: 3px solid var(--border);
+        }
+        
+        /* Left - Terminal with auto-typing */
+        #left-panel {
+            border-right: 4px solid var(--border);
+        }
+        
+        #terminal-output {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            line-height: 1.6;
+        }
+        
+        #terminal-output::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        #terminal-output::-webkit-scrollbar-thumb {
+            background: var(--border);
+        }
+        
+        .code-line {
+            animation: fadeIn 0.2s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-5px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .typing-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 14px;
+            background: var(--accent-teal);
+            margin-left: 2px;
+            animation: blink 0.8s step-end infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .keyword { color: var(--accent-coral); font-weight: 700; }
+        .string { color: var(--accent-teal); }
+        .comment { color: var(--text-dim); font-style: italic; }
+        
+        /* Center - Character + 3D Viz */
+        #center-panel {
+            border-right: 4px solid var(--border);
+            position: relative;
+        }
+        
+        #character-area {
+            height: 300px;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-dark) 100%);
+            border-bottom: 4px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .character-3d {
+            width: 180px;
+            height: 180px;
+            position: relative;
+            transition: transform 0.1s ease-out;
+        }
+        
+        .char-head {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, #9a9a9a, #6a6a6a);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            clip-path: polygon(20% 0%, 80% 0%, 100% 30%, 95% 70%, 70% 100%, 30% 100%, 5% 70%, 0% 30%);
+            box-shadow: 6px 6px 0 var(--shadow);
+        }
+        
+        .char-eye {
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            background: #000;
+            clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+            top: 35%;
+        }
+        
+        .char-eye.left { left: 20%; }
+        .char-eye.right { right: 20%; }
+        
+        .eye-inner {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: var(--accent-teal);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s;
+        }
+        
+        .char-mouth {
+            position: absolute;
+            width: 50px;
+            height: 10px;
+            background: #000;
+            bottom: 28%;
+            left: 50%;
+            transform: translateX(-50%);
+            clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+        }
+        
+        .char-status {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 16px;
+            background: var(--bg);
+            border: 3px solid var(--border);
+            font-size: 0.7rem;
+            font-weight: 700;
+            box-shadow: 3px 3px 0 var(--shadow);
+        }
+        
+        /* Neural network brain area */
+        #knowledge-viz {
+            flex: 1;
+            position: relative;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg) 100%);
+            overflow: hidden;
+        }
+        
+        .neural-node {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 3px 3px 0 var(--shadow);
+            text-align: center;
+            line-height: 1.1;
+        }
+        
+        .neural-node:hover {
+            transform: scale(1.15);
+            z-index: 10;
+        }
+        
+        .neural-node.active {
+            animation: nodePulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes nodePulse {
+            0%, 100% { 
+                box-shadow: 3px 3px 0 var(--shadow);
+            }
+            50% { 
+                box-shadow: 0 0 20px var(--accent-teal), 3px 3px 0 var(--shadow);
+                border-color: var(--accent-teal);
+            }
+        }
+        
+        .neural-node.type-core { background: var(--accent-teal); }
+        .neural-node.type-analysis { background: var(--accent-green); }
+        .neural-node.type-data { background: var(--accent-coral); }
+        .neural-node.type-signal { background: #b794f6; }
+        
+        .synapse {
+            position: absolute;
+            height: 2px;
+            background: var(--border);
+            transform-origin: left center;
+            opacity: 0.2;
+            transition: opacity 0.3s;
+        }
+        
+        .synapse.firing {
+            animation: synapseFire 2s ease-in-out infinite;
+        }
+        
+        @keyframes synapseFire {
+            0%, 100% { 
+                opacity: 0.2;
+                background: var(--border);
+            }
+            50% { 
+                opacity: 1;
+                background: var(--accent-teal);
+                box-shadow: 0 0 10px var(--accent-teal);
+            }
+        }
+        
+        .brain-stats {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .brain-stat {
+            padding: 8px 12px;
+            background: var(--bg);
+            border: 3px solid var(--border);
+            font-size: 0.65rem;
+            font-weight: 700;
+            box-shadow: 2px 2px 0 var(--shadow);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-value {
+            color: var(--accent-teal);
+            font-size: 0.85rem;
+            display: block;
+            margin-top: 3px;
+        }
+        
+        .brain-label {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 6px 14px;
+            background: var(--border);
+            color: var(--bg);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            box-shadow: 3px 3px 0 var(--shadow);
+        }
+        
+        /* Right - Chat */
+        #right-panel {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        #chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        #chat-messages::-webkit-scrollbar-thumb {
+            background: var(--border);
+        }
+        
+        .chat-msg {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .chat-msg.neural {
+            align-self: flex-start;
+            max-width: 85%;
+        }
+        
+        .chat-msg.user {
+            align-self: flex-end;
+            max-width: 75%;
+        }
+        
+        .msg-bubble {
+            padding: 12px 16px;
+            border: 3px solid var(--border);
+            box-shadow: 3px 3px 0 var(--shadow);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        
+        .chat-msg.neural .msg-bubble {
+            background: var(--bg);
+        }
+        
+        .chat-msg.user .msg-bubble {
+            background: var(--accent-green);
+            font-weight: 700;
+        }
+        
+        .msg-time {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            gap: 8px;
+            padding-left: 15px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-teal);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
+        }
+        
+        .quick-replies {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .quick-reply {
+            padding: 6px 12px;
+            background: var(--accent-teal);
+            border: 3px solid var(--border);
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 2px 2px 0 var(--shadow);
+        }
+        
+        .quick-reply:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--shadow);
+        }
+        
+        #chat-input-area {
+            padding: 15px;
+            background: var(--bg);
+            border-top: 4px solid var(--border);
+            display: flex;
+            gap: 10px;
+        }
+        
+        #chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 3px solid var(--border);
+            background: var(--bg-dark);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        
+        #chat-send {
+            padding: 12px 20px;
+            background: var(--accent-green);
+            border: 3px solid var(--border);
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 3px 3px 0 var(--shadow);
+            text-transform: uppercase;
+        }
+        
+        #chat-send:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--shadow);
+        }
+        
+        /* Footer */
+        #footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: var(--border);
+            color: var(--bg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            z-index: 1000;
+        }
+        
+        /* Highlights */
+        .hl-green { color: var(--accent-green); font-weight: 700; }
+        .hl-teal { color: var(--accent-teal); font-weight: 700; }
+        .hl-coral { color: var(--accent-coral); font-weight: 700; }
+        
+        .token-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin: 0 4px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom cursor -->
+    <div id="cursor"></div>
+    
+    <!-- Matrix background -->
+    <canvas id="matrix-canvas"></canvas>
+    
+    <!-- Header -->
+    <div id="header">
+        <div class="logo">
+            <svg class="logo-icon" viewBox="0 0 64 64">
+                <rect x="2" y="2" width="60" height="60" rx="12" fill="none" stroke="#2b2f2b" stroke-width="4" stroke-dasharray="10 6"/>
+                <circle cx="32" cy="32" r="18" fill="#6eb5a0"/>
+                <circle cx="26" cy="28" r="3" fill="#0a0f0a"/>
+                <circle cx="38" cy="28" r="3" fill="#0a0f0a"/>
+                <path d="M24 38c3 4 13 4 16 0" stroke="#0a0f0a" stroke-width="3" fill="none" stroke-linecap="round"/>
+            </svg>
+            <span>Neural V1.0</span>
+        </div>
+        <div class="header-stats">
+            <span><span class="stat-dot"></span>ONLINE</span>
+            <span>UPTIME: <span id="uptime">0m</span></span>
+            <span>MODE: BULLISH</span>
+        </div>
+    </div>
 
+    <!-- Main -->
+    <div id="main">
+        <!-- Left - Auto-typing terminal -->
+        <div class="panel" id="left-panel">
+            <div class="panel-header">CODE STREAM</div>
+            <div id="terminal-output">
+                <span class="typing-cursor"></span>
+            </div>
+        </div>
+
+        <!-- Center - Character + Knowledge Graph -->
+        <div class="panel" id="center-panel">
+            <div id="character-area">
+                <div class="character-3d" id="character">
+                    <div class="char-head">
+                        <div class="char-eye left">
+                            <div class="eye-inner" id="eye-left"></div>
+                        </div>
+                        <div class="char-eye right">
+                            <div class="eye-inner" id="eye-right"></div>
+                        </div>
+                        <div class="char-mouth"></div>
+                    </div>
+                </div>
+                <div class="char-status" id="char-status">Analyzing markets... 📈</div>
+            </div>
+            <div id="knowledge-viz"></div>
+        </div>
+
+        <!-- Right - Chat -->
+        <div class="panel" id="right-panel">
+            <div class="panel-header">NEURAL CHAT</div>
+            <div id="chat-messages"></div>
+            <div id="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Ask about crypto...">
+                <button id="chat-send">SEND</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer">
+        <span>NEURAL V1.0 | CRYPTO INTELLIGENCE SYSTEM</span>
+        <span>NEURAL STATUS: <span class="hl-teal">OPERATIONAL</span> | SYNAPSES: <span id="synapse-count">16</span> FIRING</span>
+    </div>
+
+    <script>
+        // Matrix rain
+        const matrixCanvas = document.getElementById('matrix-canvas');
+        const matrixCtx = matrixCanvas.getContext('2d');
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
+        
+        const matrixChars = '₿ΞÐØⓈ⚡🚀💎🐸🐕01';
+        const fontSize = 16;
+        const columns = matrixCanvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+        
+        function drawMatrix() {
+            matrixCtx.fillStyle = 'rgba(244, 238, 225, 0.05)';
+            matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+            
+            matrixCtx.fillStyle = '#6eb5a0';
+            matrixCtx.font = fontSize + 'px monospace';
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                matrixCtx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        
+        setInterval(drawMatrix, 50);
+        
+        // Custom cursor
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+        });
+        
+        // Auto-typing terminal code
+        const terminalOutput = document.getElementById('terminal-output');
+        const typingCursor = document.querySelector('.typing-cursor');
+        
+        const codeSnippets = [
+            `<span class="comment">// PEPE Market Analysis Engine</span>
+<span class="keyword">function</span> analyzePEPE() {
+    <span class="keyword">const</span> price = <span class="string">"$0.00000517"</span>;
+    <span class="keyword">const</span> change = <span class="hl-green">+84%</span>;
+    <span class="keyword">const</span> volume = <span class="string">"$892M"</span>;
+    
+    <span class="keyword">if</span> (whaleActivity > threshold) {
+        console.log(<span class="string">"🐋 WHALES ACCUMULATING"</span>);
+        signal = <span class="string">"STRONG BUY"</span>;
+    }
+    
+    <span class="keyword">return</span> { bullish: <span class="keyword">true</span>, confidence: <span class="hl-green">87%</span> };
+}`,
+            `
+<span class="comment">// Whale Tracker System</span>
+<span class="keyword">class</span> WhaleMonitor {
+    <span class="keyword">constructor</span>() {
+        <span class="keyword">this</span>.wallets = [];
+        <span class="keyword">this</span>.threshold = <span class="string">"$1M"</span>;
+    }
+    
+    trackMovement(wallet, amount) {
+        <span class="keyword">if</span> (amount > <span class="keyword">this</span>.threshold) {
+            alert(<span class="string">"🐋 WHALE ALERT: "</span> + wallet);
+            <span class="keyword">this</span>.logActivity(wallet, amount);
+        }
+    }
+    
+    <span class="comment">// 50M PEPE moved to cold storage</span>
+    <span class="comment">// Value: $2.1M | Status: BULLISH</span>
+}`,
+            `
+<span class="comment">// DEX Volume Scanner</span>
+<span class="keyword">const</span> dexData = {
+    uniswap: { volume: <span class="string">"$2.8B"</span>, change: <span class="hl-green">+12%</span> },
+    raydium: { volume: <span class="string">"$1.4B"</span>, change: <span class="hl-green">+28%</span> },
+    jupiter: { volume: <span class="string">"$847M"</span>, change: <span class="hl-green">+15%</span> }
+};
+
+<span class="keyword">function</span> scanDEX() {
+    Object.keys(dexData).forEach(<span class="keyword">dex</span> => {
+        console.log(<span class="string">\`\${dex}: \${dexData[dex].volume}\`</span>);
+    });
+    
+    <span class="comment">// Retail flooding back in</span>
+    <span class="keyword">return</span> <span class="string">"MANIA PHASE CONFIRMED"</span>;
+}`
+        ];
+        
+        let currentSnippet = 0;
+        let currentChar = 0;
+        let currentText = '';
+        
+        function typeCode() {
+            const snippet = codeSnippets[currentSnippet];
+            
+            if (currentChar < snippet.length) {
+                currentText += snippet[currentChar];
+                const line = document.createElement('span');
+                line.className = 'code-line';
+                line.innerHTML = currentText;
+                terminalOutput.innerHTML = '';
+                terminalOutput.appendChild(line);
+                terminalOutput.appendChild(typingCursor);
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                currentChar++;
+                setTimeout(typeCode, 20);
+            } else {
+                setTimeout(() => {
+                    currentSnippet = (currentSnippet + 1) % codeSnippets.length;
+                    currentChar = 0;
+                    currentText = '';
+                    typeCode();
+                }, 2000);
+            }
+        }
+        
+        setTimeout(typeCode, 1000);
+        
+        // Character cursor tracking
+        const character = document.getElementById('character');
+        const characterArea = document.getElementById('character-area');
+        const eyeLeft = document.getElementById('eye-left');
+        const eyeRight = document.getElementById('eye-right');
+        
+        characterArea.addEventListener('mousemove', (e) => {
+            const rect = characterArea.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const deltaX = (x - centerX) / centerX;
+            const deltaY = (y - centerY) / centerY;
+            
+            const moveX = deltaX * 15;
+            const moveY = deltaY * 15;
+            character.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            
+            const eyeMoveX = deltaX * 8;
+            const eyeMoveY = deltaY * 8;
+            eyeLeft.style.transform = `translate(calc(-50% + ${eyeMoveX}px), calc(-50% + ${eyeMoveY}px))`;
+            eyeRight.style.transform = `translate(calc(-50% + ${eyeMoveX}px), calc(-50% + ${eyeMoveY}px))`;
+        });
+        
+        characterArea.addEventListener('mouseleave', () => {
+            character.style.transform = 'translate(0, 0)';
+            eyeLeft.style.transform = 'translate(-50%, -50%)';
+            eyeRight.style.transform = 'translate(-50%, -50%)';
+        });
+        
+        // Character status rotation
+        const statuses = [
+            'Analyzing markets... 📈',
+            'Tracking whales... 🐋',
+            'Feeling bullish... 💎',
+            'Moon mission loading... 🚀',
+            'Diamond hands... 💪',
+            'We\'re so back... 😎'
+        ];
+        let statusIdx = 0;
+        setInterval(() => {
+            statusIdx = (statusIdx + 1) % statuses.length;
+            document.getElementById('char-status').textContent = statuses[statusIdx];
+        }, 3500);
+        
+        // Neural network brain visualization
+        const knowledgeViz = document.getElementById('knowledge-viz');
+        const neuralLabels = [
+            'NEURAL\nCORE',
+            'PATTERN\nRECOG',
+            'DATA\nANALYSIS',
+            'SENTIMENT\nAI',
+            'SIGNAL\nPROC',
+            'PREDICT\nENGINE',
+            'LEARNING\nALGO',
+            'MEMORY\nBANK'
+        ];
+        const neuralTypes = ['core', 'analysis', 'data', 'signal', 'analysis', 'data', 'signal', 'core'];
+        let neuralNodes = [];
+        let synapses = [];
+        
+        function createNeuralNetwork() {
+            const width = knowledgeViz.clientWidth;
+            const height = knowledgeViz.clientHeight - 80; // Leave space for stats
+            
+            // Add brain label
+            const label = document.createElement('div');
+            label.className = 'brain-label';
+            label.textContent = '⚡ NEURAL NETWORK ⚡';
+            knowledgeViz.appendChild(label);
+            
+            // Create neural nodes in a network pattern
+            const centerX = width / 2;
+            const centerY = height / 2;
+            
+            for (let i = 0; i < 8; i++) {
+                const angle = (i / 8) * Math.PI * 2 - Math.PI / 2;
+                const radius = Math.min(width, height) * 0.35;
+                const x = Math.cos(angle) * radius + centerX;
+                const y = Math.sin(angle) * radius + centerY;
+                
+                const node = document.createElement('div');
+                node.className = `neural-node type-${neuralTypes[i]}`;
+                if (i % 2 === 0) node.classList.add('active');
+                node.style.left = (x - 30) + 'px';
+                node.style.top = (y - 30) + 'px';
+                node.innerHTML = neuralLabels[i].replace('\n', '<br>');
+                knowledgeViz.appendChild(node);
+                
+                neuralNodes.push({ 
+                    element: node, 
+                    angle: angle, 
+                    radius: radius,
+                    x: x,
+                    y: y
+                });
+            }
+            
+            // Create synapses (connections between nodes)
+            for (let i = 0; i < neuralNodes.length; i++) {
+                // Connect to next 2 nodes
+                for (let j = 1; j <= 2; j++) {
+                    const nextIndex = (i + j) % neuralNodes.length;
+                    const node1 = neuralNodes[i];
+                    const node2 = neuralNodes[nextIndex];
+                    
+                    const dx = node2.x - node1.x;
+                    const dy = node2.y - node1.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const angle = Math.atan2(dy, dx);
+                    
+                    const synapse = document.createElement('div');
+                    synapse.className = 'synapse';
+                    if (Math.random() > 0.5) synapse.classList.add('firing');
+                    synapse.style.width = distance + 'px';
+                    synapse.style.left = node1.x + 'px';
+                    synapse.style.top = node1.y + 'px';
+                    synapse.style.transform = `rotate(${angle}rad)`;
+                    knowledgeViz.insertBefore(synapse, knowledgeViz.firstChild);
+                    
+                    synapses.push(synapse);
+                }
+            }
+            
+            // Add brain stats
+            const statsContainer = document.createElement('div');
+            statsContainer.className = 'brain-stats';
+            statsContainer.innerHTML = `
+                <div class="brain-stat">
+                    Processing
+                    <span class="stat-value" id="processing-speed">847 TPS</span>
+                </div>
+                <div class="brain-stat">
+                    Active Nodes
+                    <span class="stat-value" id="active-nodes">8/8</span>
+                </div>
+                <div class="brain-stat">
+                    Synapse Fire
+                    <span class="stat-value" id="synapse-rate">94.2%</span>
+                </div>
+                <div class="brain-stat">
+                    Neural Load
+                    <span class="stat-value" id="neural-load">87%</span>
+                </div>
+            `;
+            knowledgeViz.appendChild(statsContainer);
+            
+            // Update footer synapse count
+            document.getElementById('synapse-count').textContent = synapses.length;
+            
+            // Update stats periodically
+            setInterval(() => {
+                document.getElementById('processing-speed').textContent = 
+                    (800 + Math.floor(Math.random() * 100)) + ' TPS';
+                document.getElementById('synapse-rate').textContent = 
+                    (92 + Math.random() * 6).toFixed(1) + '%';
+                document.getElementById('neural-load').textContent = 
+                    (85 + Math.floor(Math.random() * 10)) + '%';
+            }, 2000);
+        }
+        
+        function animateNeuralNetwork() {
+            const width = knowledgeViz.clientWidth;
+            const height = knowledgeViz.clientHeight - 80;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            
+            neuralNodes.forEach((node, i) => {
+                // Gentle orbital movement
+                node.angle += 0.002;
+                const x = Math.cos(node.angle) * node.radius + centerX;
+                const y = Math.sin(node.angle) * node.radius + centerY;
+                node.element.style.left = (x - 30) + 'px';
+                node.element.style.top = (y - 30) + 'px';
+                node.x = x;
+                node.y = y;
+            });
+            
+            // Update synapse positions
+            let synapseIdx = 0;
+            for (let i = 0; i < neuralNodes.length; i++) {
+                for (let j = 1; j <= 2; j++) {
+                    const nextIndex = (i + j) % neuralNodes.length;
+                    const node1 = neuralNodes[i];
+                    const node2 = neuralNodes[nextIndex];
+                    
+                    const dx = node2.x - node1.x;
+                    const dy = node2.y - node1.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const angle = Math.atan2(dy, dx);
+                    
+                    if (synapses[synapseIdx]) {
+                        synapses[synapseIdx].style.width = distance + 'px';
+                        synapses[synapseIdx].style.left = node1.x + 'px';
+                        synapses[synapseIdx].style.top = node1.y + 'px';
+                        synapses[synapseIdx].style.transform = `rotate(${angle}rad)`;
+                    }
+                    synapseIdx++;
+                }
+            }
+            
+            requestAnimationFrame(animateNeuralNetwork);
+        }
+        
+        setTimeout(() => {
+            createNeuralNetwork();
+            animateNeuralNetwork();
+        }, 500);
+        
+        // Chat system
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        
+        function addChatMsg(text, type, quickReplies = []) {
+            const msg = document.createElement('div');
+            msg.className = `chat-msg ${type}`;
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'msg-bubble';
+            bubble.innerHTML = text;
+            
+            const time = document.createElement('div');
+            time.className = 'msg-time';
+            time.textContent = type === 'neural' ? 'Neural' : 'You';
+            
+            msg.appendChild(bubble);
+            msg.appendChild(time);
+            
+            if (quickReplies.length > 0) {
+                const repliesDiv = document.createElement('div');
+                repliesDiv.className = 'quick-replies';
+                quickReplies.forEach(reply => {
+                    const btn = document.createElement('div');
+                    btn.className = 'quick-reply';
+                    btn.textContent = reply;
+                    btn.onclick = () => sendChat(reply);
+                    repliesDiv.appendChild(btn);
+                });
+                msg.appendChild(repliesDiv);
+            }
+            
+            chatMessages.appendChild(msg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function showTyping() {
+            const typing = document.createElement('div');
+            typing.id = 'typing';
+            typing.className = 'typing-indicator';
+            typing.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            chatMessages.appendChild(typing);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function hideTyping() {
+            const typing = document.getElementById('typing');
+            if (typing) typing.remove();
+        }
+        
+        const responses = {
+            pepe: {
+                text: 'Yo PEPE is <span class="hl-green">ABSOLUTELY INSANE</span> right now 🐸🔥<br><br><span class="token-badge">PEPE +84%</span><br><br>$892M volume, whales accumulating like crazy. Cup & handle on 12H chart. This is textbook moonshot setup 🚀',
+                replies: ['What about other memes?', 'Show whale activity', 'Is it too late?']
+            },
+            whale: {
+                text: '🐋 WHALE ALERT 🐋<br><br>50M PEPE → cold storage ($2.1M)<br>127 BTC withdrawn from Binance ($12M)<br>$3.2M USDT → SOL memes<br><br>When whales move during consolidation... they <span class="hl-green">KNOW</span> something 👀',
+                replies: ['What are they buying?', 'Copy whale moves?', 'Show PEPE']
+            },
+            late: {
+                text: 'Bro you\'re <span class="hl-green">NOT LATE</span> 💪<br><br>Fear & Greed: 68 (greed but not extreme)<br>Google Trends: +127% (still early)<br>Funding rates: healthy<br><br>Peak euphoria is 500%+ trends. We\'re in early innings 🎯',
+                replies: ['What to buy?', 'Show market', 'Sentiment check']
+            },
+            meme: {
+                text: '<span class="hl-coral">MEME SEASON</span> confirmed 🎪<br><br><span class="token-badge">PEPE +84%</span><span class="token-badge">BONK +48%</span><span class="token-badge">DOGE +22%</span><br><br>When memes pump this hard = retail flooding in. This is what bull markets look like 💎',
+                replies: ['Which to buy?', 'PEPE analysis', 'Bitcoin?']
+            },
+            bitcoin: {
+                text: 'BTC consolidating at <span class="hl-teal">$95K</span> like a BOSS 😤<br><br>OI: $31.44B (6-week high)<br>Outflows: 14,892 BTC (7d)<br>Everyone HODLing for $100K breakout<br><br>It\'s not IF... it\'s WHEN 🚀',
+                replies: ['When $100K?', 'Show alts', 'Vibe check']
+            },
+            default: {
+                text: 'Not sure about that one 🤔<br><br>But the market is looking <span class="hl-green">SPICY</span>. Memes pumping, whales accumulating, DEX volume surging 🔥<br><br>What you wanna know?',
+                replies: ['PEPE', 'Whales', 'Market']
+            }
+        };
+        
+        function sendChat(text) {
+            if (!text) text = chatInput.value.trim();
+            if (!text) return;
+            
+            addChatMsg(text, 'user');
+            chatInput.value = '';
+            
+            showTyping();
+            setTimeout(() => {
+                hideTyping();
+                const lower = text.toLowerCase();
+                let response = responses.default;
+                
+                if (lower.includes('pepe')) response = responses.pepe;
+                else if (lower.includes('whale')) response = responses.whale;
+                else if (lower.includes('late') || lower.includes('miss')) response = responses.late;
+                else if (lower.includes('meme') || lower.includes('other')) response = responses.meme;
+                else if (lower.includes('bitcoin') || lower.includes('btc')) response = responses.bitcoin;
+                
+                addChatMsg(response.text, 'neural', response.replies);
+            }, 1200);
+        }
+        
+        chatSend.addEventListener('click', () => sendChat());
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendChat();
+        });
+        
+        // Initial chat
+        setTimeout(() => {
+            addChatMsg(
+                'Yo! I\'m Neural 🤖<br><br>I\'ve been watching the markets and bro... <span class="hl-green">things are SPICY</span> 🔥<br><br>Ask me anything about crypto!',
+                'neural',
+                ['Show me PEPE', 'Whale activity', 'Market overview']
+            );
+        }, 1500);
+        
+        // Uptime
+        const startTime = Date.now();
+        setInterval(() => {
+            const elapsed = Math.floor((Date.now() - startTime) / 60000);
+            document.getElementById('uptime').textContent = elapsed + 'm';
+        }, 1000);
+        
+        // Resize
+        window.addEventListener('resize', () => {
+            matrixCanvas.width = window.innerWidth;
+            matrixCanvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
