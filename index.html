@@ -206,7 +206,11 @@
             font-weight: 700;
             color: var(--accent-orange);
             letter-spacing: 4px;
-            animation: glitch 3s ease-in-out infinite;
+            transition: text-shadow 0.3s ease;
+        }
+        
+        .terminal-title:hover {
+            animation: glitch 0.5s ease-in-out;
         }
         
         .top-controls {
@@ -276,8 +280,9 @@
             flex: 1;
             overflow-y: auto;
             padding: 15px;
-            font-size: 0.8rem;
-            line-height: 1.6;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            background: #0f0f0f;
         }
         
         #command-output::-webkit-scrollbar {
@@ -285,19 +290,20 @@
         }
         
         #command-output::-webkit-scrollbar-thumb {
-            background: #1a1a1a;
+            background: #333;
         }
         
         .cmd-line {
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
         
         .cmd-prompt {
             color: var(--accent-orange);
+            font-weight: 700;
         }
         
         .cmd-text {
-            color: var(--text-dim);
+            color: #bbb;
         }
         
         .cmd-success {
@@ -353,36 +359,35 @@
         }
         
         #bot-character-area {
-            height: 280px;
+            height: 180px;
             background: 
-                radial-gradient(240px 240px at 50% 40%, rgba(255, 149, 0, 0.12), transparent 60%),
-                radial-gradient(320px 320px at 40% 60%, rgba(255, 149, 0, 0.08), transparent 60%),
-                var(--panel-bg);
+                radial-gradient(200px 200px at 50% 50%, rgba(255, 149, 0, 0.15), transparent 65%),
+                #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 2px solid var(--accent-orange);
             flex-shrink: 0;
         }
         
         .platform {
             position: absolute;
-            bottom: 20px;
+            bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 180px;
-            height: 16px;
+            width: 140px;
+            height: 12px;
             border-radius: 999px;
-            background: radial-gradient(90px 25px at 50% 30%, rgba(255, 149, 0, 0.15), transparent 60%);
-            border: 1px solid rgba(255, 149, 0, 0.2);
-            opacity: 0.8;
+            background: radial-gradient(70px 20px at 50% 30%, rgba(255, 149, 0, 0.2), transparent 60%);
+            border: 1px solid rgba(255, 149, 0, 0.3);
+            opacity: 0.9;
         }
         
         .bot-3d {
             position: relative;
-            width: 200px;
-            height: 250px;
+            width: 150px;
+            height: 180px;
             transform-origin: 50% 85%;
             animation: idleBob 2.8s ease-in-out infinite;
         }
