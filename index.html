@@ -406,6 +406,7 @@
             display: flex;
             flex-direction: column;
             border-right: 2px solid var(--border);
+            overflow: hidden;
         }
         
         .panel-header {
@@ -422,9 +423,14 @@
         #command-output {
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
             padding: 20px;
             font-size: 0.85rem;
             line-height: 2;
+            min-height: 0;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            touch-action: pan-y;
         }
         
         #command-output::-webkit-scrollbar {
@@ -497,6 +503,10 @@
             background: var(--panel-bg);
             position: relative;
             overflow: hidden;
+        }
+        
+        #neural-network {
+            touch-action: none;
         }
         
         .neural-label {
@@ -600,15 +610,21 @@
             display: flex;
             flex-direction: column;
             border-left: 2px solid var(--border);
+            overflow: hidden;
         }
         
         #bot-chat {
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
             padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 15px;
+            min-height: 0;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            touch-action: pan-y;
         }
         
         #bot-chat::-webkit-scrollbar {
@@ -739,11 +755,22 @@
             display: none;
         }
         
+        #neural-network {
+            touch-action: none;
+        }
+        
         @media (max-width: 768px) {
+            :root {
+                --mobile-topbar: 60px;
+                --mobile-tabs: 50px;
+                --mobile-feed: 46px;
+            }
+            
             #terminal-container {
                 grid-template-columns: 1fr;
-                grid-template-rows: 60px 50px 1fr;
+                grid-template-rows: var(--mobile-topbar) var(--mobile-tabs) 1fr;
                 height: 100vh;
+                overflow: hidden;
             }
             
             /* Show mobile tabs */
@@ -779,10 +806,13 @@
                 background: rgba(255, 149, 0, 0.1);
             }
             
-            /* Panels controlled by tabs */
+            /* Panels controlled by tabs - FIXED HEIGHT */
             #left-panel, #right-panel, #center-panel {
                 grid-column: 1 / -1;
                 border: none;
+                height: calc(100vh - var(--mobile-topbar) - var(--mobile-tabs) - var(--mobile-feed));
+                overflow: hidden;
+                min-height: 0;
             }
             
             #left-panel, #right-panel {
@@ -801,6 +831,84 @@
                 display: block;
             }
             
+            /* Fix terminal scrolling */
+            #command-output {
+                flex: 1;
+                overflow-y: auto;
+                overflow-x: hidden;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+                padding: 15px;
+                min-height: 0;
+            }
+            
+            #command-input-area {
+                flex-shrink: 0;
+                padding: 12px;
+            }
+            
+            #command-input {
+                font-size: 16px; /* Prevents iOS zoom */
+                padding: 12px;
+            }
+            
+            /* Fix bot chat scrolling */
+            #bot-chat {
+                flex: 1;
+                overflow-y: auto;
+                overflow-x: hidden;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+                padding: 15px;
+                min-height: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            #bot-input-area {
+                flex-shrink: 0;
+                padding: 12px;
+            }
+            
+            #bot-input {
+                font-size: 16px; /* Prevents iOS zoom */
+                padding: 12px;
+                margin-bottom: 8px;
+            }
+            
+            #bot-send {
+                padding: 14px;
+            }
+            
+            /* Bot messages better spacing */
+            .bot-message {
+                padding: 12px;
+                font-size: 0.85rem;
+                line-height: 1.6;
+            }
+            
+            .bot-message img {
+                margin: 10px 0;
+            }
+            
+            .message-actions {
+                margin-top: 10px;
+                gap: 8px;
+            }
+            
+            .action-btn {
+                padding: 8px 12px;
+                font-size: 0.7rem;
+            }
+            
+            /* Terminal commands better spacing */
+            .cmd-line {
+                margin-bottom: 8px;
+                font-size: 0.8rem;
+                line-height: 1.5;
+            }
+            
             .neural-node {
                 width: 45px;
                 height: 45px;
@@ -817,6 +925,9 @@
             .neural-stats {
                 grid-template-columns: 1fr 1fr;
                 gap: 8px;
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
             }
             
             .neural-stat {
@@ -826,6 +937,12 @@
             
             .stat-value {
                 font-size: 0.85rem;
+            }
+            
+            .neural-label {
+                font-size: 0.65rem;
+                padding: 6px 12px;
+                top: 10px;
             }
             
             .top-right {
@@ -846,9 +963,16 @@
             }
             
             .data-feed {
+                height: var(--mobile-feed);
                 font-size: 0.65rem;
-                padding: 8px 10px;
-                flex-wrap: wrap;
+                padding: 6px 10px;
+                flex-wrap: nowrap;
+                gap: 8px;
+                overflow-x: auto;
+            }
+            
+            .feed-item {
+                flex-shrink: 0;
             }
             
             .terminal-title {
@@ -856,9 +980,16 @@
                 letter-spacing: 3px;
             }
             
-            /* Make inputs easier to tap */
-            #command-input, #bot-input, #bot-send {
-                font-size: 16px;
+            /* Ensure scrollbars are visible on mobile */
+            #command-output::-webkit-scrollbar,
+            #bot-chat::-webkit-scrollbar {
+                width: 6px;
+            }
+            
+            #command-output::-webkit-scrollbar-thumb,
+            #bot-chat::-webkit-scrollbar-thumb {
+                background: #444;
+                border-radius: 3px;
             }
         }
     </style>
@@ -1387,6 +1518,8 @@ Volume = Truth. No volume = No interest.`,
             const leftPanel = document.getElementById('left-panel');
             const centerPanel = document.getElementById('center-panel');
             const rightPanel = document.getElementById('right-panel');
+            const commandInput = document.getElementById('command-input');
+            const botInput = document.getElementById('bot-input');
             
             // Set initial view (brain)
             centerPanel.classList.add('active');
@@ -1407,9 +1540,22 @@ Volume = Truth. No volume = No interest.`,
                 btn.classList.add('active');
                 
                 // Show selected panel
-                if (view === 'terminal') leftPanel.classList.add('active');
-                if (view === 'brain') centerPanel.classList.add('active');
-                if (view === 'bot') rightPanel.classList.add('active');
+                if (view === 'terminal') {
+                    leftPanel.classList.add('active');
+                    // Focus input after panel is visible
+                    setTimeout(() => commandInput.focus(), 100);
+                }
+                if (view === 'brain') {
+                    centerPanel.classList.add('active');
+                }
+                if (view === 'bot') {
+                    rightPanel.classList.add('active');
+                    // Focus input and scroll to bottom
+                    setTimeout(() => {
+                        botInput.focus();
+                        botChat.scrollTop = botChat.scrollHeight;
+                    }, 100);
+                }
             });
         }
 
@@ -1711,6 +1857,8 @@ Volume = Truth. No volume = No interest.`,
             
             function handleMove(e) {
                 if (isDragging && draggedNode) {
+                    if (e.cancelable) e.preventDefault();
+                    
                     const touch = e.touches ? e.touches[0] : e;
                     const rect = neuralArea.getBoundingClientRect();
                     const newX = touch.clientX - rect.left - dragOffset.x;
@@ -1737,7 +1885,7 @@ Volume = Truth. No volume = No interest.`,
             }
             
             neuralArea.addEventListener('mousemove', handleMove);
-            neuralArea.addEventListener('touchmove', handleMove);
+            neuralArea.addEventListener('touchmove', handleMove, { passive: false });
             document.addEventListener('mouseup', handleEnd);
             document.addEventListener('touchend', handleEnd);
             
