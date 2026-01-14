@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>TRADER U SUPER BOT</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap');
@@ -763,7 +763,11 @@
             :root {
                 --mobile-topbar: 60px;
                 --mobile-tabs: 50px;
-                --mobile-feed: 46px;
+                --mobile-feed: 55px;
+            }
+            
+            body {
+                padding-bottom: env(safe-area-inset-bottom);
             }
             
             #terminal-container {
@@ -852,6 +856,115 @@
                 padding: 12px;
             }
             
+        @media (max-width: 768px) {
+            :root {
+                --mobile-topbar: 60px;
+                --mobile-tabs: 50px;
+                --mobile-feed: 50px;
+                --mobile-safe-bottom: env(safe-area-inset-bottom, 0px);
+            }
+            
+            body {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+            
+            #terminal-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: var(--mobile-topbar) var(--mobile-tabs) 1fr;
+                height: 100vh;
+                overflow: hidden;
+            }
+            
+            /* Show mobile tabs */
+            #mobile-tabs {
+                display: flex;
+                grid-column: 1 / -1;
+                align-items: center;
+                justify-content: space-around;
+                gap: 8px;
+                padding: 10px;
+                background: #0a0a0a;
+                border-bottom: 2px solid var(--border);
+                z-index: 9996;
+            }
+            
+            .mobile-tab {
+                flex: 1;
+                padding: 12px 8px;
+                background: transparent;
+                border: 1px solid #333;
+                color: #bbb;
+                font-family: inherit;
+                font-size: 0.75rem;
+                font-weight: 700;
+                letter-spacing: 2px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            
+            .mobile-tab.active {
+                border-color: var(--accent);
+                color: var(--accent);
+                background: rgba(255, 149, 0, 0.1);
+            }
+            
+            /* Panels controlled by tabs - FIXED HEIGHT */
+            #left-panel, #right-panel, #center-panel {
+                grid-column: 1 / -1;
+                border: none;
+                height: calc(100vh - var(--mobile-topbar) - var(--mobile-tabs) - var(--mobile-feed));
+                overflow: hidden;
+                min-height: 0;
+                position: relative;
+            }
+            
+            #left-panel, #right-panel {
+                display: none;
+            }
+            
+            #left-panel.active, #right-panel.active {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            #center-panel {
+                display: none;
+            }
+            
+            #center-panel.active {
+                display: block;
+            }
+            
+            .panel-header {
+                flex-shrink: 0;
+                padding: 10px 15px;
+                font-size: 0.7rem;
+            }
+            
+            /* Fix terminal scrolling */
+            #command-output {
+                flex: 1;
+                overflow-y: auto;
+                overflow-x: hidden;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+                padding: 15px;
+                padding-bottom: 20px;
+                min-height: 0;
+            }
+            
+            #command-input-area {
+                flex-shrink: 0;
+                padding: 12px;
+                background: #0a0a0a;
+                border-top: 2px solid var(--border);
+            }
+            
+            #command-input {
+                font-size: 16px;
+                padding: 12px;
+            }
+            
             /* Fix bot chat scrolling */
             #bot-chat {
                 flex: 1;
@@ -860,6 +973,7 @@
                 -webkit-overflow-scrolling: touch;
                 overscroll-behavior: contain;
                 padding: 15px;
+                padding-bottom: 20px;
                 min-height: 0;
                 display: flex;
                 flex-direction: column;
@@ -869,6 +983,8 @@
             #bot-input-area {
                 flex-shrink: 0;
                 padding: 12px;
+                background: #0a0a0a;
+                border-top: 2px solid var(--border);
             }
             
             #bot-input {
@@ -879,6 +995,8 @@
             
             #bot-send {
                 padding: 14px;
+                font-size: 16px;
+                margin-bottom: 0;
             }
             
             /* Bot messages better spacing */
@@ -965,10 +1083,13 @@
             .data-feed {
                 height: var(--mobile-feed);
                 font-size: 0.65rem;
-                padding: 6px 10px;
+                padding: 8px 10px;
+                padding-bottom: max(8px, env(safe-area-inset-bottom));
                 flex-wrap: nowrap;
                 gap: 8px;
                 overflow-x: auto;
+                display: flex;
+                align-items: center;
             }
             
             .feed-item {
