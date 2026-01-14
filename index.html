@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRADER U SUPER BOT - Meme Coin Trading Intelligence</title>
+    <title>TRADER U SUPER BOT</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap');
         
@@ -14,15 +14,15 @@
         }
         
         :root {
-            --bg: #000000;
-            --panel-bg: #0a0a0a;
-            --border: #1a1a1a;
-            --text: #ffffff;
-            --text-dim: #666666;
-            --accent-orange: #ff9500;
-            --accent-green: #00ff00;
-            --accent-red: #ff0000;
-            --accent-blue: #00aaff;
+            --bg: #0a0a0a;
+            --panel-bg: #111;
+            --border: #333;
+            --text: #fff;
+            --text-dim: #aaa;
+            --accent: #ff9500;
+            --accent-hover: #ffaa33;
+            --green: #00ff00;
+            --red: #ff3333;
         }
         
         body {
@@ -32,46 +32,30 @@
             overflow: hidden;
         }
         
-        /* Scanlines + Vignette + CRT Effects */
+        /* Scanlines only */
         body::before {
             content: "";
             position: fixed;
             inset: 0;
             background: repeating-linear-gradient(
                 to bottom,
-                rgba(255,255,255,0.03),
-                rgba(255,255,255,0.03) 1px,
+                rgba(255,255,255,0.02),
+                rgba(255,255,255,0.02) 1px,
                 transparent 1px,
                 transparent 3px
             );
-            opacity: 0.10;
+            opacity: 0.08;
             pointer-events: none;
-            mix-blend-mode: overlay;
             z-index: 9999;
-            animation: scanlineMove 8s linear infinite;
-        }
-        
-        @keyframes scanlineMove {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(4px); }
-        }
-        
-        body::after {
-            content: "";
-            position: fixed;
-            inset: -30px;
-            background: radial-gradient(circle at 50% 30%, transparent 40%, rgba(0,0,0,0.55) 75%);
-            pointer-events: none;
-            z-index: 9998;
         }
         
         .screen-flash {
             position: fixed;
             inset: 0;
-            background: var(--accent-orange);
+            background: var(--accent);
             opacity: 0;
             pointer-events: none;
-            z-index: 9997;
+            z-index: 9998;
         }
         
         .screen-flash.active {
@@ -80,29 +64,21 @@
         
         @keyframes screenFlash {
             0%, 100% { opacity: 0; }
-            50% { opacity: 0.15; }
+            50% { opacity: 0.12; }
         }
         
-        @keyframes glitch {
-            0% { text-shadow: 2px 0 var(--accent-orange), -2px 0 cyan; }
-            25% { text-shadow: -2px 0 var(--accent-orange), 2px 0 cyan; }
-            50% { text-shadow: 2px 0 cyan, -2px 0 var(--accent-orange); }
-            75% { text-shadow: -2px 0 cyan, 2px 0 var(--accent-orange); }
-            100% { text-shadow: 0 0 var(--accent-orange); }
-        }
-        
-        @keyframes panelPulse {
-            0%, 100% { box-shadow: inset 0 0 20px rgba(255, 149, 0, 0.05); }
-            50% { box-shadow: inset 0 0 30px rgba(255, 149, 0, 0.15); }
+        @keyframes glitchHover {
+            0% { text-shadow: 2px 0 var(--accent), -2px 0 cyan; }
+            25% { text-shadow: -2px 0 var(--accent), 2px 0 cyan; }
+            50% { text-shadow: 2px 0 cyan, -2px 0 var(--accent); }
+            75% { text-shadow: -2px 0 cyan, 2px 0 var(--accent); }
+            100% { text-shadow: 0 0 var(--accent); }
         }
         
         /* Welcome Screen */
         #welcome-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background: #000;
             display: flex;
             flex-direction: column;
@@ -120,14 +96,14 @@
         .welcome-logo {
             font-size: 3.5rem;
             font-weight: 700;
-            color: var(--accent-orange);
+            color: var(--accent);
             margin-bottom: 10px;
             letter-spacing: 8px;
         }
         
         .welcome-subtitle {
             font-size: 1.1rem;
-            color: var(--text-dim);
+            color: #666;
             margin-bottom: 40px;
             letter-spacing: 3px;
         }
@@ -135,18 +111,14 @@
         .loading-bar {
             width: 400px;
             height: 4px;
-            background: #1a1a1a;
+            background: #222;
             margin-bottom: 30px;
-            position: relative;
             overflow: hidden;
         }
         
         .loading-progress {
-            position: absolute;
-            top: 0;
-            left: 0;
             height: 100%;
-            background: var(--accent-orange);
+            background: var(--accent);
             width: 0%;
             animation: loadProgress 2s ease-out forwards;
         }
@@ -158,8 +130,8 @@
         .enter-btn {
             padding: 15px 50px;
             background: transparent;
-            border: 2px solid var(--accent-orange);
-            color: var(--accent-orange);
+            border: 2px solid var(--accent);
+            color: var(--accent);
             font-family: inherit;
             font-size: 1rem;
             font-weight: 700;
@@ -175,19 +147,17 @@
         }
         
         .enter-btn:hover {
-            background: var(--accent-orange);
+            background: var(--accent);
             color: #000;
         }
         
-        /* Main Terminal */
+        /* Main Layout */
         #terminal-container {
             display: grid;
-            grid-template-columns: 320px 1fr 380px;
-            grid-template-rows: 50px calc(100vh - 80px);
+            grid-template-columns: 380px 1fr 420px;
+            grid-template-rows: 60px calc(100vh - 90px);
             height: 100vh;
-            gap: 1px;
-            background: var(--border);
-            animation: panelPulse 4s ease-in-out infinite;
+            gap: 0;
         }
         
         /* Top Bar */
@@ -197,81 +167,254 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
-            border-bottom: 1px solid var(--border);
+            padding: 0 25px;
+            border-bottom: 2px solid var(--border);
         }
         
         .terminal-title {
-            font-size: 1.1rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            color: var(--accent-orange);
-            letter-spacing: 4px;
-            transition: text-shadow 0.3s ease;
+            color: var(--accent);
+            letter-spacing: 5px;
+            cursor: pointer;
         }
         
         .terminal-title:hover {
-            animation: glitch 0.5s ease-in-out;
+            animation: glitchHover 0.5s ease;
         }
         
-        .top-controls {
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .social-links {
             display: flex;
             gap: 15px;
             align-items: center;
         }
         
-        .color-theme-btn {
-            padding: 6px 15px;
-            background: transparent;
-            border: 1px solid var(--text-dim);
-            color: var(--text);
-            font-family: inherit;
-            font-size: 0.75rem;
-            cursor: pointer;
+        .social-links a {
+            font-size: 1.4rem;
+            font-weight: 900;
             transition: all 0.3s;
+            text-decoration: none;
+            font-family: 'Roboto Mono', monospace;
         }
         
-        .color-theme-btn:hover {
-            border-color: var(--accent-orange);
-            color: var(--accent-orange);
+        .social-links a:hover {
+            transform: scale(1.3);
+        }
+        
+        .social-links a.youtube {
+            color: #FF0000;
+        }
+        
+        .social-links a.youtube:hover {
+            filter: brightness(1.3);
+        }
+        
+        .social-links a.tiktok {
+            color: #00f2ea;
+        }
+        
+        .social-links a.tiktok:hover {
+            filter: brightness(1.3);
+        }
+        
+        .social-links a.instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .social-links a.instagram:hover {
+            filter: brightness(1.3);
+        }
+        
+        .theme-switcher {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .theme-btn {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #333;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .theme-btn:hover {
+            transform: scale(1.15);
+            border-color: var(--text);
+        }
+        
+        .theme-btn.active {
+            border-color: var(--text);
+            box-shadow: 0 0 10px currentColor;
         }
         
         .status-indicator {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.75rem;
-            color: var(--text-dim);
+            gap: 10px;
+            font-size: 0.8rem;
+            color: #888;
         }
         
         .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-green);
+            width: 10px;
+            height: 10px;
+            background: var(--green);
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        /* Complex Neural Network - Like a Real Brain */
+        .neural-node {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+            font-weight: 700;
+            cursor: grab;
+            transition: box-shadow 0.3s;
+            background: rgba(255, 149, 0, 0.15);
+            box-shadow: 0 0 20px rgba(255, 149, 0, 0.4);
+            text-align: center;
+            line-height: 1.1;
+            color: #fff;
+            z-index: 10;
+            user-select: none;
         }
         
-        /* Left Panel */
+        .neural-node.dragging {
+            cursor: grabbing;
+            z-index: 1000;
+            box-shadow: 0 0 40px var(--accent);
+        }
+        
+        .neural-node.core {
+            width: 70px;
+            height: 70px;
+            font-size: 0.6rem;
+            background: rgba(255, 149, 0, 0.25);
+            box-shadow: 0 0 30px rgba(255, 149, 0, 0.6);
+        }
+        
+        .neural-node:hover {
+            box-shadow: 0 0 35px var(--accent);
+        }
+        
+        .neural-node.active {
+            animation: nodePulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes nodePulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 149, 0, 0.4); }
+            50% { box-shadow: 0 0 40px var(--accent); }
+        }
+        
+        .synapse {
+            position: absolute;
+            height: 1.5px;
+            background: var(--accent);
+            transform-origin: left center;
+            opacity: 0.4;
+            box-shadow: 0 0 8px var(--accent);
+            z-index: 1;
+        }
+        
+        .synapse.firing {
+            animation: synapseFire 1.5s ease-in-out infinite;
+        }
+        
+        .synapse.core-connection {
+            height: 2px;
+            opacity: 0.6;
+            box-shadow: 0 0 12px var(--accent);
+        }
+        
+        @keyframes synapseFire {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; height: 2.5px; }
+        }
+        
+        .neural-stats {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            z-index: 5;
+        }
+        
+        .neural-stat {
+            padding: 10px 12px;
+            background: rgba(255, 149, 0, 0.15);
+            border: 2px solid rgba(255, 149, 0, 0.5);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ccc;
+            backdrop-filter: blur(5px);
+        }
+        
+        .credits {
+            position: fixed;
+            bottom: 35px;
+            right: 10px;
+            font-size: 0.65rem;
+            color: #444;
+            z-index: 9999;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            opacity: 0;
+        }
+        
+        .credits a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .credits a:hover {
+            color: var(--accent);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        /* Left Panel - Education Terminal */
         #left-panel {
             background: var(--panel-bg);
             display: flex;
             flex-direction: column;
-            border-right: 1px solid var(--border);
-            overflow: hidden;
+            border-right: 2px solid var(--border);
         }
         
         .panel-header {
-            padding: 10px 15px;
-            background: #0f0f0f;
-            border-bottom: 1px solid var(--border);
+            padding: 12px 20px;
+            background: #0a0a0a;
+            border-bottom: 2px solid var(--border);
             font-size: 0.75rem;
             font-weight: 700;
-            color: var(--text-dim);
+            color: #888;
             letter-spacing: 2px;
             flex-shrink: 0;
         }
@@ -279,26 +422,33 @@
         #command-output {
             flex: 1;
             overflow-y: auto;
-            padding: 15px;
+            padding: 20px;
             font-size: 0.85rem;
-            line-height: 1.8;
-            background: #0f0f0f;
+            line-height: 2;
         }
         
         #command-output::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
         
         #command-output::-webkit-scrollbar-thumb {
             background: #333;
+            border-radius: 4px;
         }
         
         .cmd-line {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            opacity: 0;
+            animation: slideIn 0.4s ease forwards;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .cmd-prompt {
-            color: var(--accent-orange);
+            color: var(--accent);
             font-weight: 700;
         }
         
@@ -307,294 +457,68 @@
         }
         
         .cmd-success {
-            color: var(--accent-green);
-            text-shadow: 0 0 10px var(--accent-green);
+            color: var(--green);
             font-weight: 700;
+            text-shadow: 0 0 10px var(--green);
         }
         
-        .cmd-error {
-            color: var(--accent-red);
-            text-shadow: 0 0 10px var(--accent-red);
-        }
-        
-        .cmd-line.event {
-            animation: slideIn 0.5s ease, glow 2s ease-in-out infinite;
-        }
-        
-        @keyframes glow {
-            0%, 100% { text-shadow: 0 0 5px var(--accent-orange); }
-            50% { text-shadow: 0 0 15px var(--accent-orange); }
+        .cmd-warning {
+            color: #ffaa00;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
         }
         
         #command-input-area {
-            padding: 12px 15px;
-            background: #0f0f0f;
-            border-top: 1px solid var(--border);
+            padding: 15px 20px;
+            background: #0a0a0a;
+            border-top: 2px solid var(--border);
             display: flex;
-            gap: 8px;
+            gap: 10px;
             flex-shrink: 0;
         }
         
         #command-input {
             flex: 1;
-            background: transparent;
-            border: 1px solid var(--border);
-            padding: 8px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 10px;
             color: var(--text);
             font-family: inherit;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
         }
         
         #command-input:focus {
             outline: none;
-            border-color: var(--accent-orange);
+            border-color: var(--accent);
         }
         
-        /* Center Panel - Bot + Neural */
+        /* Center Panel - Neural Network */
         #center-panel {
             background: var(--panel-bg);
-            display: flex;
-            flex-direction: column;
+            position: relative;
             overflow: hidden;
         }
         
-        #bot-character-area {
-            height: 180px;
-            background: 
-                radial-gradient(200px 200px at 50% 50%, rgba(255, 149, 0, 0.15), transparent 65%),
-                #0f0f0f;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            border-bottom: 2px solid var(--accent-orange);
-            flex-shrink: 0;
-        }
-        
-        .platform {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 140px;
-            height: 12px;
-            border-radius: 999px;
-            background: radial-gradient(70px 20px at 50% 30%, rgba(255, 149, 0, 0.2), transparent 60%);
-            border: 1px solid rgba(255, 149, 0, 0.3);
-            opacity: 0.9;
-        }
-        
-        .bot-3d {
-            position: relative;
-            width: 150px;
-            height: 180px;
-            transform-origin: 50% 85%;
-            animation: idleBob 2.8s ease-in-out infinite;
-        }
-        
-        @keyframes idleBob {
-            0%, 100% { transform: translateY(0px) rotate(-0.6deg); }
-            50% { transform: translateY(-8px) rotate(0.8deg); }
-        }
-        
-        .bot-move { width: 100%; height: 100%; transition: transform 0.12s ease; }
-        .bot-tilt { width: 100%; height: 100%; transition: transform 0.12s ease; }
-        
-        .bot-glow {
-            position: absolute;
-            inset: -30px;
-            background: radial-gradient(150px 150px at 50% 40%, rgba(255, 149, 0, 0.18), transparent 60%);
-            filter: blur(15px);
-            opacity: 0.7;
-            pointer-events: none;
-        }
-        
-        .bot-head {
-            position: absolute;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 160px;
-            height: 120px;
-            border-radius: 50px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(4px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .bot-antenna {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 7px;
-            height: 22px;
-            border-radius: 999px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04));
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .bot-antenna::after {
-            content: "";
-            position: absolute;
-            top: -9px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 12px;
-            height: 12px;
-            border-radius: 999px;
-            background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.1)),
-                        radial-gradient(circle at 50% 50%, var(--accent-orange), rgba(255, 149, 0, 0.1));
-            box-shadow: 0 0 15px var(--accent-orange);
-            animation: ping 2s ease-in-out infinite;
-        }
-        
-        @keyframes ping {
-            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.95; }
-            50% { transform: translateX(-50%) scale(1.1); opacity: 0.7; }
-        }
-        
-        .bot-visor {
+        .neural-label {
             position: absolute;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            width: 130px;
-            height: 75px;
-            border-radius: 38px;
-            background: radial-gradient(90px 60px at 50% 20%, rgba(255, 149, 0, 0.12), transparent 65%),
-                        linear-gradient(180deg, rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.7));
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow: hidden;
-            box-shadow: inset 0 2px 12px rgba(255, 149, 0, 0.2);
-            animation: visorGlow 2s ease-in-out infinite;
-        }
-        
-        @keyframes visorGlow {
-            0%, 100% { box-shadow: inset 0 2px 12px rgba(255, 149, 0, 0.2), 0 0 20px rgba(255, 149, 0, 0.2); }
-            50% { box-shadow: inset 0 2px 12px rgba(255, 149, 0, 0.4), 0 0 30px rgba(255, 149, 0, 0.4); }
-        }
-        
-        .bot-3d.talking .bot-visor {
-            animation: visorTalk 0.18s ease-in-out infinite;
-        }
-        
-        @keyframes visorTalk {
-            0%, 100% { filter: brightness(1); }
-            50% { filter: brightness(1.15); }
-        }
-        
-        .bot-eye {
-            position: absolute;
-            top: 26px;
-            width: 26px;
-            height: 28px;
-            border-radius: 16px;
-            background: radial-gradient(13px 13px at 35% 35%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.08)),
-                        radial-gradient(20px 20px at 50% 60%, var(--accent-orange), rgba(255, 149, 0, 0.15));
-            box-shadow: 0 0 15px rgba(255, 149, 0, 0.3);
-            transition: transform 0.12s ease;
-        }
-        
-        .bot-eye.left { left: 32px; }
-        .bot-eye.right { right: 32px; }
-        
-        .eye-pupil {
-            position: absolute;
-            width: 9px;
-            height: 9px;
-            background: #000;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            transition: transform 0.2s;
-        }
-        
-        .bot-mouth {
-            position: absolute;
-            left: 50%;
-            top: 58px;
-            transform: translateX(-50%);
-            width: 42px;
-            height: 12px;
-            border-radius: 0 0 12px 12px;
-            border: 2px solid rgba(255, 149, 0, 0.5);
-            border-top: 0;
-            opacity: 0.85;
-            filter: drop-shadow(0 0 8px rgba(255, 149, 0, 0.2));
-            transition: height 90ms ease, width 90ms ease;
-        }
-        
-        .bot-3d.talking .bot-mouth {
-            height: 24px;
-            width: 38px;
-            border-radius: 0 0 16px 16px;
-        }
-        
-        .bot-body {
-            position: absolute;
-            top: 128px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 140px;
-            height: 110px;
-            border-radius: 30px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
-        }
-        
-        .bot-core {
-            position: absolute;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 46px;
-            height: 46px;
-            border-radius: 999px;
-            background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.1)),
-                        radial-gradient(circle at 50% 65%, var(--accent-orange), rgba(255, 149, 0, 0.12));
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 20px rgba(255, 149, 0, 0.3);
-            animation: corePulse 2.4s ease-in-out infinite;
-        }
-        
-        @keyframes corePulse {
-            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.95; }
-            50% { transform: translateX(-50%) scale(1.06); opacity: 0.8; }
-        }
-        
-        .bot-status {
-            position: absolute;
-            bottom: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 6px 12px;
-            background: rgba(255, 149, 0, 0.15);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--accent-orange);
-            border-radius: 10px;
-            font-size: 0.65rem;
+            padding: 8px 20px;
+            background: rgba(255, 149, 0, 0.2);
+            border: 2px solid var(--accent);
+            font-size: 0.75rem;
             font-weight: 700;
-            letter-spacing: 2px;
-            box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2);
-        }
-        
-        /* Neural Network */
-        #neural-network-area {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
+            letter-spacing: 3px;
+            z-index: 10;
         }
         
         .neural-node {
             position: absolute;
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
-            border: 2px solid var(--accent-orange);
+            border: 2px solid var(--accent);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -602,16 +526,17 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
-            background: rgba(255, 149, 0, 0.1);
-            box-shadow: 0 0 15px rgba(255, 149, 0, 0.3);
+            background: rgba(255, 149, 0, 0.15);
+            box-shadow: 0 0 20px rgba(255, 149, 0, 0.4);
             text-align: center;
             line-height: 1.1;
+            color: #fff;
         }
         
         .neural-node:hover {
-            transform: scale(1.2);
+            transform: scale(1.15);
             z-index: 100;
-            box-shadow: 0 0 30px var(--accent-orange);
+            box-shadow: 0 0 35px var(--accent);
         }
         
         .neural-node.active {
@@ -619,17 +544,17 @@
         }
         
         @keyframes nodePulse {
-            0%, 100% { box-shadow: 0 0 15px rgba(255, 149, 0, 0.3); }
-            50% { box-shadow: 0 0 30px var(--accent-orange); border-width: 3px; }
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 149, 0, 0.4); }
+            50% { box-shadow: 0 0 40px var(--accent); }
         }
         
         .synapse {
             position: absolute;
             height: 2px;
-            background: var(--accent-orange);
+            background: var(--accent);
             transform-origin: left center;
-            opacity: 0.3;
-            box-shadow: 0 0 5px var(--accent-orange);
+            opacity: 0.5;
+            box-shadow: 0 0 8px var(--accent);
         }
         
         .synapse.firing {
@@ -637,135 +562,120 @@
         }
         
         @keyframes synapseFire {
-            0%, 100% { opacity: 0.3; }
+            0%, 100% { opacity: 0.5; }
             50% { opacity: 1; height: 3px; }
         }
         
         .neural-stats {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
-            right: 10px;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            gap: 12px;
         }
         
         .neural-stat {
-            padding: 8px 10px;
-            background: rgba(255, 149, 0, 0.1);
-            border: 1px solid rgba(255, 149, 0, 0.3);
-            font-size: 0.65rem;
+            padding: 12px 15px;
+            background: rgba(255, 149, 0, 0.15);
+            border: 2px solid rgba(255, 149, 0, 0.5);
+            font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
+            color: #ccc;
         }
         
         .stat-value {
-            color: var(--accent-orange);
-            font-size: 0.85rem;
+            color: var(--accent);
+            font-size: 1rem;
             display: block;
-            margin-top: 3px;
+            margin-top: 5px;
         }
         
-        .neural-label {
-            position: absolute;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 6px 15px;
-            background: rgba(255, 149, 0, 0.2);
-            border: 1px solid var(--accent-orange);
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-        }
-        
-        /* Right Panel */
+        /* Right Panel - Bot Chat */
         #right-panel {
             background: var(--panel-bg);
             display: flex;
             flex-direction: column;
-            border-left: 1px solid var(--border);
-            overflow: hidden;
+            border-left: 2px solid var(--border);
         }
         
         #bot-chat {
             flex: 1;
             overflow-y: auto;
-            padding: 15px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
         }
         
         #bot-chat::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
         
         #bot-chat::-webkit-scrollbar-thumb {
-            background: #1a1a1a;
+            background: #333;
+            border-radius: 4px;
         }
         
         .bot-message {
-            padding: 10px 12px;
-            background: #0f0f0f;
-            border-left: 3px solid var(--accent-orange);
-            font-size: 0.85rem;
-            line-height: 1.6;
+            padding: 15px;
+            background: #1a1a1a;
+            border-left: 4px solid var(--accent);
+            font-size: 0.9rem;
+            line-height: 1.8;
             animation: slideIn 0.3s ease;
         }
         
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .bot-message img {
+            max-width: 100%;
+            margin: 15px 0;
+            border: 2px solid var(--accent);
+            border-radius: 4px;
         }
         
-        .user-message {
-            padding: 10px 12px;
-            background: #1a1a1a;
-            border-left: 3px solid var(--accent-green);
-            font-size: 0.85rem;
-            line-height: 1.6;
-            align-self: flex-end;
-            max-width: 80%;
+        .bot-message strong {
+            color: var(--accent);
         }
         
         .message-actions {
             display: flex;
-            gap: 8px;
-            margin-top: 8px;
+            gap: 10px;
+            margin-top: 12px;
             flex-wrap: wrap;
         }
         
         .action-btn {
-            padding: 5px 12px;
+            padding: 8px 15px;
             background: transparent;
-            border: 1px solid var(--text-dim);
-            color: var(--text-dim);
+            border: 1px solid #555;
+            color: #aaa;
             font-family: inherit;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.3s;
         }
         
         .action-btn:hover {
-            border-color: var(--accent-orange);
-            color: var(--accent-orange);
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(255, 149, 0, 0.1);
         }
         
         #bot-input-area {
-            padding: 15px;
-            background: #0f0f0f;
-            border-top: 1px solid var(--border);
+            padding: 15px 20px;
+            background: #0a0a0a;
+            border-top: 2px solid var(--border);
             flex-shrink: 0;
         }
         
         #bot-input {
             width: 100%;
-            background: transparent;
-            border: 1px solid var(--border);
-            padding: 10px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 12px;
             color: var(--text);
             font-family: inherit;
             font-size: 0.85rem;
@@ -774,66 +684,25 @@
         
         #bot-input:focus {
             outline: none;
-            border-color: var(--accent-orange);
+            border-color: var(--accent);
         }
         
         #bot-send {
             width: 100%;
-            padding: 10px;
-            background: var(--accent-orange);
+            padding: 12px;
+            background: var(--accent);
             border: none;
             color: #000;
             font-family: inherit;
             font-size: 0.85rem;
             font-weight: 700;
             cursor: pointer;
+            letter-spacing: 1px;
             transition: all 0.3s;
         }
         
         #bot-send:hover {
-            background: #ffaa33;
-        }
-        
-        .control-panel {
-            padding: 12px 15px;
-            background: #0f0f0f;
-            border-top: 1px solid var(--border);
-            flex-shrink: 0;
-        }
-        
-        .control-group {
-            margin-bottom: 10px;
-        }
-        
-        .control-label {
-            font-size: 0.65rem;
-            color: var(--text-dim);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .color-picker-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-        }
-        
-        .color-option {
-            width: 100%;
-            height: 24px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .color-option:hover {
-            transform: scale(1.1);
-            border-color: var(--text);
-        }
-        
-        .color-option.active {
-            border: 2px solid var(--text);
+            background: var(--accent-hover);
         }
         
         /* Data Feed */
@@ -842,32 +711,31 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 8px 15px;
-            background: #0f0f0f;
-            border-top: 1px solid var(--border);
-            font-size: 0.7rem;
+            padding: 10px 20px;
+            background: #0a0a0a;
+            border-top: 2px solid var(--border);
+            font-size: 0.75rem;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             z-index: 9997;
         }
         
         .feed-item {
             display: flex;
-            gap: 5px;
+            gap: 8px;
         }
         
         .feed-label {
-            color: var(--text-dim);
+            color: #666;
         }
         
         .feed-value {
-            color: var(--accent-green);
+            color: var(--green);
             font-weight: 700;
         }
     </style>
 </head>
 <body>
-    <!-- Welcome Screen -->
     <div id="welcome-screen">
         <div class="welcome-logo">TRADER U SUPER BOT</div>
         <div class="welcome-subtitle">MEME COIN TRADING INTELLIGENCE</div>
@@ -877,18 +745,23 @@
         <button class="enter-btn" onclick="enterTerminal()">ENTER SYSTEM</button>
     </div>
 
-    <!-- Main Terminal -->
     <div id="terminal-container" style="opacity: 0;">
         <div class="screen-flash" id="screen-flash"></div>
         
-        <!-- Top Bar -->
         <div id="top-bar">
             <div class="terminal-title">TRADER U SUPER BOT</div>
-            <div class="top-controls">
-                <button class="color-theme-btn" onclick="changeTheme('orange')">ORANGE</button>
-                <button class="color-theme-btn" onclick="changeTheme('green')">GREEN</button>
-                <button class="color-theme-btn" onclick="changeTheme('blue')">BLUE</button>
-                <button class="color-theme-btn" onclick="changeTheme('purple')">PURPLE</button>
+            <div class="top-right">
+                <div class="social-links">
+                    <a href="https://www.youtube.com/@Chepetrades" target="_blank" title="YouTube" class="youtube">Y</a>
+                    <a href="https://www.tiktok.com/@chepeex_" target="_blank" title="TikTok" class="tiktok">T</a>
+                    <a href="https://www.instagram.com/chepeex/" target="_blank" title="Instagram" class="instagram">I</a>
+                </div>
+                <div class="theme-switcher">
+                    <div class="theme-btn active" style="background: #ff9500;" onclick="changeTheme('#ff9500', this)" title="Orange"></div>
+                    <div class="theme-btn" style="background: #00ff00;" onclick="changeTheme('#00ff00', this)" title="Green"></div>
+                    <div class="theme-btn" style="background: #00aaff;" onclick="changeTheme('#00aaff', this)" title="Blue"></div>
+                    <div class="theme-btn" style="background: #ff00ff;" onclick="changeTheme('#ff00ff', this)" title="Purple"></div>
+                </div>
                 <div class="status-indicator">
                     <div class="status-dot"></div>
                     <span>LIVE</span>
@@ -896,7 +769,6 @@
             </div>
         </div>
 
-        <!-- Left Panel -->
         <div id="left-panel">
             <div class="panel-header">EDUCATION TERMINAL</div>
             <div id="command-output"></div>
@@ -905,56 +777,20 @@
             </div>
         </div>
 
-        <!-- Center Panel -->
         <div id="center-panel">
-            <div id="bot-character-area">
-                <div class="platform"></div>
-                <div class="bot-3d" id="bot-character">
-                    <div class="bot-move" id="bot-move">
-                        <div class="bot-tilt" id="bot-tilt">
-                            <div class="bot-glow"></div>
-                            <div class="bot-head">
-                                <div class="bot-antenna"></div>
-                                <div class="bot-visor" id="bot-visor">
-                                    <div class="bot-eye left">
-                                        <div class="eye-pupil" id="eye-left"></div>
-                                    </div>
-                                    <div class="bot-eye right">
-                                        <div class="eye-pupil" id="eye-right"></div>
-                                    </div>
-                                    <div class="bot-mouth" id="bot-mouth"></div>
-                                </div>
-                            </div>
-                            <div class="bot-body">
-                                <div class="bot-core"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bot-status" id="bot-status">LEARNING MODE</div>
+            <div class="neural-label">TRADER U NEURAL NETWORK</div>
+            <div id="neural-network" style="width: 100%; height: 100%; position: relative;"></div>
+            <div class="neural-stats">
+                <div class="neural-stat">Neural Nodes<span class="stat-value">19</span></div>
+                <div class="neural-stat">Synapses<span class="stat-value" id="synapse-count">0</span></div>
+                <div class="neural-stat">Knowledge Docs<span class="stat-value" id="doc-count">10</span></div>
+                <div class="neural-stat">Memory<span class="stat-value" id="memory-count">0</span></div>
             </div>
-            <div id="neural-network-area"></div>
         </div>
 
-        <!-- Right Panel -->
         <div id="right-panel">
-            <div class="panel-header">ASK TRADER U BOT</div>
+            <div class="panel-header">TRADER U BOT</div>
             <div id="bot-chat"></div>
-            <div class="control-panel">
-                <div class="control-group">
-                    <div class="control-label">Theme Colors</div>
-                    <div class="color-picker-grid">
-                        <div class="color-option active" style="background: #ff9500" onclick="changeAccent('#ff9500', '#ffaa33', this)"></div>
-                        <div class="color-option" style="background: #00ff00" onclick="changeAccent('#00ff00', '#33ff33', this)"></div>
-                        <div class="color-option" style="background: #00aaff" onclick="changeAccent('#00aaff', '#33bbff', this)"></div>
-                        <div class="color-option" style="background: #ff00ff" onclick="changeAccent('#ff00ff', '#ff33ff', this)"></div>
-                        <div class="color-option" style="background: #ff0000" onclick="changeAccent('#ff0000', '#ff3333', this)"></div>
-                        <div class="color-option" style="background: #ffff00" onclick="changeAccent('#ffff00', '#ffff33', this)"></div>
-                        <div class="color-option" style="background: #00ffff" onclick="changeAccent('#00ffff', '#33ffff', this)"></div>
-                        <div class="color-option" style="background: #ffffff" onclick="changeAccent('#ffffff', '#ffffff', this)"></div>
-                    </div>
-                </div>
-            </div>
             <div id="bot-input-area">
                 <input type="text" id="bot-input" placeholder="Ask me anything about trading...">
                 <button id="bot-send">SEND</button>
@@ -962,7 +798,6 @@
         </div>
     </div>
 
-    <!-- Data Feed -->
     <div class="data-feed" style="opacity: 0;" id="data-feed">
         <div class="feed-item"><span class="feed-label">BTC:</span><span class="feed-value">$95,284</span></div>
         <div class="feed-item"><span class="feed-label">ETH:</span><span class="feed-value">$3,421</span></div>
@@ -972,410 +807,256 @@
     </div>
 
     <script>
-        // TRADER U SUPER MEMORY SYSTEM
-        const traderUMemory = {
-            conversations: [],
-            episodes: [],
-            facts: { preferences: [], style: 'aggressive', interests: [] },
-            context: [],
-            
-            // MASSIVE KNOWLEDGE BASE - ALL TRADER U CONTENT
-            knowledgeBase: {
-                // Rug Detection
-                'rugpull': {
-                    title: 'HOW TO SPOT A RUG PULL',
-                    content: `🚨 RUG DETECTION CHECKLIST:
+        // KNOWLEDGE BASE WITH IMAGES
+        const knowledgeBase = {
+            rugpull: {
+                title: 'HOW TO SPOT A RUG PULL',
+                content: `🚨 **RUG DETECTION CHECKLIST:**
 
-1. CHART PATTERN - Healthy chart = heartbeat pattern (up, down, up). BAD chart = straight up then straight down death drop.
+1. **CHART PATTERN** - Healthy chart = heartbeat pattern (up, down, up). BAD chart = straight up then death drop.
 
-2. GLOBAL FEES vs MARKET CAP - Must match! Example: 3 SOL fees = 20-40k MC. If they don't match = RUG.
+2. **GLOBAL FEES vs MARKET CAP** - Must match! Example: 3 SOL fees = 20-40k MC. If they don't match = RUG.
 
-3. WALLET ANALYSIS:
+3. **WALLET ANALYSIS:**
    • Check holder dates - All "1 month" old = BUNDLED WALLETS = RUG
    • All hold same amount of SOL = ONE PERSON = RUG
    • Look for fat clusters on bubble map
 
-4. BUBBLE MAP - Should be dispersed. If it looks like a DEATH STAR = RUG.
+4. **BUBBLE MAP** - Should be dispersed. If it looks like DEATH STAR = RUG.
 
-5. LIQUIDITY - Must have healthy liquidity. Zero liquidity = your money gets LOCKED.
+5. **LIQUIDITY** - Must have healthy liquidity. Zero liquidity = money gets LOCKED.
 
-6. BUNDLED SYMBOL - Look for the 3-ring symbol indicating bundled wallets.
+⚠️ ALWAYS CHECK: Fees, Wallets, Dates, Bubble Map, Liquidity`,
+                images: [
+                    'https://github.com/user-attachments/assets/f1cc101a-fdba-4e41-abbb-5212a174f5bf',
+                    'https://github.com/user-attachments/assets/c9397444-68fb-4372-8b3a-f6e625cd434d'
+                ],
+                actions: ['Good coin signs', 'Show filters', 'Risk rules']
+            },
+            
+            goodcoin: {
+                title: 'HOW TO SPOT A GOOD COIN',
+                content: `✅ **GOOD COIN CHECKLIST:**
 
-⚠️ ALWAYS CHECK: Fees, Wallets, Dates, Bubble Map, Liquidity
+1. **HEALTHY CHART** - Starts low, builds, continues up (not straight up/down)
 
-If ANY of these are sus = DON'T APE!`,
-                    tags: ['rug', 'safety', 'beginner']
-                },
-                
-                // Filters
-                'filters': {
-                    title: 'AXIOM FILTER SETTINGS (Saint\'s Setup)',
-                    content: `📊 NEW PAIRS FILTERS:
-• Protocol: Pump.fun only
-• Audit: H1 min
-• Dev holding: 5% max
-• Holder: 5% min
-• Bundles: 40% max
-• Pro traders: 15%
-• Metrics: 5k MC, 10k volume
+2. **FEES MATCH MC** - Proper relationship between fees and market cap
 
-🎯 FINAL STRETCH FILTERS:
-• Protocol: Pump.fun only  
-• Visitors: 30
-• Time: 3 min
-• Top 10 holders: 40%
-• Dev holding: 5%
-• Holders: 15
-• Pro traders: 15
-• Volume: 30k
-• MC: 20k
-• Global fees: 2
+3. **DECENT LIQUIDITY** - Must have good liquidity for entry/exit
 
-🚀 MIGRATED FILTERS:
-• MC: 40k
-• Volume: 50k
-• Global fees: 3
+4. **VOLUME** - Look for **200+ buys on 5-minute chart**. More buys = more interest.
 
-These filters keep you safe from rugs!`,
-                    tags: ['filters', 'setup', 'axiom']
-                },
-                
-                // Good Coin Detection
-                'goodcoin': {
-                    title: 'HOW TO SPOT A GOOD COIN',
-                    content: `✅ GOOD COIN CHECKLIST:
-
-1. HEALTHY CHART - Starts low, builds, continues up (not straight up/down)
-
-2. FEES MATCH MC - Proper relationship between global fees and market cap
-
-3. DECENT LIQUIDITY - Must have good liquidity for entry/exit
-
-4. VOLUME - Look for 200+ buys on 5-minute volume chart. More buys = more interest.
-
-5. WALLET DISTRIBUTION:
+5. **WALLET DISTRIBUTION:**
    • Different wallet ages (not all "1 month")
    • Different SOL holdings
    • Nobody holds >4% (3% okay, 5%+ is risk)
 
-6. BUBBLE MAP - Dispersed, not clustered. No fat whales.
+6. **BUBBLE MAP** - Dispersed, not clustered. No fat whales.
 
-7. NARRATIVE - Good memeable story that spreads naturally
+7. **NARRATIVE** - Good memeable story that spreads naturally
 
-8. CA POSTED - Contract Address posted in community = green flag
+8. **CA POSTED** - Contract Address in community = green flag`,
+                images: [
+                    'https://github.com/user-attachments/assets/4e984939-d0c5-46f9-b059-c33159d44e6a'
+                ],
+                actions: ['Rug detection', 'Risk mgmt', 'Filters']
+            },
+            
+            risk: {
+                title: 'RISK MANAGEMENT',
+                content: `🛡️ **RISK RULES:**
 
-💎 A coin with all these = WINNER
+1. **POSITION SIZE:** Risk only 1-5% per trade. NEVER go all-in.
 
-Remember: Study EVERY trade. Why did it work? Why didn't it? Analysis makes you better!`,
-                    tags: ['signals', 'entry', 'analysis']
-                },
-                
-                // Risk Management
-                'risk': {
-                    title: 'RISK MANAGEMENT - STAY IN THE GAME',
-                    content: `🛡️ RISK RULES (DON'T BREAK THESE):
-
-1. POSITION SIZE: Risk only 1-5% of portfolio per trade. NEVER go all-in.
-
-2. STOP LOSS STRATEGY:
-   • Once up 30-50%, set stop loss 3-10% above entry
+2. **STOP LOSS:**
+   • Once up 30-50%, set stop 3-10% above entry
    • Don't let losses go below -15% max
    • Cut red candles at entry FAST
 
-3. TAKING PROFITS:
+3. **TAKING PROFITS:**
    • At 2x: Sell 50%
-   • Every 30% move up: Sell 20%
-   • At big green candles: Sell 20%
-   • At psychological levels (100k, 200k, 1M): Sell 20%
+   • Every 30% up: Sell 20%
+   • Big green candles: Sell 20%
+   • Psychological levels (100k, 200k, 1M): Sell 20%
 
-4. NOT IN PROFIT YET?
-   • Sell aggressively on first red candle
+4. **NOT IN PROFIT?**
+   • Sell aggressively on first red
    • Don't let it go under -15%
 
-5. EMOTIONAL CONTROL:
-   • No revenge trading
-   • No FOMO
-   • Stay disciplined
-   • How you trade = who you are
+⚡ This game is about PORT MANAGEMENT and STAYING IN THE GAME!`,
+                images: [
+                    'https://github.com/user-attachments/assets/bf294ee3-a038-41dd-9d99-571a2840f739'
+                ],
+                actions: ['Rug detection', 'Good coins', 'Study trades']
+            },
+            
+            filters: {
+                title: 'AXIOM FILTER SETTINGS',
+                content: `📊 **NEW PAIRS FILTERS:**
+• Protocol: Pump.fun only
+• Dev holding: 5% max
+• Bundles: 40% max
+• Pro traders: 15%
+• MC: 5k min, Volume: 10k
 
-⚡ This game is about PORT MANAGEMENT and STAYING IN THE GAME.
+🎯 **FINAL STRETCH:**
+• Volume: 30k
+• MC: 20k
+• Top 10 holders: 40%
+• 200+ buys on 5min chart
 
-The longer you survive, the more you win!`,
-                    tags: ['risk', 'management', 'psychology']
-                },
-                
-                // Trading Workflow
-                'workflow': {
-                    title: 'THE APE → SCAN → WATCH WORKFLOW',
-                    content: `🎯 TRADING STAGES:
+These filters keep you safe!`,
+                images: [],
+                actions: ['Rug signs', 'Good coins', 'Risk rules']
+            },
+            
+            workflow: {
+                title: 'APE → SCAN → WATCH WORKFLOW',
+                content: `🎯 **TRADING STAGES:**
 
 **APE** - Caller bought in
-• Fast decision made
 • Entry taken
 • Now monitoring
 
-**SCAN** - Caller is looking into the coin
+**SCAN** - Analyzing coin
 • Hasn't bought yet
-• Analyzing chart
-• Checking holders/wallets
+• Checking chart/wallets
 • Looking at bubble map
 
-**WATCH** - Caller is looking for dip to enter
+**WATCH** - Looking for dip
 • Coin looks good
-• Waiting for better entry
-• Watching for pullback
-• Ready to ape on dip
+• Waiting for entry
+• Ready to ape on dip`,
+                images: [
+                    'https://github.com/user-attachments/assets/fc33b3fa-9641-4acc-a6f6-bb7412c99286'
+                ],
+                actions: ['Good coins', 'Risk rules', 'Entry tips']
+            },
+            
+            ca: {
+                title: 'WHAT IS CA?',
+                content: `📍 **CA = CONTRACT ADDRESS**
 
-💡 Pro Tip: When you see these calls, adjust your strategy:
-• APE = Could pump fast
-• SCAN = Time to do your own research
-• WATCH = Set alerts for dip
+The EXACT unique identifier for a token.
 
-Always DYOR = Do Your Own Research!`,
-                    tags: ['workflow', 'callers', 'strategy']
-                },
-                
-                // CA Explanation
-                'ca': {
-                    title: 'WHAT IS CA? (Contract Address)',
-                    content: `📍 CA = CONTRACT ADDRESS (Also called "Coin Address")
+**HOW TO USE:**
+1. Copy the CA
+2. Paste into Axiom/DEX
+3. Finds exact coin
 
-This is the EXACT unique identifier for a token on the blockchain.
-
-HOW TO USE:
-1. Someone shares a CA (long string of letters/numbers)
-2. Copy the CA
-3. Paste it into Axiom/DEX
-4. It finds the EXACT coin
-
-WHY IT MATTERS:
+**WHY IT MATTERS:**
 • Many coins have similar names
-• CA guarantees you found the RIGHT coin
-• Prevents buying fake/scam versions
+• CA guarantees RIGHT coin
+• Prevents fake/scam versions
 
-EXAMPLE CA:
-7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU
-
-Always verify the CA in the community before buying!
-
-⚠️ Trader U Lingo: When someone says "send CA", they mean send the contract address!`,
-                    tags: ['basics', 'ca', 'terminology']
-                },
-                
-                // Glossary Part 1
-                'glossary1': {
-                    title: 'TRADER U GLOSSARY - Market Terms',
-                    content: `📚 MARKET & PRICE ACTION:
-
-• **Pump** - Rapid price increase from hype/volume
-• **Dump** - Sharp sell-off, fast price drop
-• **Chop** - Sideways, no clear direction
-• **Wick** - Long candle tail = price rejection
-• **ATH** - All-Time High price
-• **Retrace** - Temporary pullback after move
-• **MC** - Market Cap (price × supply)
-• **Volume** - Trading activity amount
-• **Liquidity Pool (LP)** - Funds allowing buy/sell
-• **Locked LP** - Liquidity devs can't withdraw
-• **Burned Tokens** - Permanently removed supply
-
-Type 'glossary2' for psychology terms!`,
-                    tags: ['glossary', 'terms', 'market']
-                },
-                
-                // Glossary Part 2
-                'glossary2': {
-                    title: 'TRADER U GLOSSARY - Psychology & Execution',
-                    content: `📚 PSYCHOLOGY:
-
-• **Diamond Hands** - Hold through volatility
-• **Paper Hands** - Sell early from fear
-• **Bag Holder** - Left holding after crash
-• **FOMO** - Fear of missing out (bad entries)
-• **FUD** - Fear, uncertainty, doubt
-• **Rekt** - Suffered large loss
-• **Jeet** - Panic sell too early
-• **Cooked** - Trade/project finished
-• **WAGMI** - We're All Gonna Make It
-• **NGMI** - Not Gonna Make It
-
-EXECUTION:
-• **Entry** - Buy point from plan
-• **Exit** - Sell point for profit/risk
-• **TP** - Take Profit (planned sell)
-• **SL** - Stop Loss (limit losses)
-• **Scale In/Out** - Buy/sell in portions
-
-Type 'glossary3' for bot & tool terms!`,
-                    tags: ['glossary', 'psychology', 'execution']
-                },
-                
-                // Glossary Part 3
-                'glossary3': {
-                    title: 'TRADER U GLOSSARY - Bots & Community',
-                    content: `📚 BOTS & TOOLS:
-
-• **Sniper Bot** - Buys instantly at launch
-• **MEV Bot** - Front-runs transactions
-• **Volume Bot** - Fake inflates volume
-• **Slippage** - Price difference from speed
-• **Gas/Fees** - Transaction costs
-
-COMMUNITY & DEV:
-• **Dev** - Project developer
-• **Anon Dev** - Unknown identity dev
-• **Rug Pull** - Devs drain & abandon
-• **Soft Rug** - Gradual selloff
-• **Raid** - Coordinated promotion
-• **Narrative** - Story driving hype
-• **Mint Authority** - Can create new tokens (RISK!)
-
-TRADER U SLANG:
-• **Conviction** - Confidence from research
-• **Printing** - Making profits consistently
-
-Type 'help' to see all commands!`,
-                    tags: ['glossary', 'bots', 'community']
-                },
-                
-                // Study & Analyze
-                'study': {
-                    title: 'STUDY YOUR TRADES - GET BETTER FAST',
-                    content: `📖 ANALYSIS PROTOCOL:
-
-After EVERY trade, ask yourself:
-
-**IF PROFIT:**
-• Why did it work?
-• Was my entry good?
-• What was my state of mind?
-• Which wallets were in?
-• How fast was it moving?
-• Was it memeable?
-
-**IF LOSS:**
-• Why did I lose money?
-• Did I get scared?
-• Did I revenge trade?
-• Did I FOMO?
-• Did I break my rules?
-
-**GENERAL:**
-• What can I learn?
-• What pattern did I see?
-• How can I improve?
-
-🎯 THE MORE YOU ANALYZE YOUR TRADES, THE MORE YOU FIX YOUR ISSUES AND BECOME A BETTER TRADER.
-
-Keep a trading journal. Write down EVERY trade. Review weekly.
-
-How you trade in the chart = who you are in real life.
-
-Master yourself, master the market!`,
-                    tags: ['education', 'psychology', 'improvement']
-                }
+Always verify CA in community!`,
+                images: [],
+                actions: ['Rug detection', 'Good coins', 'Workflow']
             },
             
-            remember(user, bot) {
-                const timestamp = Date.now();
-                this.conversations.push({ user, bot, timestamp });
+            settings: {
+                title: 'BUY/SELL SETTINGS',
+                content: `⚙️ **TRADING SETTINGS:**
+
+**SLIPPAGE:** 10-30% (typically 15%)
+
+**FEES:** Always keep extra SOL for fees
+
+**BUY SETTINGS:**
+• Set max entry amount
+• Use limit orders when possible
+
+**SELL SETTINGS:**
+• Set stop loss
+• Take profit targets
+• Scale out strategy`,
+                images: [
+                    'https://github.com/user-attachments/assets/b0bfa3b8-760d-40ee-9d08-0b6bf9d0cfb6',
+                    'https://github.com/user-attachments/assets/52acfe03-c060-4915-94dd-0d3ccbc1a1a3'
+                ],
+                actions: ['Risk rules', 'Filters', 'Entry tips']
+            },
+            
+            bundles: {
+                title: 'BUNDLED WALLETS',
+                content: `⚠️ **BUNDLE DETECTION:**
+
+**WHAT ARE BUNDLES?**
+Multiple wallets controlled by ONE person to fake activity.
+
+**HOW TO SPOT:**
+• All wallets same age
+• Hold same SOL amounts
+• Death star bubble map
+• 3-ring symbol on trades
+
+**WHY IT MATTERS:**
+Bundled coins = RUG WAITING TO HAPPEN
+
+Always check wallet dates and amounts!`,
+                images: [
+                    'https://github.com/user-attachments/assets/9d57ae17-8d03-4d5f-9c5d-d3fb8a5bda1c'
+                ],
+                actions: ['Rug detection', 'Good coins', 'Filters']
+            },
+            
+            volume: {
+                title: 'VOLUME ANALYSIS',
+                content: `📊 **VOLUME MATTERS:**
+
+**WHAT TO LOOK FOR:**
+• 200+ buys on 5min chart = STRONG
+• Volume matching MC = REAL
+• Consistent volume = HEALTHY
+• Volume spikes = ATTENTION
+
+**ON PADRE:**
+Check volume indicators for confirmation
+
+**ON AXIOM:**
+Use volume filters to find active coins
+
+Volume = Truth. No volume = No interest.`,
+                images: [
+                    'https://github.com/user-attachments/assets/da354a0d-777a-4966-901c-44d3be6256d3'
+                ],
+                actions: ['Good coins', 'Filters', 'Entry tips']
+            }
+        };
+        
+        const memory = {
+            conversations: [],
+            topics: [],
+            userProfile: {
+                name: 'Trader',
+                community: 'Trader U',
+                tradesAnalyzed: 0,
+                questionsAsked: 0,
+                topicsExplored: []
+            },
+            
+            remember(topic, content) {
+                this.conversations.push({ topic, content, timestamp: Date.now() });
+                this.userProfile.questionsAsked++;
+                
+                if (!this.topics.includes(topic)) {
+                    this.topics.push(topic);
+                    this.userProfile.topicsExplored.push(topic);
+                }
+                
                 if (this.conversations.length > 20) this.conversations.shift();
-                
-                this.episodes.push({
-                    timestamp,
-                    user,
-                    bot,
-                    topics: this.extractTopics(user)
-                });
-                if (this.episodes.length > 100) this.episodes.shift();
-                
-                this.extractFacts(user);
-                const topics = this.extractTopics(user);
-                this.context = [...new Set([...this.context, ...topics].slice(-10))];
+                if (this.topics.length > 10) this.topics.shift();
             },
             
-            extractTopics(text) {
-                const lower = text.toLowerCase();
-                const topics = [];
-                
-                if (lower.includes('rug')) topics.push('rug detection');
-                if (lower.includes('filter')) topics.push('filters');
-                if (lower.includes('risk') || lower.includes('stop')) topics.push('risk management');
-                if (lower.includes('good') && lower.includes('coin')) topics.push('coin analysis');
-                if (lower.includes('ca') || lower.includes('contract')) topics.push('contract address');
-                if (lower.includes('ape') || lower.includes('scan') || lower.includes('watch')) topics.push('workflow');
-                if (lower.includes('glossary') || lower.includes('term')) topics.push('terminology');
-                if (lower.includes('study') || lower.includes('analyze')) topics.push('learning');
-                
-                return topics;
+            getContext() {
+                return this.topics.slice(-5);
             },
             
-            extractFacts(text) {
-                const lower = text.toLowerCase();
-                
-                if (lower.includes('beginner') || lower.includes('new')) {
-                    this.addFact('preferences', 'beginner trader', 0.9);
-                }
-                if (lower.includes('experienced') || lower.includes('pro')) {
-                    this.addFact('preferences', 'experienced trader', 0.8);
-                }
-                if (lower.includes('pump') || lower.includes('fun')) {
-                    this.addFact('interests', 'pump.fun trading', 0.9);
-                }
-            },
-            
-            addFact(category, value, confidence) {
-                const existing = this.facts[category].find(f => f.value === value);
-                if (existing) {
-                    existing.confidence = Math.min(1, existing.confidence + 0.1);
-                    existing.lastSeen = Date.now();
-                } else {
-                    this.facts[category].push({ value, confidence, lastSeen: Date.now() });
-                }
-            },
-            
-            retrieve(query) {
-                const lower = query.toLowerCase();
-                const results = [];
-                
-                for (const [key, doc] of Object.entries(this.knowledgeBase)) {
-                    let score = 0;
-                    
-                    if (doc.title.toLowerCase().includes(lower)) score += 2;
-                    
-                    const words = lower.split(' ');
-                    words.forEach(word => {
-                        if (word.length > 3 && doc.content.toLowerCase().includes(word)) {
-                            score += 0.5;
-                        }
-                    });
-                    
-                    doc.tags.forEach(tag => {
-                        if (lower.includes(tag)) score += 1.5;
-                    });
-                    
-                    if (score > 0) {
-                        results.push({ key, doc, score });
-                    }
-                }
-                
-                results.sort((a, b) => b.score - a.score);
-                return results.slice(0, 3);
-            },
-            
-            getContextSummary() {
-                const recentTopics = this.context.slice(-5);
-                const topPrefs = this.facts.preferences.slice(0, 3).map(f => f.value);
-                
-                return {
-                    topics: recentTopics,
-                    preferences: topPrefs,
-                    conversationCount: this.conversations.length
-                };
+            getProfileSummary() {
+                return `${this.userProfile.name} from ${this.userProfile.community} community | ${this.userProfile.questionsAsked} questions asked | Topics: ${this.userProfile.topicsExplored.slice(-5).join(', ')}`;
             }
         };
 
-        // Enter terminal
         function enterTerminal() {
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('terminal-container').style.opacity = '1';
@@ -1384,140 +1065,362 @@ Master yourself, master the market!`,
             document.getElementById('data-feed').style.transition = 'opacity 0.5s ease 0.3s';
             
             setTimeout(() => {
-                initCommandTerminal();
-                initBotChat();
-                initBotCharacter();
+                initTerminal();
                 initNeuralNetwork();
+                initBotChat();
             }, 500);
         }
         
-        function triggerScreenFlash() {
+        function triggerFlash() {
             const flash = document.getElementById('screen-flash');
             flash.classList.add('active');
             setTimeout(() => flash.classList.remove('active'), 300);
         }
-
-        // Bot Character
-        function initBotCharacter() {
-            const botCharacter = document.getElementById('bot-character');
-            const botArea = document.getElementById('bot-character-area');
-            const botMove = document.getElementById('bot-move');
-            const botTilt = document.getElementById('bot-tilt');
-            const eyeLeft = document.getElementById('eye-left');
-            const eyeRight = document.getElementById('eye-right');
-            const botStatus = document.getElementById('bot-status');
+        
+        function changeTheme(color, element) {
+            document.documentElement.style.setProperty('--accent', color);
+            document.documentElement.style.setProperty('--accent-hover', color);
             
-            botArea.addEventListener('mousemove', (e) => {
-                const rect = botArea.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                
-                const deltaX = (x - centerX) / centerX;
-                const deltaY = (y - centerY) / centerY;
-                
-                const moveX = deltaX * 15;
-                const moveY = deltaY * 15;
-                
-                botMove.style.transform = `translate(${moveX}px, ${moveY}px)`;
-                botTilt.style.transform = `rotate(${deltaX * 2}deg)`;
-                
-                const eyeMoveX = deltaX * 6;
-                const eyeMoveY = deltaY * 6;
-                eyeLeft.style.transform = `translate(calc(-50% + ${eyeMoveX}px), calc(-50% + ${eyeMoveY}px))`;
-                eyeRight.style.transform = `translate(calc(-50% + ${eyeMoveX}px), calc(-50% + ${eyeMoveY}px))`;
-            });
-            
-            botArea.addEventListener('mouseleave', () => {
-                botMove.style.transform = 'translate(0, 0)';
-                botTilt.style.transform = 'rotate(0deg)';
-                eyeLeft.style.transform = 'translate(-50%, -50%)';
-                eyeRight.style.transform = 'translate(-50%, -50%)';
-            });
-            
-            const statuses = ['LEARNING MODE', 'ANALYZING', 'TEACHING', 'SCANNING', 'READY'];
-            let statusIdx = 0;
-            setInterval(() => {
-                statusIdx = (statusIdx + 1) % statuses.length;
-                botStatus.textContent = statuses[statusIdx];
-            }, 3000);
+            // Update active state
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+            if (element) element.classList.add('active');
         }
 
-        function setBotTalking(on) {
-            const bot = document.getElementById('bot-character');
-            bot.classList.toggle('talking', on);
-        }
-
-        function addTyping() {
-            const t = document.createElement('div');
-            t.className = 'bot-message';
-            t.id = 'typing';
-            t.innerHTML = '...';
-            botChat.appendChild(t);
-            botChat.scrollTop = botChat.scrollHeight;
+        // Education Terminal
+        const commandOutput = document.getElementById('command-output');
+        const commandInput = document.getElementById('command-input');
+        
+        function addCmd(text, type = '') {
+            const line = document.createElement('div');
+            line.className = `cmd-line ${type}`;
+            line.innerHTML = text;
+            commandOutput.appendChild(line);
+            commandOutput.scrollTop = commandOutput.scrollHeight;
         }
         
-        function removeTyping() {
-            const t = document.getElementById('typing');
-            if (t) t.remove();
-        }
-
-        // Neural Network
-        function initNeuralNetwork() {
-            const neuralArea = document.getElementById('neural-network-area');
-            const width = neuralArea.clientWidth;
-            const height = neuralArea.clientHeight;
+        function initTerminal() {
+            addCmd('<span class="cmd-prompt">TRADER U></span> <span class="cmd-text">System initialized</span>');
+            addCmd('<span class="cmd-prompt">TRADER U></span> <span class="cmd-success">Knowledge base loaded: 10 docs</span>');
+            addCmd('<span class="cmd-prompt">TRADER U></span> <span class="cmd-text">Type "help" for commands</span>');
             
-            const label = document.createElement('div');
-            label.className = 'neural-label';
-            label.textContent = 'TRADER U NEURAL NETWORK';
-            neuralArea.appendChild(label);
+            // MOTIVATIONAL QUOTES
+            const quotes = [
+                '💎 "The best traders are the most disciplined." - Stay focused.',
+                '🎯 "Cut your losers early, let your winners run." - Old wisdom.',
+                '⚡ "Patience beats FOMO every time." - Wait for your setup.',
+                '🔥 "Survive first, profit second." - Risk management wins.',
+                '💪 "Study your trades. Every loss is a lesson." - Keep learning.',
+                '🚀 "The market rewards preparation." - Do your homework.',
+                '📊 "Volume tells the truth." - Follow the money.',
+                '🛡️ "Never risk what you can\'t afford to lose." - Protect yourself.',
+                '🎪 "Meme coins reward speed and discipline." - Be ready.',
+                '💯 "Consistency beats home runs." - Stack small wins.'
+            ];
+            
+            // QUICK TIPS (GREEN - GOOD)
+            const quickTips = [
+                '✅ ALWAYS check wallet dates before entering',
+                '✅ Look for 200+ buys on 5min chart',
+                '✅ Set stop loss once up 30-50%',
+                '✅ Scale out at 2x - take 50% profit',
+                '✅ Verify CA is posted in community',
+                '✅ Check bubble map - avoid Death Star',
+                '✅ Match fees to market cap ratio',
+                '✅ Keep extra SOL for fees',
+                '✅ Wait for 40-50% dip to enter',
+                '✅ Use filters to avoid rugs',
+                '✅ Study every trade - win or lose',
+                '✅ Healthy chart = heartbeat pattern'
+            ];
+            
+            // DON'T DO THIS (RED/YELLOW - BAD)
+            const badTips = [
+                '⚠️ DON\'T buy the top - wait for dip',
+                '⚠️ DON\'T ape without checking wallets',
+                '⚠️ DON\'T hold past -15% loss',
+                '⚠️ DON\'T FOMO into pumps',
+                '⚠️ DON\'T ignore bundled wallet warnings',
+                '⚠️ DON\'T trade without stop loss',
+                '⚠️ DON\'T risk more than 5% per trade',
+                '⚠️ DON\'T revenge trade after loss',
+                '⚠️ DON\'T skip the bubble map check',
+                '⚠️ DON\'T buy coins with no liquidity',
+                '⚠️ DON\'T trust coins without CA posted',
+                '⚠️ DON\'T hold hopium bags'
+            ];
+            
+            // PRE-TRADE CHECKLIST
+            const checklist = [
+                '📋 PRE-TRADE CHECKLIST:',
+                '   □ Fees match market cap?',
+                '   □ Wallet dates dispersed?',
+                '   □ Bubble map healthy?',
+                '   □ 200+ buys on 5min?',
+                '   □ CA posted in community?',
+                '   □ Stop loss planned?'
+            ];
+            
+            // USEFUL EVENTS
+            const events = [
+                { text: '<span class="cmd-success">✅ CA verified - legitimate contract</span>', flash: false },
+                { text: '<span class="cmd-success">🔥 200+ buys on 5min chart - strong signal</span>', flash: false },
+                { text: '<span class="cmd-warning">⚠️ Bundled wallets detected - proceed with caution</span>', flash: true },
+                { text: '<span class="cmd-success">💎 Healthy bubble map - no fat clusters</span>', flash: false },
+                { text: '<span class="cmd-success">⚡ 2x profit - SELL INITIALS!</span>', flash: true },
+                { text: '<span class="cmd-success">🛡️ Stop loss at +10% entry - protected</span>', flash: false },
+                { text: '<span class="cmd-warning">📊 Volume check: Low - wait for confirmation</span>', flash: false },
+                { text: '<span class="cmd-success">🎯 Entry at 45% dip - excellent timing</span>', flash: false },
+                { text: '<span class="cmd-success">🧠 Wallet analysis complete - dispersed holders</span>', flash: false },
+                { text: '<span class="cmd-warning">⚠️ Death star bubble map - potential rug</span>', flash: true }
+            ];
+            
+            // ROTATING CONTENT SYSTEM
+            let contentIndex = 0;
+            
+            function fireContent() {
+                const rand = Math.random();
+                
+                if (rand < 0.25) {
+                    // Motivational quote
+                    addCmd('<span class="cmd-text">' + quotes[Math.floor(Math.random() * quotes.length)] + '</span>');
+                } else if (rand < 0.5) {
+                    // Quick tip (green)
+                    addCmd('<span class="cmd-success">' + quickTips[Math.floor(Math.random() * quickTips.length)] + '</span>');
+                } else if (rand < 0.7) {
+                    // Bad tip (yellow warning)
+                    addCmd('<span class="cmd-warning">' + badTips[Math.floor(Math.random() * badTips.length)] + '</span>');
+                } else if (rand < 0.8) {
+                    // Checklist
+                    checklist.forEach(line => {
+                        addCmd('<span class="cmd-text">' + line + '</span>');
+                    });
+                } else {
+                    // Event
+                    const event = events[Math.floor(Math.random() * events.length)];
+                    addCmd(event.text);
+                    if (event.flash) triggerFlash();
+                }
+                
+                // Next content in 6-12 seconds
+                setTimeout(fireContent, 6000 + Math.random() * 6000);
+            }
+            
+            // Start after 3 seconds
+            setTimeout(fireContent, 3000);
+        }
+        
+        const commands = {
+            help: () => {
+                addCmd('<span class="cmd-success">AVAILABLE COMMANDS:</span>');
+                addCmd('<span class="cmd-text">  rugpull - Rug detection guide</span>');
+                addCmd('<span class="cmd-text">  goodcoin - Good coin checklist</span>');
+                addCmd('<span class="cmd-text">  risk - Risk management</span>');
+                addCmd('<span class="cmd-text">  filters - Filter settings</span>');
+                addCmd('<span class="cmd-text">  workflow - APE/SCAN/WATCH</span>');
+                addCmd('<span class="cmd-text">  ca - Contract address</span>');
+                addCmd('<span class="cmd-text">  settings - Buy/sell settings</span>');
+                addCmd('<span class="cmd-text">  bundles - Bundle detection</span>');
+                addCmd('<span class="cmd-text">  volume - Volume analysis</span>');
+                addCmd('<span class="cmd-text">  clear - Clear terminal</span>');
+            },
+            
+            rugpull: () => showInBot('rugpull'),
+            goodcoin: () => showInBot('goodcoin'),
+            risk: () => showInBot('risk'),
+            filters: () => showInBot('filters'),
+            workflow: () => showInBot('workflow'),
+            ca: () => showInBot('ca'),
+            settings: () => showInBot('settings'),
+            bundles: () => showInBot('bundles'),
+            volume: () => showInBot('volume'),
+            
+            clear: () => {
+                commandOutput.innerHTML = '';
+                addCmd('<span class="cmd-prompt">TRADER U></span> <span class="cmd-text">Terminal cleared</span>');
+            }
+        };
+        
+        function showInBot(key) {
+            addCmd(`<span class="cmd-success">✓ Displaying "${key}" in bot chat</span>`);
+            displayBotMessage(key);
+        }
+        
+        commandInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = commandInput.value.trim().toLowerCase();
+                if (cmd) {
+                    addCmd(`<span class="cmd-prompt">TRADER U></span> ${cmd}`);
+                    if (commands[cmd]) {
+                        commands[cmd]();
+                    } else {
+                        addCmd('<span class="cmd-warning">Command not found. Type "help"</span>');
+                    }
+                }
+                commandInput.value = '';
+            }
+        });
+
+        // Neural Network - Complex Brain Structure with DRAG functionality
+        function initNeuralNetwork() {
+            const neuralArea = document.getElementById('neural-network');
+            const width = neuralArea.clientWidth;
+            const height = neuralArea.clientHeight - 120; // Leave space for stats
             
             const nodes = [];
-            const nodeLabels = ['RUG DETECT', 'FILTER', 'RISK MGT', 'CHART', 'WALLET', 'VOLUME', 'PSYCHOLOGY', 'MEMORY'];
             const centerX = width / 2;
-            const centerY = height / 2 - 20;
+            const centerY = (height / 2) - 20;
             
+            let draggedNode = null;
+            let isDragging = false;
+            let dragOffset = { x: 0, y: 0 };
+            
+            // CORE NODES (center)
+            const coreLabels = ['ANALYSIS', 'MEMORY', 'DECISION'];
+            for (let i = 0; i < 3; i++) {
+                const angle = (i / 3) * Math.PI * 2 - Math.PI / 2;
+                const radius = 80;
+                const x = Math.cos(angle) * radius + centerX;
+                const y = Math.sin(angle) * radius + centerY;
+                
+                const node = document.createElement('div');
+                node.className = 'neural-node core active';
+                node.style.left = (x - 35) + 'px';
+                node.style.top = (y - 35) + 'px';
+                node.textContent = coreLabels[i];
+                
+                neuralArea.appendChild(node);
+                nodes.push({ element: node, x, y, angle, radius, layer: 'core', isDraggable: true });
+            }
+            
+            // INNER RING (8 nodes)
+            const innerLabels = ['RUG DETECT', 'RISK MGT', 'CHART', 'VOLUME', 'WALLET', 'FILTER', 'ENTRY', 'EXIT'];
             for (let i = 0; i < 8; i++) {
                 const angle = (i / 8) * Math.PI * 2 - Math.PI / 2;
-                const radius = Math.min(width, height - 100) * 0.35;
+                const radius = 160;
                 const x = Math.cos(angle) * radius + centerX;
                 const y = Math.sin(angle) * radius + centerY;
                 
                 const node = document.createElement('div');
                 node.className = 'neural-node';
                 if (i % 2 === 0) node.classList.add('active');
-                node.style.left = (x - 30) + 'px';
-                node.style.top = (y - 30) + 'px';
-                node.textContent = nodeLabels[i];
-                
-                node.addEventListener('click', function() {
-                    synapses.forEach(s => {
-                        s.el.classList.add('firing');
-                        setTimeout(() => s.el.classList.remove('firing'), 1500);
-                    });
-                });
+                node.style.left = (x - 25) + 'px';
+                node.style.top = (y - 25) + 'px';
+                node.textContent = innerLabels[i];
                 
                 neuralArea.appendChild(node);
-                nodes.push({ element: node, x, y, angle, radius });
+                nodes.push({ element: node, x, y, angle, radius, layer: 'inner', isDraggable: true });
             }
+            
+            // OUTER RING (8 nodes)
+            const outerLabels = ['SIGNAL', 'PATTERN', 'SENTIMENT', 'LIQUIDITY', 'TIMING', 'NARRATIVE', 'EXECUTE', 'LEARN'];
+            for (let i = 0; i < 8; i++) {
+                const angle = (i / 8) * Math.PI * 2;
+                const radius = 240;
+                const x = Math.cos(angle) * radius + centerX;
+                const y = Math.sin(angle) * radius + centerY;
+                
+                const node = document.createElement('div');
+                node.className = 'neural-node';
+                if (i % 3 === 0) node.classList.add('active');
+                node.style.left = (x - 25) + 'px';
+                node.style.top = (y - 25) + 'px';
+                node.textContent = outerLabels[i];
+                
+                neuralArea.appendChild(node);
+                nodes.push({ element: node, x, y, angle, radius, layer: 'outer', isDraggable: true });
+            }
+            
+            // DRAG FUNCTIONALITY
+            nodes.forEach((node, index) => {
+                node.element.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    isDragging = true;
+                    draggedNode = { node, index };
+                    
+                    const rect = node.element.getBoundingClientRect();
+                    const neuralRect = neuralArea.getBoundingClientRect();
+                    
+                    dragOffset.x = e.clientX - rect.left - rect.width / 2;
+                    dragOffset.y = e.clientY - rect.top - rect.height / 2;
+                    
+                    node.element.classList.add('dragging');
+                });
+            });
+            
+            neuralArea.addEventListener('mousemove', (e) => {
+                if (isDragging && draggedNode) {
+                    const rect = neuralArea.getBoundingClientRect();
+                    const newX = e.clientX - rect.left - dragOffset.x;
+                    const newY = e.clientY - rect.top - dragOffset.y;
+                    
+                    // Update position
+                    draggedNode.node.x = newX;
+                    draggedNode.node.y = newY;
+                    
+                    const size = draggedNode.node.layer === 'core' ? 35 : 25;
+                    draggedNode.node.element.style.left = (newX - size) + 'px';
+                    draggedNode.node.element.style.top = (newY - size) + 'px';
+                    
+                    updateSynapses();
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                if (isDragging && draggedNode) {
+                    draggedNode.node.element.classList.remove('dragging');
+                    isDragging = false;
+                    draggedNode = null;
+                }
+            });
             
             const synapses = [];
             
-            function makeSynapse(a, b) {
+            function makeSynapse(a, b, isCore = false) {
                 const syn = document.createElement('div');
-                syn.className = 'synapse';
-                if (Math.random() > 0.5) syn.classList.add('firing');
+                syn.className = isCore ? 'synapse core-connection' : 'synapse';
+                if (Math.random() > 0.6) syn.classList.add('firing');
                 neuralArea.insertBefore(syn, neuralArea.firstChild);
                 synapses.push({ el: syn, a, b });
             }
             
-            for (let i = 0; i < nodes.length; i++) {
-                makeSynapse(i, (i + 1) % nodes.length);
-                makeSynapse(i, (i + 2) % nodes.length);
+            // CORE TO CORE connections
+            for (let i = 0; i < 3; i++) {
+                makeSynapse(i, (i + 1) % 3, true);
             }
+            
+            // CORE TO INNER connections
+            for (let i = 0; i < 3; i++) {
+                for (let j = 3; j < 11; j += 2) {
+                    makeSynapse(i, j, true);
+                }
+            }
+            
+            // INNER RING connections
+            for (let i = 3; i < 11; i++) {
+                makeSynapse(i, 3 + ((i - 3 + 1) % 8));
+                if (i % 2 === 0) {
+                    makeSynapse(i, 3 + ((i - 3 + 2) % 8));
+                }
+            }
+            
+            // INNER TO OUTER connections
+            for (let i = 3; i < 11; i++) {
+                const outerIdx = 11 + (i - 3);
+                makeSynapse(i, outerIdx);
+            }
+            
+            // OUTER RING connections
+            for (let i = 11; i < 19; i++) {
+                makeSynapse(i, 11 + ((i - 11 + 1) % 8));
+            }
+            
+            // Some cross connections for complexity
+            makeSynapse(3, 15);
+            makeSynapse(5, 17);
+            makeSynapse(7, 13);
+            makeSynapse(9, 18);
+            
+            document.getElementById('synapse-count').textContent = synapses.length;
             
             function updateSynapses() {
                 synapses.forEach(s => {
@@ -1534,26 +1437,21 @@ Master yourself, master the market!`,
                 });
             }
             
-            const statsContainer = document.createElement('div');
-            statsContainer.className = 'neural-stats';
-            statsContainer.innerHTML = `
-                <div class="neural-stat">Modules Active<span class="stat-value">8/8</span></div>
-                <div class="neural-stat">Synapses<span class="stat-value">${synapses.length}</span></div>
-                <div class="neural-stat">Knowledge Docs<span class="stat-value">${Object.keys(traderUMemory.knowledgeBase).length}</span></div>
-                <div class="neural-stat">Memory<span class="stat-value" id="memory-count">0</span></div>
-            `;
-            neuralArea.appendChild(statsContainer);
-            
             function animateNodes() {
-                nodes.forEach(node => {
-                    node.angle += 0.002;
-                    const x = Math.cos(node.angle) * node.radius + centerX;
-                    const y = Math.sin(node.angle) * node.radius + centerY;
-                    node.element.style.left = (x - 30) + 'px';
-                    node.element.style.top = (y - 30) + 'px';
-                    node.x = x;
-                    node.y = y;
-                });
+                // Only rotate nodes that aren't being dragged
+                if (!isDragging) {
+                    nodes.forEach((node, idx) => {
+                        if (node.layer !== 'core') {
+                            node.angle += (node.layer === 'inner' ? 0.0015 : 0.001);
+                            const x = Math.cos(node.angle) * node.radius + centerX;
+                            const y = Math.sin(node.angle) * node.radius + centerY;
+                            node.element.style.left = (x - 25) + 'px';
+                            node.element.style.top = (y - 25) + 'px';
+                            node.x = x;
+                            node.y = y;
+                        }
+                    });
+                }
                 
                 updateSynapses();
                 requestAnimationFrame(animateNodes);
@@ -1561,228 +1459,39 @@ Master yourself, master the market!`,
             
             animateNodes();
             
+            // Random synapse firing
             setInterval(() => {
-                document.getElementById('memory-count').textContent = traderUMemory.conversations.length;
+                if (Math.random() > 0.5) {
+                    const count = 5 + Math.floor(Math.random() * 8);
+                    for (let i = 0; i < count; i++) {
+                        const idx = Math.floor(Math.random() * synapses.length);
+                        synapses[idx].el.classList.add('firing');
+                        setTimeout(() => synapses[idx].el.classList.remove('firing'), 1500);
+                    }
+                }
             }, 2000);
             
             setInterval(() => {
-                if (Math.random() > 0.6) {
-                    const fireCount = 3 + Math.floor(Math.random() * 5);
-                    for (let i = 0; i < fireCount; i++) {
-                        const idx = Math.floor(Math.random() * synapses.length);
-                        const s = synapses[idx];
-                        s.el.classList.add('firing');
-                        setTimeout(() => s.el.classList.remove('firing'), 1500);
-                    }
-                }
-            }, 3000);
+                document.getElementById('memory-count').textContent = memory.conversations.length;
+            }, 2000);
         }
-
-        // Command Terminal
-        const commandOutput = document.getElementById('command-output');
-        const commandInput = document.getElementById('command-input');
-        
-        function addCommandLine(text, type = '') {
-            const line = document.createElement('div');
-            line.className = `cmd-line ${type}`;
-            line.innerHTML = text;
-            commandOutput.appendChild(line);
-            commandOutput.scrollTop = commandOutput.scrollHeight;
-        }
-        
-        function initCommandTerminal() {
-            addCommandLine('<span class="cmd-prompt">TRADER U></span> <span class="cmd-text">System initialized - Learning mode active</span>');
-            addCommandLine('<span class="cmd-prompt">TRADER U></span> <span class="cmd-success">All modules operational</span>');
-            addCommandLine('<span class="cmd-prompt">TRADER U></span> <span class="cmd-text">Type "help" for education commands</span>');
-            
-            // AUTO SYSTEM EVENTS
-            const systemEvents = [
-                { text: '<span class="cmd-success">🎓 New trader just learned about rug detection</span>', flash: false },
-                { text: '<span class="cmd-success">🚨 RUG ALERT: Death star bubble map detected</span>', flash: true },
-                { text: '<span class="cmd-text">📊 Filter check: Entry passed all criteria</span>', flash: false },
-                { text: '<span class="cmd-success">⚡ Risk management module activated</span>', flash: false },
-                { text: '<span class="cmd-text">🧠 Study session: 5 trades analyzed today</span>', flash: false },
-                { text: '<span class="cmd-success">💎 Diamond hands detected - proper stop loss in place</span>', flash: false },
-                { text: '<span class="cmd-text">📈 Good coin pattern recognized on chart</span>', flash: false },
-                { text: '<span class="cmd-success">🐋 Whale wallet analysis complete - safe entry</span>', flash: true },
-                { text: '<span class="cmd-text">⚠️ FOMO detected - emotion check recommended</span>', flash: false },
-                { text: '<span class="cmd-success">✅ CA verified - legitimate contract confirmed</span>', flash: false },
-                { text: '<span class="cmd-text">🎯 200+ buys on 5min chart - strong signal</span>', flash: false },
-                { text: '<span class="cmd-success">🔥 Healthy bubble map - no fat clusters</span>', flash: false },
-                { text: '<span class="cmd-text">📚 Glossary term looked up: "Paper hands"</span>', flash: false },
-                { text: '<span class="cmd-success">⚡ 2x profit reached - 50% sold per protocol</span>', flash: true },
-                { text: '<span class="cmd-text">🛡️ Stop loss triggered - portfolio protected</span>', flash: false }
-            ];
-            
-            function fireSystemEvent() {
-                const event = systemEvents[Math.floor(Math.random() * systemEvents.length)];
-                
-                const line = document.createElement('div');
-                line.className = 'cmd-line event';
-                line.innerHTML = event.text;
-                commandOutput.appendChild(line);
-                commandOutput.scrollTop = commandOutput.scrollHeight;
-                
-                if (event.flash) triggerScreenFlash();
-                
-                const nextDelay = 5000 + Math.random() * 10000;
-                setTimeout(fireSystemEvent, nextDelay);
-            }
-            
-            setTimeout(fireSystemEvent, 3000);
-        }
-        
-        const commands = {
-            help: () => {
-                addCommandLine('<span class="cmd-success">TRADER U EDUCATION COMMANDS:</span>');
-                addCommandLine('<span class="cmd-text">--- CRITICAL SAFETY ---</span>');
-                addCommandLine('<span class="cmd-text">  rugpull - How to spot rug pulls (MUST READ)</span>');
-                addCommandLine('<span class="cmd-text">  goodcoin - How to find good coins</span>');
-                addCommandLine('<span class="cmd-text">  risk - Risk management rules</span>');
-                addCommandLine('<span class="cmd-text">--- SETUP & TOOLS ---</span>');
-                addCommandLine('<span class="cmd-text">  filters - Axiom filter settings</span>');
-                addCommandLine('<span class="cmd-text">  ca - What is CA/Contract Address?</span>');
-                addCommandLine('<span class="cmd-text">  workflow - APE/SCAN/WATCH explained</span>');
-                addCommandLine('<span class="cmd-text">--- LEARNING ---</span>');
-                addCommandLine('<span class="cmd-text">  study - How to analyze your trades</span>');
-                addCommandLine('<span class="cmd-text">  glossary1 - Market terms</span>');
-                addCommandLine('<span class="cmd-text">  glossary2 - Psychology terms</span>');
-                addCommandLine('<span class="cmd-text">  glossary3 - Bots & community terms</span>');
-                addCommandLine('<span class="cmd-text">  memory - Show bot memory</span>');
-                addCommandLine('<span class="cmd-text">  clear - Clear terminal</span>');
-            },
-            
-            rugpull: () => {
-                const doc = traderUMemory.knowledgeBase.rugpull;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                doc.content.split('\n').forEach(line => {
-                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
-                });
-            },
-            
-            goodcoin: () => {
-                const doc = traderUMemory.knowledgeBase.goodcoin;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                doc.content.split('\n').forEach(line => {
-                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
-                });
-            },
-            
-            risk: () => {
-                const doc = traderUMemory.knowledgeBase.risk;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                doc.content.split('\n').forEach(line => {
-                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
-                });
-            },
-            
-            filters: () => {
-                const doc = traderUMemory.knowledgeBase.filters;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                doc.content.split('\n').forEach(line => {
-                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
-                });
-            },
-            
-            ca: () => {
-                const doc = traderUMemory.knowledgeBase.ca;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                doc.content.split('\n').forEach(line => {
-                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
-                });
-            },
-            
-            workflow: () => {
-                const doc = traderUMemory.knowledgeBase.workflow;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                doc.content.split('\n').forEach(line => {
-                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
-                });
-            },
-            
-            study: () => {
-                const doc = traderUMemory.knowledgeBase.study;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                doc.content.split('\n').forEach(line => {
-                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
-                });
-            },
-            
-            glossary1: () => {
-                const doc = traderUMemory.knowledgeBase.glossary1;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                doc.content.split('\n').forEach(line => {
-                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
-                });
-            },
-            
-            glossary2: () => {
-                const doc = traderUMemory.knowledgeBase.glossary2;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                doc.content.split('\n').forEach(line => {
-                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
-                });
-            },
-            
-            glossary3: () => {
-                const doc = traderUMemory.knowledgeBase.glossary3;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                doc.content.split('\n').forEach(line => {
-                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
-                });
-            },
-            
-            memory: () => {
-                const summary = traderUMemory.getContextSummary();
-                addCommandLine('<span class="cmd-success">TRADER U BOT MEMORY:</span>');
-                addCommandLine('<span class="cmd-text">📝 Conversations: ' + traderUMemory.conversations.length + '</span>');
-                addCommandLine('<span class="cmd-text">🧠 Episodes: ' + traderUMemory.episodes.length + '</span>');
-                addCommandLine('<span class="cmd-text">🎯 Topics: ' + summary.topics.join(', ') + '</span>');
-                addCommandLine('<span class="cmd-text">📚 Knowledge docs: ' + Object.keys(traderUMemory.knowledgeBase).length + '</span>');
-                addCommandLine('<span class="cmd-text">I remember everything we discuss!</span>');
-            },
-            
-            clear: () => {
-                commandOutput.innerHTML = '';
-                addCommandLine('<span class="cmd-prompt">TRADER U></span> <span class="cmd-text">Terminal cleared</span>');
-                addCommandLine('<span class="cmd-text">Type "help" for all commands</span>');
-            }
-        };
-        
-        commandInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const cmd = commandInput.value.trim().toLowerCase();
-                if (cmd) {
-                    addCommandLine(`<span class="cmd-prompt">TRADER U></span> ${cmd}`);
-                    
-                    if (commands[cmd]) {
-                        commands[cmd]();
-                    } else {
-                        addCommandLine(`<span class="cmd-error">Command not found. Type "help" to see all commands.</span>`);
-                    }
-                }
-                commandInput.value = '';
-            }
-        });
 
         // Bot Chat
         const botChat = document.getElementById('bot-chat');
-        const botInput = document.getElementById('bot-input');
-        const botSend = document.getElementById('bot-send');
         
-        function addBotMessage(text, isUser = false, actions = []) {
+        function addBotMessage(html, actions = []) {
             const msg = document.createElement('div');
-            msg.className = isUser ? 'user-message' : 'bot-message';
-            msg.innerHTML = text;
+            msg.className = 'bot-message';
+            msg.innerHTML = html;
             
-            if (actions.length > 0 && !isUser) {
+            if (actions.length > 0) {
                 const actionsDiv = document.createElement('div');
                 actionsDiv.className = 'message-actions';
                 actions.forEach(action => {
                     const btn = document.createElement('button');
                     btn.className = 'action-btn';
                     btn.textContent = action;
-                    btn.onclick = () => sendBotMessage(action);
+                    btn.onclick = () => handleAction(action);
                     actionsDiv.appendChild(btn);
                 });
                 msg.appendChild(actionsDiv);
@@ -1792,178 +1501,138 @@ Master yourself, master the market!`,
             botChat.scrollTop = botChat.scrollHeight;
         }
         
-        function initBotChat() {
-            const welcomeMsg = '🎓 Welcome to TRADER U SUPER BOT! I have complete knowledge of meme coin trading. Ask me ANYTHING about: rug pulls, filters, risk management, good coins, CA, workflow, glossary, or trading psychology. I remember everything we discuss!';
-            addBotMessage(welcomeMsg, false, ['How to spot rugs?', 'Risk management', 'What is CA?']);
-            traderUMemory.remember('', welcomeMsg);
+        function displayBotMessage(key) {
+            const doc = knowledgeBase[key];
+            if (!doc) return;
+            
+            let html = `<strong>${doc.title}</strong><br><br>${doc.content.replace(/\n/g, '<br>')}`;
+            
+            if (doc.images && doc.images.length > 0) {
+                doc.images.forEach(img => {
+                    html += `<br><img src="${img}" alt="Guide">`;
+                });
+            }
+            
+            memory.remember(key, doc.title);
+            addBotMessage(html, doc.actions);
         }
         
-        function sendBotMessage(text) {
-            if (!text) text = botInput.value.trim();
-            if (!text) return;
+        function handleAction(action) {
+            const map = {
+                'Good coin signs': 'goodcoin',
+                'Good coin checklist': 'goodcoin',
+                'Good coins': 'goodcoin',
+                'Rug detection': 'rugpull',
+                'Rug signs': 'rugpull',
+                'Spot rugs': 'rugpull',
+                'Risk management': 'risk',
+                'Risk mgmt': 'risk',
+                'Risk rules': 'risk',
+                'Show filters': 'filters',
+                'Filters': 'filters',
+                'Entry tips': 'workflow',
+                'Workflow': 'workflow',
+                'Study trades': 'risk',
+                'CA explanation': 'ca',
+                'Settings': 'settings',
+                'Bundle detection': 'bundles',
+                'Volume check': 'volume'
+            };
             
-            addBotMessage(text, true);
+            const key = map[action];
+            if (key) {
+                displayBotMessage(key);
+                
+                // Scroll to show the NEW message at TOP
+                setTimeout(() => {
+                    const messages = botChat.querySelectorAll('.bot-message');
+                    const lastMsg = messages[messages.length - 1];
+                    if (lastMsg) {
+                        lastMsg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 100);
+            }
+        }
+        
+        function initBotChat() {
+            const welcome = `🎓 **Welcome to TRADER U!**
+
+A community of dedicated traders learning together.
+
+I have complete meme coin trading knowledge. What do you want to learn? 🚀`;
+            
+            addBotMessage(welcome, ['Rug detection', 'Risk rules', 'Good coins']);
+        }
+        
+        // Bot input handlers
+        const botInput = document.getElementById('bot-input');
+        const botSend = document.getElementById('bot-send');
+        
+        function sendBotQuery() {
+            const query = botInput.value.trim();
+            if (!query) return;
+            
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'bot-message';
+            userMsg.style.borderLeftColor = '#00ff00';
+            userMsg.style.alignSelf = 'flex-end';
+            userMsg.style.maxWidth = '85%';
+            userMsg.textContent = query;
+            botChat.appendChild(userMsg);
+            
+            // SCROLL TO SHOW USER'S QUESTION AT TOP
+            setTimeout(() => {
+                userMsg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+            
             botInput.value = '';
             
-            addTyping();
-            setBotTalking(true);
-            
+            // Process query
             setTimeout(() => {
-                removeTyping();
-                setBotTalking(false);
+                const lower = query.toLowerCase();
+                let foundKey = null;
                 
-                const lower = text.toLowerCase();
-                let response = '';
-                let actions = [];
+                // Check for keywords
+                if (lower.includes('rug')) foundKey = 'rugpull';
+                else if (lower.includes('good') || lower.includes('find')) foundKey = 'goodcoin';
+                else if (lower.includes('risk') || lower.includes('stop')) foundKey = 'risk';
+                else if (lower.includes('filter')) foundKey = 'filters';
+                else if (lower.includes('ape') || lower.includes('scan') || lower.includes('watch')) foundKey = 'workflow';
+                else if (lower.includes('ca') || lower.includes('contract')) foundKey = 'ca';
+                else if (lower.includes('setting') || lower.includes('buy') || lower.includes('sell')) foundKey = 'settings';
+                else if (lower.includes('bundle')) foundKey = 'bundles';
+                else if (lower.includes('volume')) foundKey = 'volume';
                 
-                // Check knowledge base first
-                const retrieved = traderUMemory.retrieve(text);
-                
-                if (retrieved.length > 0 && retrieved[0].score > 1) {
-                    const doc = retrieved[0].doc;
-                    response = `📚 <strong>${doc.title}</strong><br><br>${doc.content.substring(0, 400)}...`;
+                if (foundKey) {
+                    displayBotMessage(foundKey);
+                } else {
+                    // Generic response
+                    const response = `I can help with that! Try asking about:
+
+• **Rug detection** - Spot rug pulls
+• **Good coins** - Find winners
+• **Risk management** - Protect your port
+• **Filters** - Axiom settings
+• **Workflow** - APE/SCAN/WATCH
+• **CA** - Contract addresses
+• **Settings** - Buy/sell config
+• **Bundles** - Detect bundled wallets
+• **Volume** - Volume analysis
+
+Or type a command in terminal! 📊`;
                     
-                    if (doc.tags.includes('rug')) {
-                        response += `<br><br><em>Type "rugpull" in terminal for the complete guide.</em>`;
-                        actions = ['Good coin checklist', 'Risk management', 'Show filters'];
-                    } else if (doc.tags.includes('risk')) {
-                        response += `<br><br><em>Type "risk" in terminal for full rules.</em>`;
-                        actions = ['Rug detection', 'Study my trades', 'Glossary'];
-                    } else {
-                        actions = ['Tell me more', 'Another topic', 'Show glossary'];
-                    }
-                } 
-                // Specific queries
-                else if (lower.includes('rug')) {
-                    response = `🚨 <strong>RUG PULL DETECTION</strong><br><br>Key signs:<br>
-• Chart looks like straight up then death drop<br>
-• Fees don't match market cap<br>
-• All wallets same age (1 month)<br>
-• Bubble map looks like Death Star<br>
-• Zero liquidity<br><br>
-<em>Type "rugpull" in terminal for detailed checklist!</em>`;
-                    actions = ['Good coin signs', 'Show filters', 'CA explanation'];
+                    addBotMessage(response, ['Rug detection', 'Risk rules', 'Good coins']);
                 }
-                else if (lower.includes('ca') || lower.includes('contract')) {
-                    response = `📍 <strong>CA = CONTRACT ADDRESS</strong><br><br>
-The unique identifier for a token on blockchain. When someone says "send CA", they mean send the contract address!<br><br>
-Example: 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU<br><br>
-Copy & paste it into Axiom/DEX to find the EXACT coin!<br><br>
-<em>Type "ca" in terminal for more.</em>`;
-                    actions = ['Rug detection', 'Good coins', 'Workflow'];
-                }
-                else if (lower.includes('filter')) {
-                    response = `📊 <strong>FILTER SETTINGS</strong><br><br>
-Use pump.fun only! Key filters:<br>
-• Dev holding: 5% max<br>
-• Bundles: 40% max<br>
-• For final stretch: 200+ buys on 5min chart<br><br>
-<em>Type "filters" in terminal for complete setup!</em>`;
-                    actions = ['Rug signs', 'Risk rules', 'Good coins'];
-                }
-                else if (lower.includes('risk') || lower.includes('stop')) {
-                    response = `🛡️ <strong>RISK MANAGEMENT</strong><br><br>
-Golden rules:<br>
-• Risk only 1-5% per trade<br>
-• At 2x sell 50%<br>
-• Set stop loss 3-10% above entry once up 30%<br>
-• Never let losses go below -15%<br><br>
-<em>Type "risk" in terminal for full protocol!</em>`;
-                    actions = ['Rug detection', 'Study trades', 'Glossary'];
-                }
-                else if (lower.includes('good') || lower.includes('find')) {
-                    response = `✅ <strong>GOOD COIN CHECKLIST</strong><br><br>
-• Healthy heartbeat chart<br>
-• Fees match MC<br>
-• 200+ buys on 5min chart<br>
-• Dispersed bubble map (not Death Star!)<br>
-• Nobody holds >4%<br>
-• CA posted in community<br><br>
-<em>Type "goodcoin" in terminal for complete guide!</em>`;
-                    actions = ['Rug signs', 'Risk mgmt', 'Filters'];
-                }
-                else if (lower.includes('ape') || lower.includes('scan') || lower.includes('watch')) {
-                    response = `🎯 <strong>APE/SCAN/WATCH WORKFLOW</strong><br><br>
-• <strong>APE</strong> - Caller bought, monitoring<br>
-• <strong>SCAN</strong> - Analyzing, hasn't bought<br>
-• <strong>WATCH</strong> - Looking for dip to enter<br><br>
-Adjust your strategy based on the call!<br><br>
-<em>Type "workflow" in terminal for details.</em>`;
-                    actions = ['Good coins', 'Risk rules', 'Glossary'];
-                }
-                else if (lower.includes('gloss') || lower.includes('term')) {
-                    response = `📚 <strong>TRADER U GLOSSARY</strong><br><br>
-Learn the language:<br>
-• glossary1 - Market & price terms<br>
-• glossary2 - Psychology & execution<br>
-• glossary3 - Bots & community<br><br>
-<em>Type these in terminal to learn!</em>`;
-                    actions = ['Market terms', 'Psychology terms', 'Bot terms'];
-                }
-                else if (lower.includes('study') || lower.includes('analyze') || lower.includes('learn')) {
-                    response = `📖 <strong>STUDY YOUR TRADES</strong><br><br>
-After EVERY trade ask:<br>
-• Why did it work/fail?<br>
-• Was my entry good?<br>
-• What was my state of mind?<br>
-• Did I follow my rules?<br><br>
-The more you analyze, the better you get!<br><br>
-<em>Type "study" in terminal for full protocol.</em>`;
-                    actions = ['Risk management', 'Rug detection', 'Good coins'];
-                }
-                else if (lower.includes('remember') || lower.includes('memory')) {
-                    const summary = traderUMemory.getContextSummary();
-                    response = `🧠 <strong>MY MEMORY</strong><br><br>
-I've stored ${traderUMemory.conversations.length} conversations and ${traderUMemory.episodes.length} episodes.<br><br>
-We've discussed: ${summary.topics.join(', ') || 'just getting started'}<br><br>
-I have ${Object.keys(traderUMemory.knowledgeBase).length} complete knowledge docs loaded!<br><br>
-I NEVER forget. Ask me anything!`;
-                    actions = ['Rug detection', 'Risk rules', 'Glossary'];
-                }
-                else {
-                    const summary = traderUMemory.getContextSummary();
-                    response = `I'm TRADER U SUPER BOT with complete meme coin trading knowledge! 📚<br><br>
-I can teach you about:<br>
-• Rug pull detection<br>
-• Good coin analysis<br>
-• Risk management<br>
-• Filter settings<br>
-• CA & workflow<br>
-• Trading psychology<br>
-• Complete glossary<br><br>
-${summary.topics.length > 0 ? `We've discussed: ${summary.topics.join(', ')}<br><br>` : ''}
-What do you want to learn? 🎓`;
-                    actions = ['Spot rugs', 'Risk rules', 'Glossary'];
-                }
-                
-                traderUMemory.remember(text, response);
-                addBotMessage(response, false, actions);
-            }, 1200);
+            }, 500);
         }
         
-        botSend.addEventListener('click', () => sendBotMessage());
+        botSend.addEventListener('click', sendBotQuery);
         botInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendBotMessage();
+            if (e.key === 'Enter') sendBotQuery();
         });
 
-        // Theme functions
-        function changeTheme(theme) {
-            const themes = {
-                orange: '#ff9500',
-                green: '#00ff00',
-                blue: '#00aaff',
-                purple: '#ff00ff'
-            };
-            changeAccent(themes[theme], themes[theme], null);
-        }
-
-        function changeAccent(color, hover, el) {
-            document.documentElement.style.setProperty('--accent-orange', color);
-            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
-            if (el) el.classList.add('active');
-        }
-
-        // Live data feed
+        // Live Data Feed
         function updateDataFeed() {
             const feeds = [
                 { label: 'BTC', base: 95284, variance: 500 },
