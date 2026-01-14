@@ -733,6 +733,77 @@
             color: var(--green);
             font-weight: 700;
         }
+        
+        /* Mobile Responsive Design */
+        @media (max-width: 768px) {
+            #terminal-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 60px auto;
+            }
+            
+            #left-panel, #right-panel {
+                display: none;
+            }
+            
+            #center-panel {
+                border: none;
+            }
+            
+            .neural-node {
+                width: 45px;
+                height: 45px;
+                font-size: 0.45rem;
+                touch-action: none;
+            }
+            
+            .neural-node.core {
+                width: 60px;
+                height: 60px;
+                font-size: 0.5rem;
+            }
+            
+            .neural-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            
+            .neural-stat {
+                font-size: 0.6rem;
+                padding: 8px 10px;
+            }
+            
+            .stat-value {
+                font-size: 0.85rem;
+            }
+            
+            .top-right {
+                gap: 12px;
+            }
+            
+            .social-links {
+                gap: 10px;
+            }
+            
+            .social-links a {
+                font-size: 1.2rem;
+            }
+            
+            .theme-btn {
+                width: 24px;
+                height: 24px;
+            }
+            
+            .data-feed {
+                font-size: 0.65rem;
+                padding: 8px 10px;
+                flex-wrap: wrap;
+            }
+            
+            .terminal-title {
+                font-size: 0.9rem;
+                letter-spacing: 3px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -783,7 +854,7 @@
             <div class="neural-stats">
                 <div class="neural-stat">Neural Nodes<span class="stat-value">19</span></div>
                 <div class="neural-stat">Synapses<span class="stat-value" id="synapse-count">0</span></div>
-                <div class="neural-stat">Knowledge Docs<span class="stat-value" id="doc-count">10</span></div>
+                <div class="neural-stat">Knowledge Docs<span class="stat-value" id="doc-count">12</span></div>
                 <div class="neural-stat">Memory<span class="stat-value" id="memory-count">0</span></div>
             </div>
         </div>
@@ -807,8 +878,165 @@
     </div>
 
     <script>
-        // KNOWLEDGE BASE WITH IMAGES
+        // PERSISTENT FACTS STORAGE
+        const FACTS_KEY = 'trader_u_facts_v1';
+        
+        const facts = {
+            axiomReferral: 'https://axiom.trade/ref/TRADERU',
+            novaReferral: 'https://nova.trade/ref/TRADERU',
+            padrePlatform: 'https://padre.trade',
+            traderUYoutube: 'https://www.youtube.com/@Chepetrades',
+            traderUTikTok: 'https://www.tiktok.com/@chepeex_',
+            traderUInstagram: 'https://www.instagram.com/chepeex/',
+            
+            load() {
+                try {
+                    const raw = localStorage.getItem(FACTS_KEY);
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        Object.assign(this, parsed);
+                    }
+                } catch (e) {
+                    console.log('Facts storage unavailable');
+                }
+            },
+            
+            save() {
+                try {
+                    const data = {};
+                    Object.keys(this).forEach(key => {
+                        if (typeof this[key] !== 'function') {
+                            data[key] = this[key];
+                        }
+                    });
+                    localStorage.setItem(FACTS_KEY, JSON.stringify(data));
+                } catch (e) {
+                    console.log('Cannot save facts');
+                }
+            }
+        };
+        
+        facts.load();
+        
+        // KNOWLEDGE BASE WITH IMAGES + LIQUIDITY
         const knowledgeBase = {
+            liquidity: {
+                title: 'LIQUIDITY & LP LOCK (EXIT SAFETY)',
+                content: `💧 **LIQUIDITY (LP) = THE EXIT**
+
+Liquidity is the pool you trade against. If it's weak or controlled, you can get TRAPPED.
+
+✅ **WHAT GOOD LIQUIDITY LOOKS LIKE:**
+1. **Enough LP for your size** - Buy/sell without massive price impact
+2. **Steady volume** - Real buys + sells, not one-sided
+3. **No obvious control** - LP not easily removable
+
+🔒 **WHAT "LP LOCK" MEANS:**
+LP Lock = liquidity tokens are time-locked so dev can't pull liquidity instantly.
+
+⚠️ **LP LOCK REDUCES RUG RISK - IT DOES NOT PREVENT DUMPS!**
+
+🚨 **COMMON LIQUIDITY RUG TYPES:**
+
+1. **LP PULL (RUG PULL)**
+   • Liquidity removed instantly
+   • Price nukes to zero
+   • Sells fail or slip 99%
+   • MONEY IS GONE
+
+2. **LOW LP TRAP**
+   • LP so small you can't exit
+   • Your sell kills the price
+   • Stuck holding bags
+
+3. **HONEYPOT (SELL RESTRICTION)**
+   • Buys work fine
+   • Sells revert or get taxed 99%
+   • Can buy but CANNOT SELL
+
+4. **FAKE HEALTH**
+   • LP exists but volume is fake
+   • Real sellers appear → collapse
+   • Everyone trapped
+
+🧪 **QUICK "CAN I SELL?" TEST:**
+Before going full size:
+1. Do TINY buy (like $5)
+2. Immediately try TINY sell
+3. If sell fails or slips >50% → TRAP!
+
+🎯 **RULES:**
+• No LP = No trade
+• LP locked ≠ Safe from dumps
+• Test sells BEFORE sizing up
+• If LP is thin, use SMALLER size or SKIP
+
+💀 **WHY LIQUIDITY GETS LOCKED/PULLED:**
+
+**LEGITIMATE LOCK:**
+• Dev locks LP to prove commitment
+• Can't rug pull for X days/months
+• Green flag for safety
+
+**MALICIOUS PULL:**
+• Dev unlocks and removes LP
+• Takes all the money
+• Coin becomes worthless
+• Classic rug pull
+
+**RESULT WHEN LP PULLED:**
+• Price goes to $0
+• Cannot sell (no liquidity to trade against)
+• Your money is GONE forever
+• Stop loss won't save you
+
+⚡ **ALWAYS CHECK:**
+1. Is LP locked? (How long?)
+2. Is LP amount healthy?
+3. Can you do test sell?
+4. What's the price impact on your size?`,
+                images: [],
+                actions: ['Rug detection', 'Good coins', 'Risk rules']
+            },
+            
+            referrals: {
+                title: 'PLATFORM REFERRAL LINKS',
+                content: `🔗 **TRADER U PLATFORM LINKS:**
+
+**AXIOM (Main Platform):**
+${facts.axiomReferral}
+• Best for beginners
+• Clean interface
+• Mobile friendly via Chrome
+
+**NOVA (Advanced):**
+${facts.novaReferral}
+• 25% fee cashback
+• For experienced traders
+• More features
+
+**PADRE (Terminal):**
+${facts.padrePlatform}
+• Advanced terminal
+• Pro traders only
+• Complex interface
+
+📱 **MOBILE SETUP:**
+1. Use Chrome browser
+2. Go to Axiom link above
+3. Connect Phantom wallet
+4. Start trading
+
+💰 **FEES:**
+• Axiom: Standard fees
+• Nova: 25% cashback (saves money!)
+• Always keep extra SOL for gas
+
+✅ **RECOMMENDED FOR BEGINNERS:**
+Start with Axiom + Phantom wallet combo`,
+                images: [],
+                actions: ['Filters', 'Risk rules', 'Good coins']
+            },
             rugpull: {
                 title: 'HOW TO SPOT A RUG PULL',
                 content: `🚨 **RUG DETECTION CHECKLIST:**
@@ -1100,7 +1328,7 @@ Volume = Truth. No volume = No interest.`,
         
         function initTerminal() {
             addCmd('<span class="cmd-prompt">TRADER U></span> <span class="cmd-text">System initialized</span>');
-            addCmd('<span class="cmd-prompt">TRADER U></span> <span class="cmd-success">Knowledge base loaded: 10 docs</span>');
+            addCmd('<span class="cmd-prompt">TRADER U></span> <span class="cmd-success">Knowledge base loaded: 12 docs</span>');
             addCmd('<span class="cmd-prompt">TRADER U></span> <span class="cmd-text">Type "help" for commands</span>');
             
             // MOTIVATIONAL QUOTES
@@ -1130,7 +1358,10 @@ Volume = Truth. No volume = No interest.`,
                 '✅ Wait for 40-50% dip to enter',
                 '✅ Use filters to avoid rugs',
                 '✅ Study every trade - win or lose',
-                '✅ Healthy chart = heartbeat pattern'
+                '✅ Healthy chart = heartbeat pattern',
+                '✅ Test tiny sell BEFORE sizing up',
+                '✅ Check if LP is locked (how long?)',
+                '✅ No LP = No trade, walk away'
             ];
             
             // DON'T DO THIS (RED/YELLOW - BAD)
@@ -1146,7 +1377,10 @@ Volume = Truth. No volume = No interest.`,
                 '⚠️ DON\'T skip the bubble map check',
                 '⚠️ DON\'T buy coins with no liquidity',
                 '⚠️ DON\'T trust coins without CA posted',
-                '⚠️ DON\'T hold hopium bags'
+                '⚠️ DON\'T hold hopium bags',
+                '⚠️ DON\'T skip the sell test',
+                '⚠️ DON\'T ignore LP lock status',
+                '⚠️ DON\'T assume LP locked = safe'
             ];
             
             // PRE-TRADE CHECKLIST
@@ -1157,6 +1391,8 @@ Volume = Truth. No volume = No interest.`,
                 '   □ Bubble map healthy?',
                 '   □ 200+ buys on 5min?',
                 '   □ CA posted in community?',
+                '   □ LP locked? How long?',
+                '   □ Test sell successful?',
                 '   □ Stop loss planned?'
             ];
             
@@ -1171,7 +1407,11 @@ Volume = Truth. No volume = No interest.`,
                 { text: '<span class="cmd-warning">📊 Volume check: Low - wait for confirmation</span>', flash: false },
                 { text: '<span class="cmd-success">🎯 Entry at 45% dip - excellent timing</span>', flash: false },
                 { text: '<span class="cmd-success">🧠 Wallet analysis complete - dispersed holders</span>', flash: false },
-                { text: '<span class="cmd-warning">⚠️ Death star bubble map - potential rug</span>', flash: true }
+                { text: '<span class="cmd-warning">⚠️ Death star bubble map - potential rug</span>', flash: true },
+                { text: '<span class="cmd-success">💧 LP locked for 6 months - good sign</span>', flash: false },
+                { text: '<span class="cmd-warning">🚨 LOW LIQUIDITY - test sell before sizing up</span>', flash: true },
+                { text: '<span class="cmd-success">✅ Sell test passed - exit is clear</span>', flash: false },
+                { text: '<span class="cmd-warning">⚠️ LP UNLOCKED - rug risk high</span>', flash: true }
             ];
             
             // ROTATING CONTENT SYSTEM
@@ -1221,6 +1461,8 @@ Volume = Truth. No volume = No interest.`,
                 addCmd('<span class="cmd-text">  settings - Buy/sell settings</span>');
                 addCmd('<span class="cmd-text">  bundles - Bundle detection</span>');
                 addCmd('<span class="cmd-text">  volume - Volume analysis</span>');
+                addCmd('<span class="cmd-text">  liquidity - LP locks & exit safety</span>');
+                addCmd('<span class="cmd-text">  referrals - Platform links</span>');
                 addCmd('<span class="cmd-text">  clear - Clear terminal</span>');
             },
             
@@ -1233,6 +1475,11 @@ Volume = Truth. No volume = No interest.`,
             settings: () => showInBot('settings'),
             bundles: () => showInBot('bundles'),
             volume: () => showInBot('volume'),
+            liquidity: () => showInBot('liquidity'),
+            lp: () => showInBot('liquidity'),
+            referrals: () => showInBot('referrals'),
+            links: () => showInBot('referrals'),
+            axiom: () => showInBot('referrals'),
             
             clear: () => {
                 commandOutput.innerHTML = '';
@@ -1260,27 +1507,39 @@ Volume = Truth. No volume = No interest.`,
             }
         });
 
-        // Neural Network - Complex Brain Structure with DRAG functionality
+        // Neural Network - Complex Brain Structure with DRAG functionality + MOBILE RESPONSIVE
         function initNeuralNetwork() {
             const neuralArea = document.getElementById('neural-network');
-            const width = neuralArea.clientWidth;
-            const height = neuralArea.clientHeight - 120; // Leave space for stats
+            
+            function getAreaDimensions() {
+                const rect = neuralArea.getBoundingClientRect();
+                return {
+                    width: rect.width,
+                    height: rect.height - 140, // Space for stats
+                    centerX: rect.width / 2,
+                    centerY: (rect.height - 140) / 2
+                };
+            }
+            
+            let dims = getAreaDimensions();
             
             const nodes = [];
-            const centerX = width / 2;
-            const centerY = (height / 2) - 20;
-            
             let draggedNode = null;
             let isDragging = false;
             let dragOffset = { x: 0, y: 0 };
+            
+            // Responsive radius scaling
+            function getRadiusScale() {
+                return Math.min(dims.width, dims.height) / 600; // Base 600px
+            }
             
             // CORE NODES (center)
             const coreLabels = ['ANALYSIS', 'MEMORY', 'DECISION'];
             for (let i = 0; i < 3; i++) {
                 const angle = (i / 3) * Math.PI * 2 - Math.PI / 2;
-                const radius = 80;
-                const x = Math.cos(angle) * radius + centerX;
-                const y = Math.sin(angle) * radius + centerY;
+                const radius = 80 * getRadiusScale();
+                const x = Math.cos(angle) * radius + dims.centerX;
+                const y = Math.sin(angle) * radius + dims.centerY;
                 
                 const node = document.createElement('div');
                 node.className = 'neural-node core active';
@@ -1289,16 +1548,16 @@ Volume = Truth. No volume = No interest.`,
                 node.textContent = coreLabels[i];
                 
                 neuralArea.appendChild(node);
-                nodes.push({ element: node, x, y, angle, radius, layer: 'core', isDraggable: true });
+                nodes.push({ element: node, x, y, angle, radius, layer: 'core', isDraggable: true, baseRadius: 80 });
             }
             
             // INNER RING (8 nodes)
             const innerLabels = ['RUG DETECT', 'RISK MGT', 'CHART', 'VOLUME', 'WALLET', 'FILTER', 'ENTRY', 'EXIT'];
             for (let i = 0; i < 8; i++) {
                 const angle = (i / 8) * Math.PI * 2 - Math.PI / 2;
-                const radius = 160;
-                const x = Math.cos(angle) * radius + centerX;
-                const y = Math.sin(angle) * radius + centerY;
+                const radius = 160 * getRadiusScale();
+                const x = Math.cos(angle) * radius + dims.centerX;
+                const y = Math.sin(angle) * radius + dims.centerY;
                 
                 const node = document.createElement('div');
                 node.className = 'neural-node';
@@ -1308,16 +1567,16 @@ Volume = Truth. No volume = No interest.`,
                 node.textContent = innerLabels[i];
                 
                 neuralArea.appendChild(node);
-                nodes.push({ element: node, x, y, angle, radius, layer: 'inner', isDraggable: true });
+                nodes.push({ element: node, x, y, angle, radius, layer: 'inner', isDraggable: true, baseRadius: 160 });
             }
             
             // OUTER RING (8 nodes)
             const outerLabels = ['SIGNAL', 'PATTERN', 'SENTIMENT', 'LIQUIDITY', 'TIMING', 'NARRATIVE', 'EXECUTE', 'LEARN'];
             for (let i = 0; i < 8; i++) {
                 const angle = (i / 8) * Math.PI * 2;
-                const radius = 240;
-                const x = Math.cos(angle) * radius + centerX;
-                const y = Math.sin(angle) * radius + centerY;
+                const radius = 240 * getRadiusScale();
+                const x = Math.cos(angle) * radius + dims.centerX;
+                const y = Math.sin(angle) * radius + dims.centerY;
                 
                 const node = document.createElement('div');
                 node.className = 'neural-node';
@@ -1327,31 +1586,36 @@ Volume = Truth. No volume = No interest.`,
                 node.textContent = outerLabels[i];
                 
                 neuralArea.appendChild(node);
-                nodes.push({ element: node, x, y, angle, radius, layer: 'outer', isDraggable: true });
+                nodes.push({ element: node, x, y, angle, radius, layer: 'outer', isDraggable: true, baseRadius: 240 });
             }
             
             // DRAG FUNCTIONALITY
             nodes.forEach((node, index) => {
-                node.element.addEventListener('mousedown', (e) => {
+                node.element.addEventListener('mousedown', startDrag);
+                node.element.addEventListener('touchstart', startDrag);
+                
+                function startDrag(e) {
                     e.preventDefault();
                     isDragging = true;
                     draggedNode = { node, index };
                     
+                    const touch = e.touches ? e.touches[0] : e;
                     const rect = node.element.getBoundingClientRect();
                     const neuralRect = neuralArea.getBoundingClientRect();
                     
-                    dragOffset.x = e.clientX - rect.left - rect.width / 2;
-                    dragOffset.y = e.clientY - rect.top - rect.height / 2;
+                    dragOffset.x = touch.clientX - rect.left - rect.width / 2;
+                    dragOffset.y = touch.clientY - rect.top - rect.height / 2;
                     
                     node.element.classList.add('dragging');
-                });
+                }
             });
             
-            neuralArea.addEventListener('mousemove', (e) => {
+            function handleMove(e) {
                 if (isDragging && draggedNode) {
+                    const touch = e.touches ? e.touches[0] : e;
                     const rect = neuralArea.getBoundingClientRect();
-                    const newX = e.clientX - rect.left - dragOffset.x;
-                    const newY = e.clientY - rect.top - dragOffset.y;
+                    const newX = touch.clientX - rect.left - dragOffset.x;
+                    const newY = touch.clientY - rect.top - dragOffset.y;
                     
                     // Update position
                     draggedNode.node.x = newX;
@@ -1363,15 +1627,20 @@ Volume = Truth. No volume = No interest.`,
                     
                     updateSynapses();
                 }
-            });
+            }
             
-            document.addEventListener('mouseup', () => {
+            function handleEnd() {
                 if (isDragging && draggedNode) {
                     draggedNode.node.element.classList.remove('dragging');
                     isDragging = false;
                     draggedNode = null;
                 }
-            });
+            }
+            
+            neuralArea.addEventListener('mousemove', handleMove);
+            neuralArea.addEventListener('touchmove', handleMove);
+            document.addEventListener('mouseup', handleEnd);
+            document.addEventListener('touchend', handleEnd);
             
             const synapses = [];
             
@@ -1440,13 +1709,26 @@ Volume = Truth. No volume = No interest.`,
             function animateNodes() {
                 // Only rotate nodes that aren't being dragged
                 if (!isDragging) {
+                    dims = getAreaDimensions();
+                    const scale = getRadiusScale();
+                    
                     nodes.forEach((node, idx) => {
                         if (node.layer !== 'core') {
                             node.angle += (node.layer === 'inner' ? 0.0015 : 0.001);
-                            const x = Math.cos(node.angle) * node.radius + centerX;
-                            const y = Math.sin(node.angle) * node.radius + centerY;
+                            node.radius = node.baseRadius * scale;
+                            const x = Math.cos(node.angle) * node.radius + dims.centerX;
+                            const y = Math.sin(node.angle) * node.radius + dims.centerY;
                             node.element.style.left = (x - 25) + 'px';
                             node.element.style.top = (y - 25) + 'px';
+                            node.x = x;
+                            node.y = y;
+                        } else {
+                            // Update core positions for responsiveness
+                            node.radius = node.baseRadius * scale;
+                            const x = Math.cos(node.angle) * node.radius + dims.centerX;
+                            const y = Math.sin(node.angle) * node.radius + dims.centerY;
+                            node.element.style.left = (x - 35) + 'px';
+                            node.element.style.top = (y - 35) + 'px';
                             node.x = x;
                             node.y = y;
                         }
@@ -1474,6 +1756,11 @@ Volume = Truth. No volume = No interest.`,
             setInterval(() => {
                 document.getElementById('memory-count').textContent = memory.conversations.length;
             }, 2000);
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                dims = getAreaDimensions();
+            });
         }
 
         // Bot Chat
@@ -1536,7 +1823,11 @@ Volume = Truth. No volume = No interest.`,
                 'CA explanation': 'ca',
                 'Settings': 'settings',
                 'Bundle detection': 'bundles',
-                'Volume check': 'volume'
+                'Volume check': 'volume',
+                'Liquidity': 'liquidity',
+                'LP locks': 'liquidity',
+                'Platform links': 'referrals',
+                'Referrals': 'referrals'
             };
             
             const key = map[action];
@@ -1559,9 +1850,9 @@ Volume = Truth. No volume = No interest.`,
 
 A community of dedicated traders learning together.
 
-I have complete meme coin trading knowledge. What do you want to learn? 🚀`;
+I have complete meme coin trading knowledge + platform links. What do you want to learn? 🚀`;
             
-            addBotMessage(welcome, ['Rug detection', 'Risk rules', 'Good coins']);
+            addBotMessage(welcome, ['Rug detection', 'Liquidity', 'Platform links']);
         }
         
         // Bot input handlers
@@ -1603,6 +1894,8 @@ I have complete meme coin trading knowledge. What do you want to learn? 🚀`;
                 else if (lower.includes('setting') || lower.includes('buy') || lower.includes('sell')) foundKey = 'settings';
                 else if (lower.includes('bundle')) foundKey = 'bundles';
                 else if (lower.includes('volume')) foundKey = 'volume';
+                else if (lower.includes('liq') || lower.includes('lp') || lower.includes('lock') || lower.includes('cant sell') || lower.includes('trapped') || lower.includes('stuck')) foundKey = 'liquidity';
+                else if (lower.includes('refer') || lower.includes('link') || lower.includes('axiom') || lower.includes('nova') || lower.includes('platform')) foundKey = 'referrals';
                 
                 if (foundKey) {
                     displayBotMessage(foundKey);
@@ -1619,10 +1912,12 @@ I have complete meme coin trading knowledge. What do you want to learn? 🚀`;
 • **Settings** - Buy/sell config
 • **Bundles** - Detect bundled wallets
 • **Volume** - Volume analysis
+• **Liquidity** - LP locks & exit safety
+• **Referral links** - Platform links
 
 Or type a command in terminal! 📊`;
                     
-                    addBotMessage(response, ['Rug detection', 'Risk rules', 'Good coins']);
+                    addBotMessage(response, ['Rug detection', 'Risk rules', 'Liquidity']);
                 }
             }, 500);
         }
