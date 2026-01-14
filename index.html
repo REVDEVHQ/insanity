@@ -735,18 +735,70 @@
         }
         
         /* Mobile Responsive Design */
+        #mobile-tabs {
+            display: none;
+        }
+        
         @media (max-width: 768px) {
             #terminal-container {
                 grid-template-columns: 1fr;
-                grid-template-rows: 60px auto;
+                grid-template-rows: 60px 50px 1fr;
+                height: 100vh;
+            }
+            
+            /* Show mobile tabs */
+            #mobile-tabs {
+                display: flex;
+                grid-column: 1 / -1;
+                align-items: center;
+                justify-content: space-around;
+                gap: 8px;
+                padding: 10px;
+                background: #0a0a0a;
+                border-bottom: 2px solid var(--border);
+                z-index: 9996;
+            }
+            
+            .mobile-tab {
+                flex: 1;
+                padding: 12px 8px;
+                background: transparent;
+                border: 1px solid #333;
+                color: #bbb;
+                font-family: inherit;
+                font-size: 0.75rem;
+                font-weight: 700;
+                letter-spacing: 2px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            
+            .mobile-tab.active {
+                border-color: var(--accent);
+                color: var(--accent);
+                background: rgba(255, 149, 0, 0.1);
+            }
+            
+            /* Panels controlled by tabs */
+            #left-panel, #right-panel, #center-panel {
+                grid-column: 1 / -1;
+                border: none;
             }
             
             #left-panel, #right-panel {
                 display: none;
             }
             
+            #left-panel.active, #right-panel.active {
+                display: flex;
+            }
+            
             #center-panel {
-                border: none;
+                display: none;
+            }
+            
+            #center-panel.active {
+                display: block;
             }
             
             .neural-node {
@@ -803,6 +855,11 @@
                 font-size: 0.9rem;
                 letter-spacing: 3px;
             }
+            
+            /* Make inputs easier to tap */
+            #command-input, #bot-input, #bot-send {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -838,6 +895,13 @@
                     <span>LIVE</span>
                 </div>
             </div>
+        </div>
+
+        <!-- MOBILE TAB BAR -->
+        <div id="mobile-tabs">
+            <button class="mobile-tab" data-view="terminal">TERMINAL</button>
+            <button class="mobile-tab active" data-view="brain">BRAIN</button>
+            <button class="mobile-tab" data-view="bot">BOT</button>
         </div>
 
         <div id="left-panel">
@@ -882,9 +946,9 @@
         const FACTS_KEY = 'trader_u_facts_v1';
         
         const facts = {
-            axiomReferral: 'https://axiom.trade/ref/TRADERU',
+            axiomReferral: 'https://axiom.trade/@plmedia?gad_source=1&gad_campaignid=23382871156&gbraid=0AAAAA_1EOup_SCkt8vFvA1W1Ye6tqnx2Q&chain=sol',
             novaReferral: 'https://nova.trade/ref/TRADERU',
-            padrePlatform: 'https://padre.trade',
+            padreReferral: 'https://trade.padre.gg/rk/unethicaldev',
             traderUYoutube: 'https://www.youtube.com/@Chepetrades',
             traderUTikTok: 'https://www.tiktok.com/@chepeex_',
             traderUInstagram: 'https://www.instagram.com/chepeex/',
@@ -1016,7 +1080,7 @@ ${facts.novaReferral}
 • More features
 
 **PADRE (Terminal):**
-${facts.padrePlatform}
+${facts.padreReferral}
 • Advanced terminal
 • Pro traders only
 • Complex interface
@@ -1296,6 +1360,7 @@ Volume = Truth. No volume = No interest.`,
                 initTerminal();
                 initNeuralNetwork();
                 initBotChat();
+                initMobileTabs();
             }, 500);
         }
         
@@ -1312,6 +1377,40 @@ Volume = Truth. No volume = No interest.`,
             // Update active state
             document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
             if (element) element.classList.add('active');
+        }
+        
+        // Mobile Tab Switcher
+        function initMobileTabs() {
+            const tabs = document.getElementById('mobile-tabs');
+            if (!tabs) return;
+            
+            const leftPanel = document.getElementById('left-panel');
+            const centerPanel = document.getElementById('center-panel');
+            const rightPanel = document.getElementById('right-panel');
+            
+            // Set initial view (brain)
+            centerPanel.classList.add('active');
+            
+            tabs.addEventListener('click', (e) => {
+                const btn = e.target.closest('.mobile-tab');
+                if (!btn) return;
+                
+                const view = btn.dataset.view;
+                
+                // Remove all active classes
+                document.querySelectorAll('.mobile-tab').forEach(t => t.classList.remove('active'));
+                leftPanel.classList.remove('active');
+                centerPanel.classList.remove('active');
+                rightPanel.classList.remove('active');
+                
+                // Add active to clicked tab
+                btn.classList.add('active');
+                
+                // Show selected panel
+                if (view === 'terminal') leftPanel.classList.add('active');
+                if (view === 'brain') centerPanel.classList.add('active');
+                if (view === 'bot') rightPanel.classList.add('active');
+            });
         }
 
         // Education Terminal
