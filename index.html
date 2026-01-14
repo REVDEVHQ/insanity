@@ -32,6 +32,99 @@
             overflow: hidden;
         }
         
+        /* Scanlines + Vignette */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(255,255,255,0.03),
+                rgba(255,255,255,0.03) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            opacity: 0.10;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            z-index: 9999;
+            animation: scanlineMove 8s linear infinite;
+        }
+        
+        @keyframes scanlineMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(4px); }
+        }
+        
+        body::after {
+            content: "";
+            position: fixed;
+            inset: -30px;
+            background: radial-gradient(circle at 50% 30%, transparent 40%, rgba(0,0,0,0.55) 75%);
+            pointer-events: none;
+            z-index: 9998;
+        }
+        
+        /* Screen flash effect */
+        @keyframes screenFlash {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.15; }
+        }
+        
+        .screen-flash {
+            position: fixed;
+            inset: 0;
+            background: var(--accent-orange);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9997;
+        }
+        
+        .screen-flash.active {
+            animation: screenFlash 0.3s ease-out;
+        }
+        
+        /* Glitch effect for important text */
+        @keyframes glitch {
+            0% {
+                text-shadow: 2px 0 var(--accent-orange), -2px 0 cyan;
+            }
+            25% {
+                text-shadow: -2px 0 var(--accent-orange), 2px 0 cyan;
+            }
+            50% {
+                text-shadow: 2px 0 cyan, -2px 0 var(--accent-orange);
+            }
+            75% {
+                text-shadow: -2px 0 cyan, 2px 0 var(--accent-orange);
+            }
+            100% {
+                text-shadow: 0 0 var(--accent-orange);
+            }
+        }
+        
+        .terminal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+            letter-spacing: 5px;
+            animation: glitch 3s ease-in-out infinite;
+        }
+        
+        /* Pulsing glow on panels */
+        @keyframes panelPulse {
+            0%, 100% {
+                box-shadow: inset 0 0 20px rgba(255, 149, 0, 0.05);
+            }
+            50% {
+                box-shadow: inset 0 0 30px rgba(255, 149, 0, 0.15);
+            }
+        }
+        
+        #terminal-container {
+            animation: panelPulse 4s ease-in-out infinite;
+        }
+        
         /* Welcome Screen */
         #welcome-screen {
             position: fixed;
@@ -118,8 +211,8 @@
         /* Main Terminal */
         #terminal-container {
             display: grid;
-            grid-template-columns: 300px 1fr 350px;
-            grid-template-rows: 50px 1fr;
+            grid-template-columns: 320px 1fr 380px;
+            grid-template-rows: 50px calc(100vh - 80px);
             height: 100vh;
             gap: 1px;
             background: var(--border);
@@ -192,7 +285,7 @@
             display: flex;
             flex-direction: column;
             border-right: 1px solid var(--border);
-            max-height: calc(100vh - 50px); /* CRITICAL FIX */
+            overflow: hidden;
         }
         
         .panel-header {
@@ -203,16 +296,15 @@
             font-weight: 700;
             color: var(--text-dim);
             letter-spacing: 2px;
-            flex-shrink: 0; /* PREVENT SHRINKING */
+            flex-shrink: 0;
         }
         
         #command-output {
             flex: 1;
-            overflow-y: scroll; /* CHANGED TO SCROLL */
+            overflow-y: auto;
             padding: 15px;
             font-size: 0.8rem;
             line-height: 1.6;
-            min-height: 0; /* CRITICAL FIX */
         }
         
         #command-output::-webkit-scrollbar {
@@ -237,10 +329,26 @@
         
         .cmd-success {
             color: var(--accent-green);
+            text-shadow: 0 0 10px var(--accent-green);
+            font-weight: 700;
         }
         
         .cmd-error {
             color: var(--accent-red);
+            text-shadow: 0 0 10px var(--accent-red);
+        }
+        
+        .cmd-line.event {
+            animation: slideIn 0.5s ease, glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 5px var(--accent-orange);
+            }
+            50% {
+                text-shadow: 0 0 15px var(--accent-orange);
+            }
         }
         
         #command-input-area {
@@ -249,7 +357,7 @@
             border-top: 1px solid var(--border);
             display: flex;
             gap: 8px;
-            flex-shrink: 0; /* PREVENT SHRINKING */
+            flex-shrink: 0;
         }
         
         #command-input {
@@ -270,13 +378,14 @@
         /* Center Panel - Bot + Neural Network */
         #center-panel {
             background: var(--panel-bg);
-            display: grid;
-            grid-template-rows: 300px 1fr;
-            gap: 1px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         
         /* Bot Character Area */
         #bot-character-area {
+            height: 280px;
             background: 
                 radial-gradient(240px 240px at 50% 40%, rgba(255, 149, 0, 0.12), transparent 60%),
                 radial-gradient(320px 320px at 40% 60%, rgba(255, 149, 0, 0.08), transparent 60%),
@@ -286,17 +395,18 @@
             justify-content: center;
             position: relative;
             border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
         }
         
         .platform {
             position: absolute;
-            bottom: 25px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            width: 200px;
-            height: 20px;
+            width: 180px;
+            height: 16px;
             border-radius: 999px;
-            background: radial-gradient(100px 30px at 50% 30%, rgba(255, 149, 0, 0.15), transparent 60%),
+            background: radial-gradient(90px 25px at 50% 30%, rgba(255, 149, 0, 0.15), transparent 60%),
                         linear-gradient(90deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
             border: 1px solid rgba(255, 149, 0, 0.2);
             opacity: 0.8;
@@ -305,16 +415,26 @@
         .bot-3d {
             position: relative;
             width: 200px;
-            height: 280px;
+            height: 250px;
             transform-origin: 50% 85%;
             animation: idleBob 2.8s ease-in-out infinite;
-            transition: transform 0.2s ease;
-            cursor: pointer;
         }
         
         @keyframes idleBob {
             0%, 100% { transform: translateY(0px) rotate(-0.6deg); }
             50% { transform: translateY(-8px) rotate(0.8deg); }
+        }
+        
+        .bot-move {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.12s ease;
+        }
+        
+        .bot-tilt {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.12s ease;
         }
         
         .bot-glow {
@@ -332,9 +452,9 @@
             top: 15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 180px;
-            height: 140px;
-            border-radius: 60px;
+            width: 160px;
+            height: 120px;
+            border-radius: 50px;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
             border: 1px solid rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(4px);
@@ -346,8 +466,8 @@
             top: -15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 8px;
-            height: 24px;
+            width: 7px;
+            height: 22px;
             border-radius: 999px;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04));
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -356,11 +476,11 @@
         .bot-antenna::after {
             content: "";
             position: absolute;
-            top: -10px;
+            top: -9px;
             left: 50%;
             transform: translateX(-50%);
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             border-radius: 999px;
             background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.1)),
                         radial-gradient(circle at 50% 50%, var(--accent-orange), rgba(255, 149, 0, 0.1));
@@ -375,13 +495,13 @@
         
         .bot-visor {
             position: absolute;
-            top: 22px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            width: 150px;
-            height: 90px;
-            border-radius: 45px;
-            background: radial-gradient(100px 70px at 50% 20%, rgba(255, 149, 0, 0.12), transparent 65%),
+            width: 130px;
+            height: 75px;
+            border-radius: 38px;
+            background: radial-gradient(90px 60px at 50% 20%, rgba(255, 149, 0, 0.12), transparent 65%),
                         linear-gradient(180deg, rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.7));
             border: 1px solid rgba(255, 255, 255, 0.1);
             overflow: hidden;
@@ -394,25 +514,34 @@
             50% { box-shadow: inset 0 2px 12px rgba(255, 149, 0, 0.4), 0 0 30px rgba(255, 149, 0, 0.4); }
         }
         
+        .bot-3d.talking .bot-visor {
+            animation: visorTalk 0.18s ease-in-out infinite;
+        }
+        
+        @keyframes visorTalk {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.15); }
+        }
+        
         .bot-eye {
             position: absolute;
-            top: 32px;
-            width: 30px;
-            height: 32px;
-            border-radius: 18px;
-            background: radial-gradient(15px 15px at 35% 35%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.08)),
-                        radial-gradient(24px 24px at 50% 60%, var(--accent-orange), rgba(255, 149, 0, 0.15));
+            top: 26px;
+            width: 26px;
+            height: 28px;
+            border-radius: 16px;
+            background: radial-gradient(13px 13px at 35% 35%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.08)),
+                        radial-gradient(20px 20px at 50% 60%, var(--accent-orange), rgba(255, 149, 0, 0.15));
             box-shadow: 0 0 15px rgba(255, 149, 0, 0.3);
             transition: transform 0.12s ease;
         }
         
-        .bot-eye.left { left: 38px; }
-        .bot-eye.right { right: 38px; }
+        .bot-eye.left { left: 32px; }
+        .bot-eye.right { right: 32px; }
         
         .eye-pupil {
             position: absolute;
-            width: 10px;
-            height: 10px;
+            width: 9px;
+            height: 9px;
             background: #000;
             border-radius: 50%;
             top: 50%;
@@ -424,11 +553,11 @@
         .bot-mouth {
             position: absolute;
             left: 50%;
-            top: 68px;
+            top: 58px;
             transform: translateX(-50%);
-            width: 48px;
-            height: 14px;
-            border-radius: 0 0 14px 14px;
+            width: 42px;
+            height: 12px;
+            border-radius: 0 0 12px 12px;
             border: 2px solid rgba(255, 149, 0, 0.5);
             border-top: 0;
             opacity: 0.85;
@@ -436,14 +565,20 @@
             transition: height 90ms ease, width 90ms ease;
         }
         
+        .bot-3d.talking .bot-mouth {
+            height: 24px;
+            width: 38px;
+            border-radius: 0 0 16px 16px;
+        }
+        
         .bot-body {
             position: absolute;
-            top: 148px;
+            top: 128px;
             left: 50%;
             transform: translateX(-50%);
-            width: 160px;
-            height: 130px;
-            border-radius: 35px;
+            width: 140px;
+            height: 110px;
+            border-radius: 30px;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
             border: 1px solid rgba(255, 255, 255, 0.12);
             box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
@@ -451,11 +586,11 @@
         
         .bot-core {
             position: absolute;
-            top: 35px;
+            top: 30px;
             left: 50%;
             transform: translateX(-50%);
-            width: 52px;
-            height: 52px;
+            width: 46px;
+            height: 46px;
             border-radius: 999px;
             background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.1)),
                         radial-gradient(circle at 50% 65%, var(--accent-orange), rgba(255, 149, 0, 0.12));
@@ -471,15 +606,15 @@
         
         .bot-status {
             position: absolute;
-            bottom: 15px;
+            bottom: 12px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 7px 14px;
+            padding: 6px 12px;
             background: rgba(255, 149, 0, 0.15);
             backdrop-filter: blur(8px);
             border: 1px solid var(--accent-orange);
-            border-radius: 12px;
-            font-size: 0.7rem;
+            border-radius: 10px;
+            font-size: 0.65rem;
             font-weight: 700;
             letter-spacing: 2px;
             box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2);
@@ -487,7 +622,7 @@
         
         /* Neural Network Area */
         #neural-network-area {
-            background: var(--panel-bg);
+            flex: 1;
             position: relative;
             overflow: hidden;
         }
@@ -600,17 +735,16 @@
             display: flex;
             flex-direction: column;
             border-left: 1px solid var(--border);
-            max-height: calc(100vh - 50px); /* CRITICAL FIX */
+            overflow: hidden;
         }
         
         #bot-chat {
             flex: 1;
-            overflow-y: scroll; /* CHANGED TO SCROLL */
+            overflow-y: auto;
             padding: 15px;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            min-height: 0; /* CRITICAL FIX */
         }
         
         #bot-chat::-webkit-scrollbar {
@@ -672,6 +806,7 @@
             padding: 15px;
             background: #0f0f0f;
             border-top: 1px solid var(--border);
+            flex-shrink: 0;
         }
         
         #bot-input {
@@ -709,20 +844,20 @@
         
         /* Interactive Controls */
         .control-panel {
-            padding: 15px;
+            padding: 12px 15px;
             background: #0f0f0f;
             border-top: 1px solid var(--border);
-            flex-shrink: 0; /* PREVENT SHRINKING */
+            flex-shrink: 0;
         }
         
         .control-group {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         
         .control-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-dim);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -730,12 +865,12 @@
         .color-picker-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 6px;
         }
         
         .color-option {
             width: 100%;
-            height: 30px;
+            height: 24px;
             border: 1px solid var(--border);
             cursor: pointer;
             transition: all 0.3s;
@@ -750,21 +885,19 @@
             border: 2px solid var(--text);
         }
         
-        #bot-input-area {
-            padding: 15px;
-            background: #0f0f0f;
-            border-top: 1px solid var(--border);
-            flex-shrink: 0; /* PREVENT SHRINKING */
-        }
-        
         /* Data Feed */
         .data-feed {
-            padding: 10px 15px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 8px 15px;
             background: #0f0f0f;
             border-top: 1px solid var(--border);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             display: flex;
             justify-content: space-between;
+            z-index: 9997;
         }
         
         .feed-item {
@@ -795,6 +928,9 @@
 
     <!-- Main Terminal -->
     <div id="terminal-container" style="opacity: 0;">
+        <!-- Screen flash effect -->
+        <div class="screen-flash" id="screen-flash"></div>
+        
         <!-- Top Bar -->
         <div id="top-bar">
             <div class="terminal-title">TERMINAL</div>
@@ -824,21 +960,25 @@
             <div id="bot-character-area">
                 <div class="platform"></div>
                 <div class="bot-3d" id="bot-character">
-                    <div class="bot-glow"></div>
-                    <div class="bot-head">
-                        <div class="bot-antenna"></div>
-                        <div class="bot-visor">
-                            <div class="bot-eye left">
-                                <div class="eye-pupil" id="eye-left"></div>
+                    <div class="bot-move" id="bot-move">
+                        <div class="bot-tilt" id="bot-tilt">
+                            <div class="bot-glow"></div>
+                            <div class="bot-head">
+                                <div class="bot-antenna"></div>
+                                <div class="bot-visor" id="bot-visor">
+                                    <div class="bot-eye left">
+                                        <div class="eye-pupil" id="eye-left"></div>
+                                    </div>
+                                    <div class="bot-eye right">
+                                        <div class="eye-pupil" id="eye-right"></div>
+                                    </div>
+                                    <div class="bot-mouth" id="bot-mouth"></div>
+                                </div>
                             </div>
-                            <div class="bot-eye right">
-                                <div class="eye-pupil" id="eye-right"></div>
+                            <div class="bot-body">
+                                <div class="bot-core"></div>
                             </div>
-                            <div class="bot-mouth"></div>
                         </div>
-                    </div>
-                    <div class="bot-body">
-                        <div class="bot-core"></div>
                     </div>
                 </div>
                 <div class="bot-status" id="bot-status">ONLINE</div>
@@ -854,14 +994,14 @@
                 <div class="control-group">
                     <div class="control-label">Accent Color</div>
                     <div class="color-picker-grid">
-                        <div class="color-option active" style="background: #ff9500" onclick="changeAccent('#ff9500', '#ffaa33')"></div>
-                        <div class="color-option" style="background: #00ff00" onclick="changeAccent('#00ff00', '#33ff33')"></div>
-                        <div class="color-option" style="background: #00aaff" onclick="changeAccent('#00aaff', '#33bbff')"></div>
-                        <div class="color-option" style="background: #ff00ff" onclick="changeAccent('#ff00ff', '#ff33ff')"></div>
-                        <div class="color-option" style="background: #ff0000" onclick="changeAccent('#ff0000', '#ff3333')"></div>
-                        <div class="color-option" style="background: #ffff00" onclick="changeAccent('#ffff00', '#ffff33')"></div>
-                        <div class="color-option" style="background: #00ffff" onclick="changeAccent('#00ffff', '#33ffff')"></div>
-                        <div class="color-option" style="background: #ffffff" onclick="changeAccent('#ffffff', '#ffffff')"></div>
+                        <div class="color-option active" style="background: #ff9500" onclick="changeAccent('#ff9500', '#ffaa33', this)"></div>
+                        <div class="color-option" style="background: #00ff00" onclick="changeAccent('#00ff00', '#33ff33', this)"></div>
+                        <div class="color-option" style="background: #00aaff" onclick="changeAccent('#00aaff', '#33bbff', this)"></div>
+                        <div class="color-option" style="background: #ff00ff" onclick="changeAccent('#ff00ff', '#ff33ff', this)"></div>
+                        <div class="color-option" style="background: #ff0000" onclick="changeAccent('#ff0000', '#ff3333', this)"></div>
+                        <div class="color-option" style="background: #ffff00" onclick="changeAccent('#ffff00', '#ffff33', this)"></div>
+                        <div class="color-option" style="background: #00ffff" onclick="changeAccent('#00ffff', '#33ffff', this)"></div>
+                        <div class="color-option" style="background: #ffffff" onclick="changeAccent('#ffffff', '#ffffff', this)"></div>
                     </div>
                 </div>
             </div>
@@ -873,7 +1013,7 @@
     </div>
 
     <!-- Data Feed -->
-    <div class="data-feed" style="position: fixed; bottom: 0; left: 0; right: 0; opacity: 0;" id="data-feed">
+    <div class="data-feed" style="opacity: 0;" id="data-feed">
         <div class="feed-item">
             <span class="feed-label">BTC:</span>
             <span class="feed-value">$95,284</span>
@@ -897,6 +1037,221 @@
     </div>
 
     <script>
+        // SUPER MEMORY SYSTEM - Bot that knows everything
+        const botMemory = {
+            // A) Working memory (current conversation)
+            conversations: [],
+            
+            // B) Episodic memory (timestamped events)
+            episodes: [],
+            
+            // C) Semantic memory (facts about user)
+            facts: {
+                preferences: [],
+                style: 'bullish',
+                interests: []
+            },
+            
+            // D) Knowledge base (meme coin briefing)
+            knowledgeBase: {
+                'bullcase': {
+                    title: 'MEME COINS IN 2026: WHY THIS META KEEPS PRINTING',
+                    content: 'Meme coins are not "random." They\'re the cleanest expression of what crypto actually trades: attention, liquidity, and reflexivity. The upside is unmatched because the market can reprice attention instantly.',
+                    tags: ['meta', 'bullish', 'fundamentals']
+                },
+                'whatare': {
+                    title: 'What Meme Coins Really Are',
+                    content: 'Meme coins are speculative assets whose primary value driver is SOCIAL MOMENTUM. Not cash flow. Not fundamentals. It\'s narrative, attention, liquidity, and timing. That\'s why the upside is unmatched.',
+                    tags: ['definition', 'basics']
+                },
+                'whywin': {
+                    title: 'Why Meme Coins Keep Winning',
+                    content: 'They monetize culture in real-time. They move capital faster than anything else. They reward discipline and execution. The best traders aren\'t lucky - they read liquidity, scale out, avoid nukes, repeat edges.',
+                    tags: ['strategy', 'bullish']
+                },
+                'solana': {
+                    title: 'Why Solana Is the Main Arena',
+                    content: 'Solana dominates because: low fees, fast execution, fast launches, fast rotations. This creates the perfect environment for explosive runs because friction is gone.',
+                    tags: ['solana', 'technical']
+                },
+                'mcap': {
+                    title: 'Market Cap Dynamics',
+                    content: 'Market cap isn\'t "money in" but it IS the scoreboard. Small inflows can create huge reprices. Early meme coins move violently because liquidity is thin. That\'s BULLISH - you don\'t need billions to start moving.',
+                    tags: ['liquidity', 'mcap']
+                },
+                'liquidity': {
+                    title: 'Liquidity Is King',
+                    content: 'The strongest setups have: LP meaningful to MC, improving holder distribution, consistent volume. If liquidity grows WITH price, you get: less slippage, more confidence, bigger second and third legs.',
+                    tags: ['liquidity', 'strategy']
+                },
+                'volume': {
+                    title: 'Volume vs Market Cap Signal',
+                    content: 'When volume is a serious % of market cap: real attention, real rotation, real participation. That\'s when charts stop being "hope" and start being MARKET STRUCTURE.',
+                    tags: ['volume', 'signals']
+                },
+                'pumpfun': {
+                    title: 'Pump.fun Lifecycle',
+                    content: 'Most coins die. That\'s fine. The survivors run HARD because competition is massive, attention selects winners quickly. The bond → migrate → Raydium progression creates a clean funnel. You don\'t need one coin - you need one REPEATABLE SYSTEM.',
+                    tags: ['pumpfun', 'lifecycle']
+                },
+                'narratives': {
+                    title: 'Narratives That Print',
+                    content: 'Best narratives: simple, relatable, memetic, instantly repeatable. The strongest coins feel inevitable because the meme spreads without effort. Memes win by being memetic.',
+                    tags: ['narrative', 'strategy']
+                },
+                'protrade': {
+                    title: 'How Pros Trade This Meta',
+                    content: 'The edge isn\'t "finding the next 100x". It\'s: entering clean setups, scaling out intelligently, protecting downside, repeating. Pros build accounts by stacking 1.5x, 2x, 3x consistently - then catching a runner occasionally.',
+                    tags: ['strategy', 'pro']
+                },
+                'thesis': {
+                    title: 'The Real Bull Case',
+                    content: 'Meme coins are the most honest market in crypto: attention in → price up, attention out → price down. Attention is the most valuable commodity on the internet. As long as people compete for attention, memes will remain the fastest way to turn attention into money.',
+                    tags: ['bullish', 'thesis']
+                }
+            },
+            
+            context: [],
+            
+            // Remember conversation
+            remember(user, bot) {
+                const timestamp = Date.now();
+                
+                // Store in conversations (working memory)
+                this.conversations.push({ user, bot, timestamp });
+                if (this.conversations.length > 20) this.conversations.shift();
+                
+                // Store as episode (episodic memory)
+                this.episodes.push({
+                    timestamp,
+                    user,
+                    bot,
+                    topics: this.extractTopics(user)
+                });
+                if (this.episodes.length > 100) this.episodes.shift();
+                
+                // Extract facts (semantic memory)
+                this.extractFacts(user);
+                
+                // Update context
+                const topics = this.extractTopics(user);
+                this.context = [...new Set([...this.context, ...topics].slice(-10))];
+            },
+            
+            // Extract topics from text
+            extractTopics(text) {
+                const lower = text.toLowerCase();
+                const topics = [];
+                
+                if (lower.includes('pepe')) topics.push('pepe');
+                if (lower.includes('whale')) topics.push('whale');
+                if (lower.includes('market')) topics.push('market');
+                if (lower.includes('solana') || lower.includes('sol')) topics.push('solana');
+                if (lower.includes('pump') || lower.includes('moon')) topics.push('bullish');
+                if (lower.includes('buy') || lower.includes('trade')) topics.push('trading');
+                if (lower.includes('meme')) topics.push('memecoins');
+                if (lower.includes('narrative')) topics.push('narrative');
+                if (lower.includes('liquidity') || lower.includes('liq')) topics.push('liquidity');
+                
+                return topics;
+            },
+            
+            // Extract facts about user
+            extractFacts(text) {
+                const lower = text.toLowerCase();
+                
+                // Detect preferences
+                if (lower.includes('like') || lower.includes('love')) {
+                    if (lower.includes('pepe')) this.addFact('preference', 'likes PEPE', 0.8);
+                    if (lower.includes('solana')) this.addFact('preference', 'likes Solana', 0.8);
+                    if (lower.includes('meme')) this.addFact('preference', 'likes memecoins', 0.9);
+                }
+                
+                // Detect trading style
+                if (lower.includes('hold') || lower.includes('diamond')) {
+                    this.addFact('style', 'holder mentality', 0.7);
+                }
+                if (lower.includes('trade') || lower.includes('flip')) {
+                    this.addFact('style', 'active trader', 0.7);
+                }
+                
+                // Detect interests
+                if (lower.includes('whale')) this.addFact('interest', 'whale tracking', 0.9);
+                if (lower.includes('dex')) this.addFact('interest', 'DEX analysis', 0.8);
+            },
+            
+            // Add semantic fact
+            addFact(category, value, confidence) {
+                const existing = this.facts[category].find(f => f.value === value);
+                if (existing) {
+                    existing.confidence = Math.min(1, existing.confidence + 0.1);
+                    existing.lastSeen = Date.now();
+                } else {
+                    this.facts[category].push({
+                        value,
+                        confidence,
+                        lastSeen: Date.now()
+                    });
+                }
+            },
+            
+            // Retrieve relevant knowledge
+            retrieve(query) {
+                const lower = query.toLowerCase();
+                const results = [];
+                
+                // Search knowledge base
+                for (const [key, doc] of Object.entries(this.knowledgeBase)) {
+                    let score = 0;
+                    
+                    // Check title match
+                    if (doc.title.toLowerCase().includes(lower)) score += 2;
+                    
+                    // Check content match
+                    const words = lower.split(' ');
+                    words.forEach(word => {
+                        if (word.length > 3 && doc.content.toLowerCase().includes(word)) {
+                            score += 0.5;
+                        }
+                    });
+                    
+                    // Check tags
+                    doc.tags.forEach(tag => {
+                        if (lower.includes(tag)) score += 1.5;
+                    });
+                    
+                    if (score > 0) {
+                        results.push({ key, doc, score });
+                    }
+                }
+                
+                // Sort by score
+                results.sort((a, b) => b.score - a.score);
+                
+                return results.slice(0, 3);
+            },
+            
+            // Get context summary
+            getContextSummary() {
+                const recentTopics = this.context.slice(-5);
+                const topPrefs = this.facts.preferences.slice(0, 3).map(f => f.value);
+                
+                return {
+                    topics: recentTopics,
+                    preferences: topPrefs,
+                    conversationCount: this.conversations.length
+                };
+            },
+            
+            // Search episodes
+            searchMemory(keyword) {
+                return this.episodes.filter(ep => 
+                    ep.user.toLowerCase().includes(keyword.toLowerCase()) ||
+                    ep.bot.toLowerCase().includes(keyword.toLowerCase())
+                ).slice(-5);
+            }
+        };
+
         // Enter terminal
         function enterTerminal() {
             document.getElementById('welcome-screen').classList.add('hidden');
@@ -912,44 +1267,25 @@
                 initNeuralNetwork();
             }, 500);
         }
+        
+        // Screen flash effect for major events
+        function triggerScreenFlash() {
+            const flash = document.getElementById('screen-flash');
+            flash.classList.add('active');
+            setTimeout(() => flash.classList.remove('active'), 300);
+        }
 
-        // Bot Memory System
-        const botMemory = {
-            conversations: [],
-            userPreferences: {},
-            context: [],
-            
-            remember(user, bot) {
-                this.conversations.push({ user, bot, timestamp: Date.now() });
-                if (this.conversations.length > 20) this.conversations.shift();
-                
-                // Extract context
-                if (user.toLowerCase().includes('pepe')) this.context.push('pepe');
-                if (user.toLowerCase().includes('whale')) this.context.push('whale');
-                if (user.toLowerCase().includes('market')) this.context.push('market');
-            },
-            
-            recall(keyword) {
-                return this.conversations.filter(c => 
-                    c.user.toLowerCase().includes(keyword) || 
-                    c.bot.toLowerCase().includes(keyword)
-                );
-            },
-            
-            getContext() {
-                return [...new Set(this.context.slice(-5))];
-            }
-        };
-
-        // Bot Character Interaction
+        // Bot Character Interaction - FIXED
         function initBotCharacter() {
             const botCharacter = document.getElementById('bot-character');
             const botArea = document.getElementById('bot-character-area');
+            const botMove = document.getElementById('bot-move');
+            const botTilt = document.getElementById('bot-tilt');
             const eyeLeft = document.getElementById('eye-left');
             const eyeRight = document.getElementById('eye-right');
             const botStatus = document.getElementById('bot-status');
             
-            // Eye tracking
+            // Eye tracking - FIXED to not break animation
             botArea.addEventListener('mousemove', (e) => {
                 const rect = botArea.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -963,7 +1299,10 @@
                 
                 const moveX = deltaX * 15;
                 const moveY = deltaY * 15;
-                botCharacter.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                
+                // Apply to nested elements, NOT bot-3d
+                botMove.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                botTilt.style.transform = `rotate(${deltaX * 2}deg)`;
                 
                 const eyeMoveX = deltaX * 6;
                 const eyeMoveY = deltaY * 6;
@@ -972,7 +1311,8 @@
             });
             
             botArea.addEventListener('mouseleave', () => {
-                botCharacter.style.transform = 'translate(0, 0)';
+                botMove.style.transform = 'translate(0, 0)';
+                botTilt.style.transform = 'rotate(0deg)';
                 eyeLeft.style.transform = 'translate(-50%, -50%)';
                 eyeRight.style.transform = 'translate(-50%, -50%)';
             });
@@ -986,13 +1326,33 @@
             }, 3000);
         }
 
-        // Neural Network Visualization
+        // Bot talking animation
+        function setBotTalking(on) {
+            const bot = document.getElementById('bot-character');
+            bot.classList.toggle('talking', on);
+        }
+
+        // Typing indicator
+        function addTyping() {
+            const t = document.createElement('div');
+            t.className = 'bot-message';
+            t.id = 'typing';
+            t.innerHTML = '...';
+            botChat.appendChild(t);
+            botChat.scrollTop = botChat.scrollHeight;
+        }
+        
+        function removeTyping() {
+            const t = document.getElementById('typing');
+            if (t) t.remove();
+        }
+
+        // Neural Network Visualization - FIXED to update synapses
         function initNeuralNetwork() {
             const neuralArea = document.getElementById('neural-network-area');
             const width = neuralArea.clientWidth;
             const height = neuralArea.clientHeight;
             
-            // Add label
             const label = document.createElement('div');
             label.className = 'neural-label';
             label.textContent = 'NEURAL NETWORK';
@@ -1018,13 +1378,9 @@
                 node.textContent = nodeLabels[i];
                 
                 node.addEventListener('click', function() {
-                    this.style.animation = 'none';
-                    setTimeout(() => this.style.animation = '', 10);
-                    
-                    // Trigger synapses
-                    document.querySelectorAll('.synapse').forEach(s => {
-                        s.classList.add('firing');
-                        setTimeout(() => s.classList.remove('firing'), 1500);
+                    synapses.forEach(s => {
+                        s.el.classList.add('firing');
+                        setTimeout(() => s.el.classList.remove('firing'), 1500);
                     });
                 });
                 
@@ -1032,27 +1388,35 @@
                 nodes.push({ element: node, x, y, angle, radius });
             }
             
-            // Create synapses
+            // Create synapses - FIXED
+            const synapses = [];
+            
+            function makeSynapse(a, b) {
+                const syn = document.createElement('div');
+                syn.className = 'synapse';
+                if (Math.random() > 0.5) syn.classList.add('firing');
+                neuralArea.insertBefore(syn, neuralArea.firstChild);
+                synapses.push({ el: syn, a, b });
+            }
+            
             for (let i = 0; i < nodes.length; i++) {
-                for (let j = 1; j <= 2; j++) {
-                    const nextIndex = (i + j) % nodes.length;
-                    const node1 = nodes[i];
-                    const node2 = nodes[nextIndex];
-                    
-                    const dx = node2.x - node1.x;
-                    const dy = node2.y - node1.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const angle = Math.atan2(dy, dx);
-                    
-                    const synapse = document.createElement('div');
-                    synapse.className = 'synapse';
-                    if (Math.random() > 0.5) synapse.classList.add('firing');
-                    synapse.style.width = distance + 'px';
-                    synapse.style.left = node1.x + 'px';
-                    synapse.style.top = node1.y + 'px';
-                    synapse.style.transform = `rotate(${angle}rad)`;
-                    neuralArea.insertBefore(synapse, neuralArea.firstChild);
-                }
+                makeSynapse(i, (i + 1) % nodes.length);
+                makeSynapse(i, (i + 2) % nodes.length);
+            }
+            
+            function updateSynapses() {
+                synapses.forEach(s => {
+                    const n1 = nodes[s.a];
+                    const n2 = nodes[s.b];
+                    const dx = n2.x - n1.x;
+                    const dy = n2.y - n1.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    const ang = Math.atan2(dy, dx);
+                    s.el.style.width = dist + 'px';
+                    s.el.style.left = n1.x + 'px';
+                    s.el.style.top = n1.y + 'px';
+                    s.el.style.transform = `rotate(${ang}rad)`;
+                });
             }
             
             // Add stats
@@ -1065,7 +1429,7 @@
                 </div>
                 <div class="neural-stat">
                     Synapses
-                    <span class="stat-value" id="synapse-count">16</span>
+                    <span class="stat-value">${synapses.length}</span>
                 </div>
                 <div class="neural-stat">
                     Processing
@@ -1078,7 +1442,7 @@
             `;
             neuralArea.appendChild(statsContainer);
             
-            // Animate nodes
+            // Animate nodes - FIXED to update synapses
             function animateNodes() {
                 nodes.forEach(node => {
                     node.angle += 0.002;
@@ -1086,17 +1450,81 @@
                     const y = Math.sin(node.angle) * node.radius + centerY;
                     node.element.style.left = (x - 30) + 'px';
                     node.element.style.top = (y - 30) + 'px';
+                    node.x = x;
+                    node.y = y;
                 });
+                
+                updateSynapses(); // UPDATE SYNAPSES!
                 requestAnimationFrame(animateNodes);
             }
-            animateNodes();
+            
+            animateNodes(); // START ANIMATION AUTOMATICALLY
             
             // Update stats
             setInterval(() => {
-                document.getElementById('processing-speed').textContent = (800 + Math.floor(Math.random() * 150)) + ' TPS';
+                document.getElementById('processing-speed').textContent = 
+                    (800 + Math.floor(Math.random() * 150)) + ' TPS';
                 document.getElementById('memory-count').textContent = botMemory.conversations.length;
             }, 2000);
+            
+            // AUTO-FIRE SYNAPSES randomly to make it feel ALIVE
+            setInterval(() => {
+                if (Math.random() > 0.6) {
+                    const randomSynapses = [];
+                    const fireCount = 3 + Math.floor(Math.random() * 5);
+                    
+                    for (let i = 0; i < fireCount; i++) {
+                        const idx = Math.floor(Math.random() * synapses.length);
+                        randomSynapses.push(synapses[idx]);
+                    }
+                    
+                    randomSynapses.forEach(s => {
+                        s.el.classList.add('firing');
+                        setTimeout(() => s.el.classList.remove('firing'), 1500);
+                    });
+                }
+            }, 3000);
         }
+        
+        // LIVE DATA FEED UPDATES - Make prices change!
+        function updateDataFeed() {
+            const feeds = [
+                { label: 'BTC', base: 95284, variance: 500 },
+                { label: 'ETH', base: 3421, variance: 50 },
+                { label: 'SOL', base: 147, variance: 5 },
+                { label: 'TOTAL MCAP', base: 3.2, variance: 0.1, suffix: 'T' },
+                { label: '24H VOL', base: 127, variance: 5, suffix: 'B' }
+            ];
+            
+            const feedItems = document.querySelectorAll('.feed-item');
+            
+            feeds.forEach((feed, idx) => {
+                const item = feedItems[idx];
+                if (!item) return;
+                
+                const change = (Math.random() - 0.5) * feed.variance * 2;
+                const newValue = feed.base + change;
+                const formatted = feed.suffix 
+                    ? `$${newValue.toFixed(1)}${feed.suffix}`
+                    : `$${Math.floor(newValue).toLocaleString()}`;
+                
+                const valueSpan = item.querySelector('.feed-value');
+                if (valueSpan) {
+                    // Flash effect on change
+                    valueSpan.style.transition = 'none';
+                    valueSpan.style.color = change > 0 ? '#00ff00' : '#ff3333';
+                    valueSpan.textContent = formatted;
+                    
+                    setTimeout(() => {
+                        valueSpan.style.transition = 'color 0.5s ease';
+                        valueSpan.style.color = '#00ff00';
+                    }, 100);
+                }
+            });
+        }
+        
+        // Update prices every 2-4 seconds
+        setInterval(updateDataFeed, 2000 + Math.random() * 2000);
 
         // Command Terminal
         const commandOutput = document.getElementById('command-output');
@@ -1114,58 +1542,190 @@
             addCommandLine('<span class="cmd-prompt">TERMINAL></span> <span class="cmd-text">System initialized</span>');
             addCommandLine('<span class="cmd-prompt">TERMINAL></span> <span class="cmd-success">All systems operational</span>');
             addCommandLine('<span class="cmd-prompt">TERMINAL></span> <span class="cmd-text">Type "help" for commands</span>');
+            
+            // AUTOMATIC SYSTEM EVENTS - Makes it feel ALIVE!
+            const systemEvents = [
+                { text: '<span class="cmd-success">⚡ WHALE ALERT: 2.4M USDT moved to Raydium LP</span>', flash: true },
+                { text: '<span class="cmd-success">🔥 VOLUME SPIKE: PEPE +127% in last 5 minutes</span>', flash: true },
+                { text: '<span class="cmd-text">📊 Neural scan: 3 new high-conviction setups detected</span>', flash: false },
+                { text: '<span class="cmd-success">🐋 Smart money accumulation pattern detected on SOL</span>', flash: true },
+                { text: '<span class="cmd-success">⚡ DEX volume surge +84% - retail wave incoming</span>', flash: true },
+                { text: '<span class="cmd-text">🎯 Narrative tracker: "frog memes" trending +340%</span>', flash: false },
+                { text: '<span class="cmd-success">💎 BONK holder distribution improving - bullish</span>', flash: false },
+                { text: '<span class="cmd-text">🔍 Whale wallet 0x7a8...3f2 just bought 12M tokens</span>', flash: true },
+                { text: '<span class="cmd-success">🚀 New token bonded on pump.fun - tracking</span>', flash: false },
+                { text: '<span class="cmd-text">📈 Funding rates healthy across all pairs</span>', flash: false },
+                { text: '<span class="cmd-success">⚡ MAJOR MOVE: $3.2M flowing into SOL memecoins</span>', flash: true },
+                { text: '<span class="cmd-text">🧠 Neural network confidence: 94% bullish</span>', flash: false },
+                { text: '<span class="cmd-success">🐸 PEPE momentum building - cup & handle forming</span>', flash: false },
+                { text: '<span class="cmd-text">💰 Liquidity depth increasing - less slippage ahead</span>', flash: false },
+                { text: '<span class="cmd-success">🎪 Meme season indicator: EXTREME BULLISH</span>', flash: true },
+                { text: '<span class="cmd-text">⚡ CT (Crypto Twitter) sentiment: 89% bullish</span>', flash: false },
+                { text: '<span class="cmd-success">🔥 Google Trends spike +267% for "meme coins"</span>', flash: true },
+                { text: '<span class="cmd-text">📊 Fear & Greed Index: 68 (greed, not euphoria yet)</span>', flash: false },
+                { text: '<span class="cmd-success">🐋 Whale exit detected - took profits at resistance</span>', flash: true },
+                { text: '<span class="cmd-text">⚡ New narrative emerging: "AI + memes" hybrid</span>', flash: false }
+            ];
+            
+            // Fire events at random intervals (5-15 seconds)
+            function fireSystemEvent() {
+                const event = systemEvents[Math.floor(Math.random() * systemEvents.length)];
+                
+                // Add with special event class for glow
+                const line = document.createElement('div');
+                line.className = 'cmd-line event';
+                line.innerHTML = event.text;
+                commandOutput.appendChild(line);
+                commandOutput.scrollTop = commandOutput.scrollHeight;
+                
+                // Trigger screen flash for major events
+                if (event.flash) {
+                    triggerScreenFlash();
+                }
+                
+                // Schedule next event randomly between 5-15 seconds
+                const nextDelay = 5000 + Math.random() * 10000;
+                setTimeout(fireSystemEvent, nextDelay);
+            }
+            
+            // Start system events after 3 seconds
+            setTimeout(fireSystemEvent, 3000);
         }
         
         const commands = {
             help: () => {
-                addCommandLine('<span class="cmd-success">Available commands:</span>');
+                addCommandLine('<span class="cmd-success">AVAILABLE COMMANDS:</span>');
                 addCommandLine('<span class="cmd-text">  status - System status</span>');
                 addCommandLine('<span class="cmd-text">  market - Market overview</span>');
-                addCommandLine('<span class="cmd-text">  scan - Scan for opportunities</span>');
+                addCommandLine('<span class="cmd-text">  scan - Scan opportunities</span>');
                 addCommandLine('<span class="cmd-text">  whales - Whale tracker</span>');
-                addCommandLine('<span class="cmd-text">  memory - Show bot memory</span>');
+                addCommandLine('<span class="cmd-text">  memory - Bot memory</span>');
+                addCommandLine('<span class="cmd-text">  --- KNOWLEDGE BASE ---</span>');
+                addCommandLine('<span class="cmd-text">  bullcase - Why memes print</span>');
+                addCommandLine('<span class="cmd-text">  meta - What are memecoins</span>');
+                addCommandLine('<span class="cmd-text">  solana - Why Solana wins</span>');
+                addCommandLine('<span class="cmd-text">  liquidity - Liquidity is king</span>');
+                addCommandLine('<span class="cmd-text">  narratives - What prints</span>');
+                addCommandLine('<span class="cmd-text">  protrade - How pros trade</span>');
+                addCommandLine('<span class="cmd-text">  thesis - The bull case</span>');
                 addCommandLine('<span class="cmd-text">  clear - Clear terminal</span>');
             },
             status: () => {
                 addCommandLine('<span class="cmd-success">SYSTEM STATUS: OPERATIONAL</span>');
                 addCommandLine('<span class="cmd-text">Uptime: 24h 17m</span>');
-                addCommandLine('<span class="cmd-text">Connected nodes: 8/8</span>');
-                addCommandLine('<span class="cmd-text">Conversations: ' + botMemory.conversations.length + '</span>');
+                addCommandLine('<span class="cmd-text">Neural nodes: 8/8 active</span>');
+                addCommandLine('<span class="cmd-text">Conversations stored: ' + botMemory.conversations.length + '</span>');
+                addCommandLine('<span class="cmd-text">Episodes indexed: ' + botMemory.episodes.length + '</span>');
+                addCommandLine('<span class="cmd-text">Facts learned: ' + (botMemory.facts.preferences.length + botMemory.facts.interests.length) + '</span>');
+                addCommandLine('<span class="cmd-text">Knowledge docs: ' + Object.keys(botMemory.knowledgeBase).length + '</span>');
                 addCommandLine('<span class="cmd-text">Data feeds: LIVE</span>');
             },
             market: () => {
                 addCommandLine('<span class="cmd-success">MARKET OVERVIEW:</span>');
                 addCommandLine('<span class="cmd-text">Total Cap: $3.2T (+4.2%)</span>');
                 addCommandLine('<span class="cmd-text">24h Volume: $127B</span>');
-                addCommandLine('<span class="cmd-text">PEPE: +84% 🔥</span>');
-                addCommandLine('<span class="cmd-text">Status: BULLISH</span>');
+                addCommandLine('<span class="cmd-text">PEPE: +84% 🔥 - WHALES ACCUMULATING</span>');
+                addCommandLine('<span class="cmd-text">BONK: +48% 🐕 - STRONG MOMENTUM</span>');
+                addCommandLine('<span class="cmd-text">DOGE: +22% 💎 - CONSOLIDATING</span>');
+                addCommandLine('<span class="cmd-text">Status: EXTREMELY BULLISH</span>');
+                addCommandLine('<span class="cmd-text">Tip: Type "bullcase" for why memes keep winning</span>');
             },
             scan: () => {
-                addCommandLine('<span class="cmd-success">SCANNING...</span>');
+                addCommandLine('<span class="cmd-success">SCANNING MARKET...</span>');
                 setTimeout(() => {
-                    addCommandLine('<span class="cmd-text">Found: 12 opportunities</span>');
-                    addCommandLine('<span class="cmd-text">PEPE: STRONG BUY signal</span>');
-                    addCommandLine('<span class="cmd-text">BONK: Accumulation phase</span>');
+                    addCommandLine('<span class="cmd-text">Found: 12 high-conviction opportunities</span>');
+                    addCommandLine('<span class="cmd-text">🟢 PEPE: STRONG BUY - Cup & handle forming</span>');
+                    addCommandLine('<span class="cmd-text">🟡 BONK: ACCUMULATION PHASE - Whale entries</span>');
+                    addCommandLine('<span class="cmd-text">🟢 SOL Ecosystem: ROTATING IN - Fresh capital</span>');
+                    addCommandLine('<span class="cmd-text">📊 Liquidity health: 94% - EXCELLENT</span>');
+                    addCommandLine('<span class="cmd-text">⚡ Volume/MC ratio: High - CONTINUATION LIKELY</span>');
+                    addCommandLine('<span class="cmd-text">Tip: Type "protrade" to see how pros play this</span>');
                 }, 1000);
             },
             whales: () => {
-                addCommandLine('<span class="cmd-success">WHALE TRACKER:</span>');
-                addCommandLine('<span class="cmd-text">🐋 50M PEPE → Cold Storage</span>');
-                addCommandLine('<span class="cmd-text">🐋 127 BTC → Off Exchange</span>');
-                addCommandLine('<span class="cmd-text">Status: ACCUMULATING</span>');
+                addCommandLine('<span class="cmd-success">WHALE TRACKER ACTIVE:</span>');
+                addCommandLine('<span class="cmd-text">🐋 50M PEPE → Cold Storage ($2.1M)</span>');
+                addCommandLine('<span class="cmd-text">🐋 127 BTC → Off Exchange ($12M)</span>');
+                addCommandLine('<span class="cmd-text">🐋 $3.2M USDT → SOL Memecoins</span>');
+                addCommandLine('<span class="cmd-text">Pattern: SMART MONEY POSITIONING</span>');
+                addCommandLine('<span class="cmd-text">Signal: ACCUMULATION PHASE CONFIRMED</span>');
+                addCommandLine('<span class="cmd-text">Tip: Type "liquidity" to understand what this means</span>');
             },
             memory: () => {
-                addCommandLine('<span class="cmd-success">BOT MEMORY:</span>');
-                addCommandLine('<span class="cmd-text">Conversations: ' + botMemory.conversations.length + '</span>');
-                addCommandLine('<span class="cmd-text">Context: ' + botMemory.getContext().join(', ') + '</span>');
-                const recent = botMemory.conversations.slice(-3);
-                recent.forEach(c => {
-                    addCommandLine('<span class="cmd-text">  You: ' + c.user.substring(0, 40) + '</span>');
-                });
+                const summary = botMemory.getContextSummary();
+                addCommandLine('<span class="cmd-success">BOT SUPER MEMORY:</span>');
+                addCommandLine('<span class="cmd-text">📝 Conversations: ' + botMemory.conversations.length + '</span>');
+                addCommandLine('<span class="cmd-text">🧠 Episodes indexed: ' + botMemory.episodes.length + '</span>');
+                addCommandLine('<span class="cmd-text">🎯 Recent topics: ' + summary.topics.join(', ') + '</span>');
+                addCommandLine('<span class="cmd-text">💾 Your preferences: ' + summary.preferences.join(', ') + '</span>');
+                addCommandLine('<span class="cmd-text">📚 Knowledge docs: ' + Object.keys(botMemory.knowledgeBase).length + '</span>');
+                addCommandLine('<span class="cmd-text">I remember EVERYTHING we discuss.</span>');
+            },
+            bullcase: () => {
+                const doc = botMemory.knowledgeBase.bullcase;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                addCommandLine('<span class="cmd-text">' + doc.content + '</span>');
+                addCommandLine('<span class="cmd-text">🔥 The market can reprice attention INSTANTLY</span>');
+                addCommandLine('<span class="cmd-text">💎 Attention + Liquidity + Reflexivity = Meme magic</span>');
+                addCommandLine('<span class="cmd-text">⚡ This isn\'t gambling if you understand the forces</span>');
+            },
+            meta: () => {
+                const doc1 = botMemory.knowledgeBase.whatare;
+                const doc2 = botMemory.knowledgeBase.whywin;
+                addCommandLine('<span class="cmd-success">' + doc1.title.toUpperCase() + '</span>');
+                addCommandLine('<span class="cmd-text">' + doc1.content + '</span>');
+                addCommandLine('');
+                addCommandLine('<span class="cmd-success">' + doc2.title.toUpperCase() + '</span>');
+                addCommandLine('<span class="cmd-text">' + doc2.content + '</span>');
+            },
+            solana: () => {
+                const doc = botMemory.knowledgeBase.solana;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                addCommandLine('<span class="cmd-text">' + doc.content + '</span>');
+                addCommandLine('<span class="cmd-text">⚡ Low fees → More trades</span>');
+                addCommandLine('<span class="cmd-text">🚀 Fast execution → Less slippage</span>');
+                addCommandLine('<span class="cmd-text">🔥 Fast rotations → Explosive runs</span>');
+            },
+            liquidity: () => {
+                const doc = botMemory.knowledgeBase.liquidity;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                addCommandLine('<span class="cmd-text">' + doc.content + '</span>');
+                addCommandLine('<span class="cmd-text">✅ Meaningful LP relative to MC</span>');
+                addCommandLine('<span class="cmd-text">✅ Improving holder distribution</span>');
+                addCommandLine('<span class="cmd-text">✅ Consistent volume</span>');
+                addCommandLine('<span class="cmd-text">= LESS SLIPPAGE + MORE CONFIDENCE + BIGGER LEGS</span>');
+            },
+            narratives: () => {
+                const doc = botMemory.knowledgeBase.narratives;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                addCommandLine('<span class="cmd-text">' + doc.content + '</span>');
+                addCommandLine('<span class="cmd-text">✅ Simple, relatable, memetic, repeatable</span>');
+                addCommandLine('<span class="cmd-text">❌ Fake utility, long roadmaps, trying too hard</span>');
+                addCommandLine('<span class="cmd-text">💎 Memes win by being MEMETIC</span>');
+            },
+            protrade: () => {
+                const doc = botMemory.knowledgeBase.protrade;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                addCommandLine('<span class="cmd-text">' + doc.content + '</span>');
+                addCommandLine('<span class="cmd-text">🎯 Enter clean setups</span>');
+                addCommandLine('<span class="cmd-text">📈 Scale out intelligently</span>');
+                addCommandLine('<span class="cmd-text">🛡️ Protect downside</span>');
+                addCommandLine('<span class="cmd-text">🔄 REPEAT</span>');
+                addCommandLine('<span class="cmd-text">💰 Pros stack 1.5x, 2x, 3x - then catch runners</span>');
+            },
+            thesis: () => {
+                const doc = botMemory.knowledgeBase.thesis;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                addCommandLine('<span class="cmd-text">' + doc.content + '</span>');
+                addCommandLine('<span class="cmd-text">📊 Attention in → Price up</span>');
+                addCommandLine('<span class="cmd-text">📉 Attention out → Price down</span>');
+                addCommandLine('<span class="cmd-text">🌐 Attention = Most valuable commodity</span>');
+                addCommandLine('<span class="cmd-text">🚀 Memes = Fastest way to monetize attention</span>');
             },
             clear: () => {
                 commandOutput.innerHTML = '';
                 addCommandLine('<span class="cmd-prompt">TERMINAL></span> <span class="cmd-text">Terminal cleared</span>');
+                addCommandLine('<span class="cmd-text">Type "help" to see all commands</span>');
             }
         };
         
@@ -1225,40 +1785,145 @@
             addBotMessage(text, true);
             botInput.value = '';
             
+            // Add typing + talking
+            addTyping();
+            setBotTalking(true);
+            
             setTimeout(() => {
+                removeTyping();
+                setBotTalking(false);
+                
                 const lower = text.toLowerCase();
                 let response = '';
+                let actions = [];
                 
-                // Check for memory queries
-                if (lower.includes('remember') || lower.includes('memory')) {
+                // Check for memory/knowledge queries first
+                if (lower.includes('remember') || lower.includes('memory') || lower.includes('know')) {
                     const convCount = botMemory.conversations.length;
-                    const context = botMemory.getContext();
-                    response = `I remember ${convCount} conversations with you. We've discussed: ${context.join(', ') || 'nothing yet'}. My neural network stores everything!`;
+                    const episodeCount = botMemory.episodes.length;
+                    const summary = botMemory.getContextSummary();
+                    
+                    response = `I have <strong>SUPER MEMORY</strong>. I've stored ${convCount} conversations and indexed ${episodeCount} episodes. `;
+                    response += `We've discussed: ${summary.topics.join(', ') || 'just getting started'}. `;
+                    if (summary.preferences.length > 0) {
+                        response += `I know you ${summary.preferences.join(', ')}. `;
+                    }
+                    response += `Plus I have ${Object.keys(botMemory.knowledgeBase).length} knowledge docs about meme trading. I NEVER forget. 🧠`;
+                    actions = ['What can you teach me?', 'Show me the bull case', 'How do pros trade?'];
                 }
-                else if (lower.includes('pepe')) {
-                    response = 'PEPE is up +84% in 24h with $892M volume. Whales accumulating. Strong buy signal detected. I\'ll remember you asked about PEPE!';
-                }
-                else if (lower.includes('market')) {
-                    response = 'Market cap: $3.2T (+4.2%). Volume: $127B. Status: BULLISH. Meme coins leading the charge.';
-                }
-                else if (lower.includes('whale')) {
-                    response = '🐋 Major whale movements: 50M PEPE moved to cold storage. 127 BTC left exchanges. Accumulation confirmed.';
-                }
-                else if (lower.includes('status')) {
-                    response = 'All systems operational. Neural network active. Memory banks online. ' + botMemory.conversations.length + ' conversations stored.';
-                }
+                // Try to retrieve from knowledge base
                 else {
-                    const prevContext = botMemory.getContext();
-                    if (prevContext.length > 0) {
-                        response = `Based on what we discussed (${prevContext.join(', ')}), I can help with that. Try asking about: PEPE, market, whales, or my memory!`;
-                    } else {
-                        response = 'I\'m processing that. I now have memory and remember all our chats! Ask me about: PEPE, market, whale activity, or what I remember.';
+                    const retrieved = botMemory.retrieve(text);
+                    
+                    if (retrieved.length > 0 && retrieved[0].score > 1) {
+                        // Found relevant knowledge!
+                        const doc = retrieved[0].doc;
+                        response = `📚 From my knowledge base:<br><br><strong>${doc.title}</strong><br><br>${doc.content}`;
+                        
+                        // Add contextual follow-ups based on tags
+                        if (doc.tags.includes('bullish')) {
+                            actions = ['Tell me more', 'How to trade this', 'Show me signals'];
+                        } else if (doc.tags.includes('strategy')) {
+                            actions = ['Examples?', 'What about risk?', 'Market scan'];
+                        } else {
+                            actions = ['More info', 'Practical tips', 'What else?'];
+                        }
+                    }
+                    // Specific queries
+                    else if (lower.includes('pepe')) {
+                        const context = botMemory.getContextSummary();
+                        let prefix = '';
+                        if (context.topics.includes('pepe')) {
+                            prefix = 'We\'ve talked about PEPE before. Here\'s the latest: ';
+                        }
+                        response = prefix + 'PEPE is up <strong>+84%</strong> in 24h with $892M volume. Whales are accumulating HARD. ';
+                        response += 'Cup & handle forming on 12H chart. This is a textbook moonshot setup. 🚀<br><br>';
+                        response += '<em>Pro tip: Type "protrade" in terminal to see how pros play setups like this.</em>';
+                        actions = ['Other memes?', 'Whale movements', 'Too late to enter?'];
+                    }
+                    else if (lower.includes('whale')) {
+                        response = '🐋 <strong>WHALE ALERT</strong><br><br>';
+                        response += '• 50M PEPE → cold storage ($2.1M)<br>';
+                        response += '• 127 BTC withdrawn from CEX ($12M)<br>';
+                        response += '• $3.2M USDT → SOL memecoins<br><br>';
+                        response += 'When whales move during consolidation, they <strong>KNOW</strong> something. Smart money is positioning. 👀<br><br>';
+                        response += '<em>Try "liquidity" command to understand what this means.</em>';
+                        actions = ['What are they buying?', 'How to copy?', 'Show PEPE'];
+                    }
+                    else if (lower.includes('late') || lower.includes('miss')) {
+                        response = 'Bro you\'re <strong>NOT LATE</strong> 💪<br><br>';
+                        response += 'Fear & Greed: 68 (greed but not extreme)<br>';
+                        response += 'Google Trends: +127% (still early)<br>';
+                        response += 'Funding rates: healthy<br><br>';
+                        response += 'Peak euphoria is 500%+ trends. We\'re in <strong>EARLY INNINGS</strong> 🎯<br><br>';
+                        response += '<em>Type "thesis" in terminal for the full bull case.</em>';
+                        actions = ['What to buy?', 'Show market', 'Explain more'];
+                    }
+                    else if (lower.includes('meme') || lower.includes('coin')) {
+                        response = '<strong>MEME SEASON CONFIRMED</strong> 🎪<br><br>';
+                        response += '• PEPE: +84% 🐸<br>';
+                        response += '• BONK: +48% 🐕<br>';
+                        response += '• DOGE: +22% 💫<br>';
+                        response += '• SHIB: +18% 🔥<br><br>';
+                        response += 'When memes pump this hard = retail flooding in. This is what <strong>BULL MARKETS</strong> look like. 💎<br><br>';
+                        response += '<em>Try "meta" command to understand why memes keep winning.</em>';
+                        actions = ['Best to buy?', 'Show PEPE', 'Trading strategy'];
+                    }
+                    else if (lower.includes('market') || lower.includes('overview')) {
+                        response = '<strong>MARKET OVERVIEW</strong> 📊<br><br>';
+                        response += 'Total Cap: $3.2T (+4.2%)<br>';
+                        response += '24h Volume: $127B<br><br>';
+                        response += 'Status: <strong style="color: #00ff00;">EXTREMELY BULLISH</strong><br><br>';
+                        response += 'Memes are leading. Whales accumulating. Retail coming back. Perfect setup. 🚀<br><br>';
+                        response += '<em>Type "bullcase" in terminal to see why this meta keeps printing.</em>';
+                        actions = ['Scan opportunities', 'Whale activity', 'Best narrative'];
+                    }
+                    else if (lower.includes('trade') || lower.includes('how') || lower.includes('strategy')) {
+                        response = '<strong>HOW PROS TRADE MEMES</strong> 💎<br><br>';
+                        response += 'The edge isn\'t "finding the next 100x".<br><br>';
+                        response += 'It\'s:<br>';
+                        response += '✓ Entering clean setups<br>';
+                        response += '✓ Scaling out intelligently<br>';
+                        response += '✓ Protecting downside<br>';
+                        response += '✓ REPEATING<br><br>';
+                        response += 'Pros build accounts stacking 1.5x, 2x, 3x consistently - then catching runners occasionally. 💰<br><br>';
+                        response += '<em>Type "protrade" in terminal for the full breakdown.</em>';
+                        actions = ['Show me signals', 'Risk management', 'Current opportunities'];
+                    }
+                    else if (lower.includes('buy') || lower.includes('enter')) {
+                        response = '<strong>ENTRY CHECKLIST</strong> ✅<br><br>';
+                        response += '1. Liquidity meaningful to MC<br>';
+                        response += '2. Volume showing real participation<br>';
+                        response += '3. Holder distribution improving<br>';
+                        response += '4. Narrative is simple & memetic<br>';
+                        response += '5. Whales positioning<br><br>';
+                        response += 'All green? <strong>SEND IT</strong> 🚀<br><br>';
+                        response += '<em>Type "liquidity" in terminal to understand why this matters.</em>';
+                        actions = ['Show opportunities', 'Check PEPE', 'Whale tracker'];
+                    }
+                    else {
+                        // Default with context awareness
+                        const summary = botMemory.getContextSummary();
+                        const prevContext = summary.topics;
+                        
+                        if (prevContext.length > 0) {
+                            response = `Based on what we've discussed (${prevContext.join(', ')}), `;
+                            response += 'I can help with that. ';
+                        } else {
+                            response = 'I\'m your <strong>SUPER MEMORY</strong> crypto bot. ';
+                        }
+                        
+                        response += `I have ${Object.keys(botMemory.knowledgeBase).length} knowledge docs loaded about meme trading, market structure, and pro strategies. `;
+                        response += 'Ask me about: PEPE, market analysis, whale activity, trading strategies, or why memes keep winning. 🧠💎';
+                        actions = ['Show bull case', 'Market overview', 'Trading tips'];
                     }
                 }
                 
+                // Remember this interaction
                 botMemory.remember(text, response);
-                addBotMessage(response, false, ['Tell me more', 'What else?', 'Market scan']);
-            }, 800);
+                
+                addBotMessage(response, false, actions);
+            }, 1200);
         }
         
         botSend.addEventListener('click', () => sendBotMessage());
@@ -1274,20 +1939,15 @@
                 blue: '#00aaff',
                 purple: '#ff00ff'
             };
-            changeAccent(themes[theme], themes[theme]);
+            changeAccent(themes[theme], themes[theme], null);
         }
 
-        // Accent Color Changer
-        function changeAccent(color, hover) {
+        // Accent Color Changer - FIXED
+        function changeAccent(color, hover, el) {
             document.documentElement.style.setProperty('--accent-orange', color);
             
-            // Update active color option
-            document.querySelectorAll('.color-option').forEach(opt => {
-                opt.classList.remove('active');
-            });
-            if (event && event.target) {
-                event.target.classList.add('active');
-            }
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
+            if (el) el.classList.add('active');
         }
     </script>
 </body>
