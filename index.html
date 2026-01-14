@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEURAL V1.0 - Crypto Intelligence System</title>
+    <title>TERMINAL - Crypto Intelligence System</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap');
         
         * {
             margin: 0;
@@ -14,313 +14,481 @@
         }
         
         :root {
-            --bg: #f4eee1;
-            --bg-dark: #e4dfd2;
-            --border: #2b2f2b;
-            --text: #0a0f0a;
-            --text-dim: #5a5f5a;
-            --accent-green: #7ac396;
-            --accent-teal: #6eb5a0;
-            --accent-coral: #d47d7d;
-            --shadow: rgba(0, 0, 0, 0.15);
+            --bg: #000000;
+            --panel-bg: #0a0a0a;
+            --border: #1a1a1a;
+            --text: #ffffff;
+            --text-dim: #666666;
+            --accent-orange: #ff9500;
+            --accent-green: #00ff00;
+            --accent-red: #ff0000;
+            --accent-blue: #00aaff;
         }
         
         body {
-            font-family: 'Space Mono', monospace;
+            font-family: 'Roboto Mono', monospace;
             background: var(--bg);
             color: var(--text);
             overflow: hidden;
-            cursor: none;
         }
         
-        /* Matrix rain overlay */
-        #matrix-canvas {
+        /* Welcome Screen */
+        #welcome-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            opacity: 0.03;
-            z-index: 0;
-            pointer-events: none;
-        }
-        
-        /* Scanlines */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.03),
-                rgba(0, 0, 0, 0.03) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-            z-index: 10;
-            animation: scanlines 8s linear infinite;
-        }
-        
-        @keyframes scanlines {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(10px); }
-        }
-        
-        /* Custom cursor */
-        #cursor {
-            position: fixed;
-            width: 20px;
-            height: 20px;
-            border: 3px solid var(--accent-teal);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10000;
-            transition: all 0.1s ease;
-            box-shadow: 0 0 15px var(--accent-teal);
-        }
-        
-        #cursor::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 6px;
-            height: 6px;
-            background: var(--accent-teal);
-            border-radius: 50%;
-        }
-        
-        /* Header */
-        #header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: var(--bg-dark);
-            border-bottom: 4px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            z-index: 1000;
-            box-shadow: 0 4px 10px var(--shadow);
-        }
-        
-        .logo {
-            font-size: 1.1rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-transform: uppercase;
-        }
-        
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            animation: spin 20s linear infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .header-stats {
-            display: flex;
-            gap: 20px;
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-        }
-        
-        .stat-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-green);
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 5px;
-            animation: pulse 2s ease-in-out infinite;
-            box-shadow: 0 0 8px var(--accent-green);
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-        
-        /* Main layout */
-        #main {
-            margin-top: 60px;
-            display: grid;
-            grid-template-columns: 320px 1fr 380px;
-            height: calc(100vh - 90px);
-            gap: 0;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .panel {
-            background: var(--bg-dark);
+            background: #000;
             display: flex;
             flex-direction: column;
-        }
-        
-        .panel-header {
-            padding: 12px 16px;
-            background: var(--border);
-            color: var(--bg);
-            font-weight: 700;
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border-bottom: 3px solid var(--border);
-        }
-        
-        /* Left - Terminal with auto-typing */
-        #left-panel {
-            border-right: 4px solid var(--border);
-        }
-        
-        #terminal-output {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.75rem;
-            line-height: 1.6;
-        }
-        
-        #terminal-output::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        #terminal-output::-webkit-scrollbar-thumb {
-            background: var(--border);
-        }
-        
-        .code-line {
-            animation: fadeIn 0.2s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-5px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        .typing-cursor {
-            display: inline-block;
-            width: 8px;
-            height: 14px;
-            background: var(--accent-teal);
-            margin-left: 2px;
-            animation: blink 0.8s step-end infinite;
-        }
-        
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-        
-        .keyword { color: var(--accent-coral); font-weight: 700; }
-        .string { color: var(--accent-teal); }
-        .comment { color: var(--text-dim); font-style: italic; }
-        
-        /* Center - Character + 3D Viz */
-        #center-panel {
-            border-right: 4px solid var(--border);
-            position: relative;
-        }
-        
-        #character-area {
-            height: 300px;
-            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-dark) 100%);
-            border-bottom: 4px solid var(--border);
-            display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+        
+        #welcome-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .welcome-logo {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+            margin-bottom: 20px;
+            letter-spacing: 10px;
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            margin-bottom: 50px;
+            letter-spacing: 3px;
+        }
+        
+        .loading-bar {
+            width: 400px;
+            height: 4px;
+            background: #1a1a1a;
+            margin-bottom: 30px;
             position: relative;
             overflow: hidden;
         }
         
-        .character-3d {
-            width: 180px;
-            height: 180px;
+        .loading-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--accent-orange);
+            width: 0%;
+            animation: loadProgress 2s ease-out forwards;
+        }
+        
+        @keyframes loadProgress {
+            to { width: 100%; }
+        }
+        
+        .enter-btn {
+            padding: 15px 50px;
+            background: transparent;
+            border: 2px solid var(--accent-orange);
+            color: var(--accent-orange);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 3px;
+            opacity: 0;
+            animation: fadeInBtn 0.5s ease 2s forwards;
+            transition: all 0.3s;
+        }
+        
+        @keyframes fadeInBtn {
+            to { opacity: 1; }
+        }
+        
+        .enter-btn:hover {
+            background: var(--accent-orange);
+            color: #000;
+        }
+        
+        /* Main Terminal */
+        #terminal-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            grid-template-rows: 50px 1fr;
+            height: 100vh;
+            gap: 1px;
+            background: var(--border);
+        }
+        
+        /* Top Bar */
+        #top-bar {
+            grid-column: 1 / -1;
+            background: var(--panel-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .terminal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+            letter-spacing: 5px;
+        }
+        
+        .top-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .color-theme-btn {
+            padding: 6px 15px;
+            background: transparent;
+            border: 1px solid var(--text-dim);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .color-theme-btn:hover {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Left Panel - Command Terminal */
+        #left-panel {
+            background: var(--panel-bg);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            max-height: calc(100vh - 50px); /* CRITICAL FIX */
+        }
+        
+        .panel-header {
+            padding: 10px 15px;
+            background: #0f0f0f;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            flex-shrink: 0; /* PREVENT SHRINKING */
+        }
+        
+        #command-output {
+            flex: 1;
+            overflow-y: scroll; /* CHANGED TO SCROLL */
+            padding: 15px;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            min-height: 0; /* CRITICAL FIX */
+        }
+        
+        #command-output::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        #command-output::-webkit-scrollbar-thumb {
+            background: #1a1a1a;
+        }
+        
+        .cmd-line {
+            margin-bottom: 5px;
+        }
+        
+        .cmd-prompt {
+            color: var(--accent-orange);
+        }
+        
+        .cmd-text {
+            color: var(--text-dim);
+        }
+        
+        .cmd-success {
+            color: var(--accent-green);
+        }
+        
+        .cmd-error {
+            color: var(--accent-red);
+        }
+        
+        #command-input-area {
+            padding: 12px 15px;
+            background: #0f0f0f;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0; /* PREVENT SHRINKING */
+        }
+        
+        #command-input {
+            flex: 1;
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 8px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.8rem;
+        }
+        
+        #command-input:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+        
+        /* Center Panel - Bot + Neural Network */
+        #center-panel {
+            background: var(--panel-bg);
+            display: grid;
+            grid-template-rows: 300px 1fr;
+            gap: 1px;
+        }
+        
+        /* Bot Character Area */
+        #bot-character-area {
+            background: 
+                radial-gradient(240px 240px at 50% 40%, rgba(255, 149, 0, 0.12), transparent 60%),
+                radial-gradient(320px 320px at 40% 60%, rgba(255, 149, 0, 0.08), transparent 60%),
+                var(--panel-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
-            transition: transform 0.1s ease-out;
+            border-bottom: 1px solid var(--border);
         }
         
-        .char-head {
-            width: 140px;
+        .platform {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 20px;
+            border-radius: 999px;
+            background: radial-gradient(100px 30px at 50% 30%, rgba(255, 149, 0, 0.15), transparent 60%),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 149, 0, 0.2);
+            opacity: 0.8;
+        }
+        
+        .bot-3d {
+            position: relative;
+            width: 200px;
+            height: 280px;
+            transform-origin: 50% 85%;
+            animation: idleBob 2.8s ease-in-out infinite;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+        
+        @keyframes idleBob {
+            0%, 100% { transform: translateY(0px) rotate(-0.6deg); }
+            50% { transform: translateY(-8px) rotate(0.8deg); }
+        }
+        
+        .bot-glow {
+            position: absolute;
+            inset: -30px;
+            background: radial-gradient(150px 150px at 50% 40%, rgba(255, 149, 0, 0.18), transparent 60%),
+                        radial-gradient(180px 180px at 40% 70%, rgba(255, 149, 0, 0.12), transparent 62%);
+            filter: blur(15px);
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .bot-head {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
             height: 140px;
-            background: linear-gradient(135deg, #9a9a9a, #6a6a6a);
+            border-radius: 60px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .bot-antenna {
             position: absolute;
-            top: 50%;
+            top: -15px;
             left: 50%;
-            transform: translate(-50%, -50%);
-            clip-path: polygon(20% 0%, 80% 0%, 100% 30%, 95% 70%, 70% 100%, 30% 100%, 5% 70%, 0% 30%);
-            box-shadow: 6px 6px 0 var(--shadow);
+            transform: translateX(-50%);
+            width: 8px;
+            height: 24px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04));
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .char-eye {
+        .bot-antenna::after {
+            content: "";
             position: absolute;
-            width: 45px;
-            height: 45px;
-            background: #000;
-            clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-            top: 35%;
-        }
-        
-        .char-eye.left { left: 20%; }
-        .char-eye.right { right: 20%; }
-        
-        .eye-inner {
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            background: var(--accent-teal);
-            top: 50%;
+            top: -10px;
             left: 50%;
-            transform: translate(-50%, -50%);
-            transition: transform 0.1s;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 14px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.1)),
+                        radial-gradient(circle at 50% 50%, var(--accent-orange), rgba(255, 149, 0, 0.1));
+            box-shadow: 0 0 15px var(--accent-orange);
+            animation: ping 2s ease-in-out infinite;
         }
         
-        .char-mouth {
+        @keyframes ping {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.95; }
+            50% { transform: translateX(-50%) scale(1.1); opacity: 0.7; }
+        }
+        
+        .bot-visor {
             position: absolute;
-            width: 50px;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 90px;
+            border-radius: 45px;
+            background: radial-gradient(100px 70px at 50% 20%, rgba(255, 149, 0, 0.12), transparent 65%),
+                        linear-gradient(180deg, rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.7));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            box-shadow: inset 0 2px 12px rgba(255, 149, 0, 0.2);
+            animation: visorGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes visorGlow {
+            0%, 100% { box-shadow: inset 0 2px 12px rgba(255, 149, 0, 0.2), 0 0 20px rgba(255, 149, 0, 0.2); }
+            50% { box-shadow: inset 0 2px 12px rgba(255, 149, 0, 0.4), 0 0 30px rgba(255, 149, 0, 0.4); }
+        }
+        
+        .bot-eye {
+            position: absolute;
+            top: 32px;
+            width: 30px;
+            height: 32px;
+            border-radius: 18px;
+            background: radial-gradient(15px 15px at 35% 35%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.08)),
+                        radial-gradient(24px 24px at 50% 60%, var(--accent-orange), rgba(255, 149, 0, 0.15));
+            box-shadow: 0 0 15px rgba(255, 149, 0, 0.3);
+            transition: transform 0.12s ease;
+        }
+        
+        .bot-eye.left { left: 38px; }
+        .bot-eye.right { right: 38px; }
+        
+        .eye-pupil {
+            position: absolute;
+            width: 10px;
             height: 10px;
             background: #000;
-            bottom: 28%;
+            border-radius: 50%;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+            transform: translate(-50%, -50%);
+            transition: transform 0.2s;
         }
         
-        .char-status {
+        .bot-mouth {
             position: absolute;
-            bottom: 20px;
+            left: 50%;
+            top: 68px;
+            transform: translateX(-50%);
+            width: 48px;
+            height: 14px;
+            border-radius: 0 0 14px 14px;
+            border: 2px solid rgba(255, 149, 0, 0.5);
+            border-top: 0;
+            opacity: 0.85;
+            filter: drop-shadow(0 0 8px rgba(255, 149, 0, 0.2));
+            transition: height 90ms ease, width 90ms ease;
+        }
+        
+        .bot-body {
+            position: absolute;
+            top: 148px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 8px 16px;
-            background: var(--bg);
-            border: 3px solid var(--border);
+            width: 160px;
+            height: 130px;
+            border-radius: 35px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+        }
+        
+        .bot-core {
+            position: absolute;
+            top: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 52px;
+            height: 52px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.1)),
+                        radial-gradient(circle at 50% 65%, var(--accent-orange), rgba(255, 149, 0, 0.12));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(255, 149, 0, 0.3);
+            animation: corePulse 2.4s ease-in-out infinite;
+        }
+        
+        @keyframes corePulse {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.95; }
+            50% { transform: translateX(-50%) scale(1.06); opacity: 0.8; }
+        }
+        
+        .bot-status {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 7px 14px;
+            background: rgba(255, 149, 0, 0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--accent-orange);
+            border-radius: 12px;
             font-size: 0.7rem;
             font-weight: 700;
-            box-shadow: 3px 3px 0 var(--shadow);
+            letter-spacing: 2px;
+            box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2);
         }
         
-        /* Neural network brain area */
-        #knowledge-viz {
-            flex: 1;
+        /* Neural Network Area */
+        #neural-network-area {
+            background: var(--panel-bg);
             position: relative;
-            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg) 100%);
             overflow: hidden;
         }
         
@@ -329,7 +497,7 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            border: 3px solid var(--border);
+            border: 2px solid var(--accent-orange);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -337,127 +505,129 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 3px 3px 0 var(--shadow);
+            background: rgba(255, 149, 0, 0.1);
+            box-shadow: 0 0 15px rgba(255, 149, 0, 0.3);
             text-align: center;
             line-height: 1.1;
         }
         
         .neural-node:hover {
-            transform: scale(1.15);
-            z-index: 10;
+            transform: scale(1.2);
+            z-index: 100;
+            box-shadow: 0 0 30px var(--accent-orange);
         }
         
         .neural-node.active {
-            animation: nodePulse 1.5s ease-in-out infinite;
+            animation: nodePulse 2s ease-in-out infinite;
         }
         
         @keyframes nodePulse {
             0%, 100% { 
-                box-shadow: 3px 3px 0 var(--shadow);
+                box-shadow: 0 0 15px rgba(255, 149, 0, 0.3);
             }
             50% { 
-                box-shadow: 0 0 20px var(--accent-teal), 3px 3px 0 var(--shadow);
-                border-color: var(--accent-teal);
+                box-shadow: 0 0 30px var(--accent-orange);
+                border-width: 3px;
             }
         }
-        
-        .neural-node.type-core { background: var(--accent-teal); }
-        .neural-node.type-analysis { background: var(--accent-green); }
-        .neural-node.type-data { background: var(--accent-coral); }
-        .neural-node.type-signal { background: #b794f6; }
         
         .synapse {
             position: absolute;
             height: 2px;
-            background: var(--border);
+            background: var(--accent-orange);
             transform-origin: left center;
-            opacity: 0.2;
-            transition: opacity 0.3s;
+            opacity: 0.3;
+            box-shadow: 0 0 5px var(--accent-orange);
         }
         
         .synapse.firing {
-            animation: synapseFire 2s ease-in-out infinite;
+            animation: synapseFire 1.5s ease-in-out infinite;
         }
         
         @keyframes synapseFire {
             0%, 100% { 
-                opacity: 0.2;
-                background: var(--border);
+                opacity: 0.3;
             }
             50% { 
                 opacity: 1;
-                background: var(--accent-teal);
-                box-shadow: 0 0 10px var(--accent-teal);
+                height: 3px;
             }
         }
         
-        .brain-stats {
+        .neural-stats {
             position: absolute;
-            bottom: 15px;
-            left: 15px;
-            right: 15px;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
         }
         
-        .brain-stat {
-            padding: 8px 12px;
-            background: var(--bg);
-            border: 3px solid var(--border);
+        .neural-stat {
+            padding: 8px 10px;
+            background: rgba(255, 149, 0, 0.1);
+            border: 1px solid rgba(255, 149, 0, 0.3);
             font-size: 0.65rem;
             font-weight: 700;
-            box-shadow: 2px 2px 0 var(--shadow);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         
         .stat-value {
-            color: var(--accent-teal);
+            color: var(--accent-orange);
             font-size: 0.85rem;
             display: block;
             margin-top: 3px;
         }
         
-        .brain-label {
+        .neural-label {
             position: absolute;
             top: 15px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 6px 14px;
-            background: var(--border);
-            color: var(--bg);
+            padding: 6px 15px;
+            background: rgba(255, 149, 0, 0.2);
+            border: 1px solid var(--accent-orange);
             font-size: 0.7rem;
             font-weight: 700;
             letter-spacing: 2px;
-            box-shadow: 3px 3px 0 var(--shadow);
         }
         
-        /* Right - Chat */
+        /* Right Panel - Bot Chat & Controls */
         #right-panel {
+            background: var(--panel-bg);
             display: flex;
             flex-direction: column;
+            border-left: 1px solid var(--border);
+            max-height: calc(100vh - 50px); /* CRITICAL FIX */
         }
         
-        #chat-messages {
+        #bot-chat {
             flex: 1;
-            overflow-y: auto;
+            overflow-y: scroll; /* CHANGED TO SCROLL */
             padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            min-height: 0; /* CRITICAL FIX */
         }
         
-        #chat-messages::-webkit-scrollbar {
-            width: 8px;
+        #bot-chat::-webkit-scrollbar {
+            width: 6px;
         }
         
-        #chat-messages::-webkit-scrollbar-thumb {
-            background: var(--border);
+        #bot-chat::-webkit-scrollbar-thumb {
+            background: #1a1a1a;
         }
         
-        .chat-msg {
-            animation: slideIn 0.3s ease-out;
+        .bot-message {
+            padding: 10px 12px;
+            background: #0f0f0f;
+            border-left: 3px solid var(--accent-orange);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            animation: slideIn 0.3s ease;
         }
         
         @keyframes slideIn {
@@ -465,458 +635,409 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .chat-msg.neural {
-            align-self: flex-start;
-            max-width: 85%;
-        }
-        
-        .chat-msg.user {
-            align-self: flex-end;
-            max-width: 75%;
-        }
-        
-        .msg-bubble {
-            padding: 12px 16px;
-            border: 3px solid var(--border);
-            box-shadow: 3px 3px 0 var(--shadow);
+        .user-message {
+            padding: 10px 12px;
+            background: #1a1a1a;
+            border-left: 3px solid var(--accent-green);
             font-size: 0.85rem;
             line-height: 1.6;
+            align-self: flex-end;
+            max-width: 80%;
         }
         
-        .chat-msg.neural .msg-bubble {
-            background: var(--bg);
-        }
-        
-        .chat-msg.user .msg-bubble {
-            background: var(--accent-green);
-            font-weight: 700;
-        }
-        
-        .msg-time {
-            font-size: 0.65rem;
-            color: var(--text-dim);
-            margin-top: 5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .typing-indicator {
+        .message-actions {
             display: flex;
             gap: 8px;
-            padding-left: 15px;
-        }
-        
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-teal);
-            border-radius: 50%;
-            animation: typingBounce 1.4s infinite;
-        }
-        
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        
-        @keyframes typingBounce {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-8px); }
-        }
-        
-        .quick-replies {
-            display: flex;
-            gap: 8px;
+            margin-top: 8px;
             flex-wrap: wrap;
-            margin-top: 10px;
         }
         
-        .quick-reply {
-            padding: 6px 12px;
-            background: var(--accent-teal);
-            border: 3px solid var(--border);
+        .action-btn {
+            padding: 5px 12px;
+            background: transparent;
+            border: 1px solid var(--text-dim);
+            color: var(--text-dim);
+            font-family: inherit;
             font-size: 0.7rem;
-            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 2px 2px 0 var(--shadow);
+            transition: all 0.3s;
         }
         
-        .quick-reply:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 4px 4px 0 var(--shadow);
+        .action-btn:hover {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
         }
         
-        #chat-input-area {
+        #bot-input-area {
             padding: 15px;
-            background: var(--bg);
-            border-top: 4px solid var(--border);
-            display: flex;
-            gap: 10px;
+            background: #0f0f0f;
+            border-top: 1px solid var(--border);
         }
         
-        #chat-input {
-            flex: 1;
-            padding: 12px;
-            border: 3px solid var(--border);
-            background: var(--bg-dark);
+        #bot-input {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 10px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        
+        #bot-input:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+        
+        #bot-send {
+            width: 100%;
+            padding: 10px;
+            background: var(--accent-orange);
+            border: none;
+            color: #000;
             font-family: inherit;
             font-size: 0.85rem;
             font-weight: 700;
-        }
-        
-        #chat-send {
-            padding: 12px 20px;
-            background: var(--accent-green);
-            border: 3px solid var(--border);
-            font-family: inherit;
-            font-size: 0.8rem;
-            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 3px 3px 0 var(--shadow);
+            transition: all 0.3s;
+        }
+        
+        #bot-send:hover {
+            background: #ffaa33;
+        }
+        
+        /* Interactive Controls */
+        .control-panel {
+            padding: 15px;
+            background: #0f0f0f;
+            border-top: 1px solid var(--border);
+            flex-shrink: 0; /* PREVENT SHRINKING */
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-label {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-bottom: 8px;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
-        #chat-send:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 5px 5px 0 var(--shadow);
+        .color-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
         }
         
-        /* Footer */
-        #footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+        .color-option {
+            width: 100%;
             height: 30px;
-            background: var(--border);
-            color: var(--bg);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.1);
+            border-color: var(--text);
+        }
+        
+        .color-option.active {
+            border: 2px solid var(--text);
+        }
+        
+        #bot-input-area {
+            padding: 15px;
+            background: #0f0f0f;
+            border-top: 1px solid var(--border);
+            flex-shrink: 0; /* PREVENT SHRINKING */
+        }
+        
+        /* Data Feed */
+        .data-feed {
+            padding: 10px 15px;
+            background: #0f0f0f;
+            border-top: 1px solid var(--border);
+            font-size: 0.75rem;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            font-size: 0.65rem;
-            letter-spacing: 1px;
-            z-index: 1000;
         }
         
-        /* Highlights */
-        .hl-green { color: var(--accent-green); font-weight: 700; }
-        .hl-teal { color: var(--accent-teal); font-weight: 700; }
-        .hl-coral { color: var(--accent-coral); font-weight: 700; }
+        .feed-item {
+            display: flex;
+            gap: 5px;
+        }
         
-        .token-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            margin: 0 4px;
+        .feed-label {
+            color: var(--text-dim);
+        }
+        
+        .feed-value {
+            color: var(--accent-green);
             font-weight: 700;
         }
     </style>
 </head>
 <body>
-    <!-- Custom cursor -->
-    <div id="cursor"></div>
-    
-    <!-- Matrix background -->
-    <canvas id="matrix-canvas"></canvas>
-    
-    <!-- Header -->
-    <div id="header">
-        <div class="logo">
-            <svg class="logo-icon" viewBox="0 0 64 64">
-                <rect x="2" y="2" width="60" height="60" rx="12" fill="none" stroke="#2b2f2b" stroke-width="4" stroke-dasharray="10 6"/>
-                <circle cx="32" cy="32" r="18" fill="#6eb5a0"/>
-                <circle cx="26" cy="28" r="3" fill="#0a0f0a"/>
-                <circle cx="38" cy="28" r="3" fill="#0a0f0a"/>
-                <path d="M24 38c3 4 13 4 16 0" stroke="#0a0f0a" stroke-width="3" fill="none" stroke-linecap="round"/>
-            </svg>
-            <span>Neural V1.0</span>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen">
+        <div class="welcome-logo">TERMINAL</div>
+        <div class="welcome-subtitle">CRYPTO INTELLIGENCE SYSTEM</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
         </div>
-        <div class="header-stats">
-            <span><span class="stat-dot"></span>ONLINE</span>
-            <span>UPTIME: <span id="uptime">0m</span></span>
-            <span>MODE: BULLISH</span>
-        </div>
+        <button class="enter-btn" onclick="enterTerminal()">ENTER TERMINAL</button>
     </div>
 
-    <!-- Main -->
-    <div id="main">
-        <!-- Left - Auto-typing terminal -->
-        <div class="panel" id="left-panel">
-            <div class="panel-header">CODE STREAM</div>
-            <div id="terminal-output">
-                <span class="typing-cursor"></span>
+    <!-- Main Terminal -->
+    <div id="terminal-container" style="opacity: 0;">
+        <!-- Top Bar -->
+        <div id="top-bar">
+            <div class="terminal-title">TERMINAL</div>
+            <div class="top-controls">
+                <button class="color-theme-btn" onclick="changeTheme('orange')">ORANGE</button>
+                <button class="color-theme-btn" onclick="changeTheme('green')">GREEN</button>
+                <button class="color-theme-btn" onclick="changeTheme('blue')">BLUE</button>
+                <button class="color-theme-btn" onclick="changeTheme('purple')">PURPLE</button>
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>LIVE</span>
+                </div>
             </div>
         </div>
 
-        <!-- Center - Character + Knowledge Graph -->
-        <div class="panel" id="center-panel">
-            <div id="character-area">
-                <div class="character-3d" id="character">
-                    <div class="char-head">
-                        <div class="char-eye left">
-                            <div class="eye-inner" id="eye-left"></div>
+        <!-- Left Panel - Command Terminal -->
+        <div id="left-panel">
+            <div class="panel-header">COMMAND TERMINAL</div>
+            <div id="command-output"></div>
+            <div id="command-input-area">
+                <input type="text" id="command-input" placeholder="Enter command...">
+            </div>
+        </div>
+
+        <!-- Center Panel - Bot + Neural Network -->
+        <div id="center-panel">
+            <div id="bot-character-area">
+                <div class="platform"></div>
+                <div class="bot-3d" id="bot-character">
+                    <div class="bot-glow"></div>
+                    <div class="bot-head">
+                        <div class="bot-antenna"></div>
+                        <div class="bot-visor">
+                            <div class="bot-eye left">
+                                <div class="eye-pupil" id="eye-left"></div>
+                            </div>
+                            <div class="bot-eye right">
+                                <div class="eye-pupil" id="eye-right"></div>
+                            </div>
+                            <div class="bot-mouth"></div>
                         </div>
-                        <div class="char-eye right">
-                            <div class="eye-inner" id="eye-right"></div>
-                        </div>
-                        <div class="char-mouth"></div>
+                    </div>
+                    <div class="bot-body">
+                        <div class="bot-core"></div>
                     </div>
                 </div>
-                <div class="char-status" id="char-status">Analyzing markets... 📈</div>
+                <div class="bot-status" id="bot-status">ONLINE</div>
             </div>
-            <div id="knowledge-viz"></div>
+            <div id="neural-network-area"></div>
         </div>
 
-        <!-- Right - Chat -->
-        <div class="panel" id="right-panel">
-            <div class="panel-header">NEURAL CHAT</div>
-            <div id="chat-messages"></div>
-            <div id="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Ask about crypto...">
-                <button id="chat-send">SEND</button>
+        <!-- Right Panel - Bot Chat -->
+        <div id="right-panel">
+            <div class="panel-header">BOT INTERFACE</div>
+            <div id="bot-chat"></div>
+            <div class="control-panel">
+                <div class="control-group">
+                    <div class="control-label">Accent Color</div>
+                    <div class="color-picker-grid">
+                        <div class="color-option active" style="background: #ff9500" onclick="changeAccent('#ff9500', '#ffaa33')"></div>
+                        <div class="color-option" style="background: #00ff00" onclick="changeAccent('#00ff00', '#33ff33')"></div>
+                        <div class="color-option" style="background: #00aaff" onclick="changeAccent('#00aaff', '#33bbff')"></div>
+                        <div class="color-option" style="background: #ff00ff" onclick="changeAccent('#ff00ff', '#ff33ff')"></div>
+                        <div class="color-option" style="background: #ff0000" onclick="changeAccent('#ff0000', '#ff3333')"></div>
+                        <div class="color-option" style="background: #ffff00" onclick="changeAccent('#ffff00', '#ffff33')"></div>
+                        <div class="color-option" style="background: #00ffff" onclick="changeAccent('#00ffff', '#33ffff')"></div>
+                        <div class="color-option" style="background: #ffffff" onclick="changeAccent('#ffffff', '#ffffff')"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="bot-input-area">
+                <input type="text" id="bot-input" placeholder="Ask the bot anything...">
+                <button id="bot-send">SEND</button>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <div id="footer">
-        <span>NEURAL V1.0 | CRYPTO INTELLIGENCE SYSTEM</span>
-        <span>NEURAL STATUS: <span class="hl-teal">OPERATIONAL</span> | SYNAPSES: <span id="synapse-count">16</span> FIRING</span>
+    <!-- Data Feed -->
+    <div class="data-feed" style="position: fixed; bottom: 0; left: 0; right: 0; opacity: 0;" id="data-feed">
+        <div class="feed-item">
+            <span class="feed-label">BTC:</span>
+            <span class="feed-value">$95,284</span>
+        </div>
+        <div class="feed-item">
+            <span class="feed-label">ETH:</span>
+            <span class="feed-value">$3,421</span>
+        </div>
+        <div class="feed-item">
+            <span class="feed-label">SOL:</span>
+            <span class="feed-value">$147</span>
+        </div>
+        <div class="feed-item">
+            <span class="feed-label">TOTAL MCAP:</span>
+            <span class="feed-value">$3.2T</span>
+        </div>
+        <div class="feed-item">
+            <span class="feed-label">24H VOL:</span>
+            <span class="feed-value">$127B</span>
+        </div>
     </div>
 
     <script>
-        // Matrix rain
-        const matrixCanvas = document.getElementById('matrix-canvas');
-        const matrixCtx = matrixCanvas.getContext('2d');
-        matrixCanvas.width = window.innerWidth;
-        matrixCanvas.height = window.innerHeight;
-        
-        const matrixChars = '₿ΞÐØⓈ⚡🚀💎🐸🐕01';
-        const fontSize = 16;
-        const columns = matrixCanvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-        
-        function drawMatrix() {
-            matrixCtx.fillStyle = 'rgba(244, 238, 225, 0.05)';
-            matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+        // Enter terminal
+        function enterTerminal() {
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('terminal-container').style.opacity = '1';
+            document.getElementById('terminal-container').style.transition = 'opacity 0.5s ease';
+            document.getElementById('data-feed').style.opacity = '1';
+            document.getElementById('data-feed').style.transition = 'opacity 0.5s ease 0.3s';
             
-            matrixCtx.fillStyle = '#6eb5a0';
-            matrixCtx.font = fontSize + 'px monospace';
-            
-            for (let i = 0; i < drops.length; i++) {
-                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-                matrixCtx.fillText(text, i * fontSize, drops[i] * fontSize);
-                
-                if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
+            setTimeout(() => {
+                initCommandTerminal();
+                initBotChat();
+                initBotCharacter();
+                initNeuralNetwork();
+            }, 500);
         }
-        
-        setInterval(drawMatrix, 50);
-        
-        // Custom cursor
-        const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX - 10 + 'px';
-            cursor.style.top = e.clientY - 10 + 'px';
-        });
-        
-        // Auto-typing terminal code
-        const terminalOutput = document.getElementById('terminal-output');
-        const typingCursor = document.querySelector('.typing-cursor');
-        
-        const codeSnippets = [
-            `<span class="comment">// PEPE Market Analysis Engine</span>
-<span class="keyword">function</span> analyzePEPE() {
-    <span class="keyword">const</span> price = <span class="string">"$0.00000517"</span>;
-    <span class="keyword">const</span> change = <span class="hl-green">+84%</span>;
-    <span class="keyword">const</span> volume = <span class="string">"$892M"</span>;
-    
-    <span class="keyword">if</span> (whaleActivity > threshold) {
-        console.log(<span class="string">"🐋 WHALES ACCUMULATING"</span>);
-        signal = <span class="string">"STRONG BUY"</span>;
-    }
-    
-    <span class="keyword">return</span> { bullish: <span class="keyword">true</span>, confidence: <span class="hl-green">87%</span> };
-}`,
-            `
-<span class="comment">// Whale Tracker System</span>
-<span class="keyword">class</span> WhaleMonitor {
-    <span class="keyword">constructor</span>() {
-        <span class="keyword">this</span>.wallets = [];
-        <span class="keyword">this</span>.threshold = <span class="string">"$1M"</span>;
-    }
-    
-    trackMovement(wallet, amount) {
-        <span class="keyword">if</span> (amount > <span class="keyword">this</span>.threshold) {
-            alert(<span class="string">"🐋 WHALE ALERT: "</span> + wallet);
-            <span class="keyword">this</span>.logActivity(wallet, amount);
-        }
-    }
-    
-    <span class="comment">// 50M PEPE moved to cold storage</span>
-    <span class="comment">// Value: $2.1M | Status: BULLISH</span>
-}`,
-            `
-<span class="comment">// DEX Volume Scanner</span>
-<span class="keyword">const</span> dexData = {
-    uniswap: { volume: <span class="string">"$2.8B"</span>, change: <span class="hl-green">+12%</span> },
-    raydium: { volume: <span class="string">"$1.4B"</span>, change: <span class="hl-green">+28%</span> },
-    jupiter: { volume: <span class="string">"$847M"</span>, change: <span class="hl-green">+15%</span> }
-};
 
-<span class="keyword">function</span> scanDEX() {
-    Object.keys(dexData).forEach(<span class="keyword">dex</span> => {
-        console.log(<span class="string">\`\${dex}: \${dexData[dex].volume}\`</span>);
-    });
-    
-    <span class="comment">// Retail flooding back in</span>
-    <span class="keyword">return</span> <span class="string">"MANIA PHASE CONFIRMED"</span>;
-}`
-        ];
-        
-        let currentSnippet = 0;
-        let currentChar = 0;
-        let currentText = '';
-        
-        function typeCode() {
-            const snippet = codeSnippets[currentSnippet];
+        // Bot Memory System
+        const botMemory = {
+            conversations: [],
+            userPreferences: {},
+            context: [],
             
-            if (currentChar < snippet.length) {
-                currentText += snippet[currentChar];
-                const line = document.createElement('span');
-                line.className = 'code-line';
-                line.innerHTML = currentText;
-                terminalOutput.innerHTML = '';
-                terminalOutput.appendChild(line);
-                terminalOutput.appendChild(typingCursor);
-                terminalOutput.scrollTop = terminalOutput.scrollHeight;
-                currentChar++;
-                setTimeout(typeCode, 20);
-            } else {
-                setTimeout(() => {
-                    currentSnippet = (currentSnippet + 1) % codeSnippets.length;
-                    currentChar = 0;
-                    currentText = '';
-                    typeCode();
-                }, 2000);
+            remember(user, bot) {
+                this.conversations.push({ user, bot, timestamp: Date.now() });
+                if (this.conversations.length > 20) this.conversations.shift();
+                
+                // Extract context
+                if (user.toLowerCase().includes('pepe')) this.context.push('pepe');
+                if (user.toLowerCase().includes('whale')) this.context.push('whale');
+                if (user.toLowerCase().includes('market')) this.context.push('market');
+            },
+            
+            recall(keyword) {
+                return this.conversations.filter(c => 
+                    c.user.toLowerCase().includes(keyword) || 
+                    c.bot.toLowerCase().includes(keyword)
+                );
+            },
+            
+            getContext() {
+                return [...new Set(this.context.slice(-5))];
             }
+        };
+
+        // Bot Character Interaction
+        function initBotCharacter() {
+            const botCharacter = document.getElementById('bot-character');
+            const botArea = document.getElementById('bot-character-area');
+            const eyeLeft = document.getElementById('eye-left');
+            const eyeRight = document.getElementById('eye-right');
+            const botStatus = document.getElementById('bot-status');
+            
+            // Eye tracking
+            botArea.addEventListener('mousemove', (e) => {
+                const rect = botArea.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const deltaX = (x - centerX) / centerX;
+                const deltaY = (y - centerY) / centerY;
+                
+                const moveX = deltaX * 15;
+                const moveY = deltaY * 15;
+                botCharacter.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                
+                const eyeMoveX = deltaX * 6;
+                const eyeMoveY = deltaY * 6;
+                eyeLeft.style.transform = `translate(calc(-50% + ${eyeMoveX}px), calc(-50% + ${eyeMoveY}px))`;
+                eyeRight.style.transform = `translate(calc(-50% + ${eyeMoveX}px), calc(-50% + ${eyeMoveY}px))`;
+            });
+            
+            botArea.addEventListener('mouseleave', () => {
+                botCharacter.style.transform = 'translate(0, 0)';
+                eyeLeft.style.transform = 'translate(-50%, -50%)';
+                eyeRight.style.transform = 'translate(-50%, -50%)';
+            });
+            
+            // Status rotation
+            const statuses = ['ONLINE', 'PROCESSING', 'THINKING', 'ANALYZING', 'SCANNING'];
+            let statusIdx = 0;
+            setInterval(() => {
+                statusIdx = (statusIdx + 1) % statuses.length;
+                botStatus.textContent = statuses[statusIdx];
+            }, 3000);
         }
-        
-        setTimeout(typeCode, 1000);
-        
-        // Character cursor tracking
-        const character = document.getElementById('character');
-        const characterArea = document.getElementById('character-area');
-        const eyeLeft = document.getElementById('eye-left');
-        const eyeRight = document.getElementById('eye-right');
-        
-        characterArea.addEventListener('mousemove', (e) => {
-            const rect = characterArea.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+
+        // Neural Network Visualization
+        function initNeuralNetwork() {
+            const neuralArea = document.getElementById('neural-network-area');
+            const width = neuralArea.clientWidth;
+            const height = neuralArea.clientHeight;
             
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const deltaX = (x - centerX) / centerX;
-            const deltaY = (y - centerY) / centerY;
-            
-            const moveX = deltaX * 15;
-            const moveY = deltaY * 15;
-            character.style.transform = `translate(${moveX}px, ${moveY}px)`;
-            
-            const eyeMoveX = deltaX * 8;
-            const eyeMoveY = deltaY * 8;
-            eyeLeft.style.transform = `translate(calc(-50% + ${eyeMoveX}px), calc(-50% + ${eyeMoveY}px))`;
-            eyeRight.style.transform = `translate(calc(-50% + ${eyeMoveX}px), calc(-50% + ${eyeMoveY}px))`;
-        });
-        
-        characterArea.addEventListener('mouseleave', () => {
-            character.style.transform = 'translate(0, 0)';
-            eyeLeft.style.transform = 'translate(-50%, -50%)';
-            eyeRight.style.transform = 'translate(-50%, -50%)';
-        });
-        
-        // Character status rotation
-        const statuses = [
-            'Analyzing markets... 📈',
-            'Tracking whales... 🐋',
-            'Feeling bullish... 💎',
-            'Moon mission loading... 🚀',
-            'Diamond hands... 💪',
-            'We\'re so back... 😎'
-        ];
-        let statusIdx = 0;
-        setInterval(() => {
-            statusIdx = (statusIdx + 1) % statuses.length;
-            document.getElementById('char-status').textContent = statuses[statusIdx];
-        }, 3500);
-        
-        // Neural network brain visualization
-        const knowledgeViz = document.getElementById('knowledge-viz');
-        const neuralLabels = [
-            'NEURAL\nCORE',
-            'PATTERN\nRECOG',
-            'DATA\nANALYSIS',
-            'SENTIMENT\nAI',
-            'SIGNAL\nPROC',
-            'PREDICT\nENGINE',
-            'LEARNING\nALGO',
-            'MEMORY\nBANK'
-        ];
-        const neuralTypes = ['core', 'analysis', 'data', 'signal', 'analysis', 'data', 'signal', 'core'];
-        let neuralNodes = [];
-        let synapses = [];
-        
-        function createNeuralNetwork() {
-            const width = knowledgeViz.clientWidth;
-            const height = knowledgeViz.clientHeight - 80; // Leave space for stats
-            
-            // Add brain label
+            // Add label
             const label = document.createElement('div');
-            label.className = 'brain-label';
-            label.textContent = '⚡ NEURAL NETWORK ⚡';
-            knowledgeViz.appendChild(label);
+            label.className = 'neural-label';
+            label.textContent = 'NEURAL NETWORK';
+            neuralArea.appendChild(label);
             
-            // Create neural nodes in a network pattern
+            const nodes = [];
+            const nodeLabels = ['CORE', 'PATTERN', 'DATA', 'SENTIMENT', 'SIGNAL', 'PREDICT', 'LEARN', 'MEMORY'];
             const centerX = width / 2;
-            const centerY = height / 2;
+            const centerY = height / 2 - 20;
             
+            // Create nodes
             for (let i = 0; i < 8; i++) {
                 const angle = (i / 8) * Math.PI * 2 - Math.PI / 2;
-                const radius = Math.min(width, height) * 0.35;
+                const radius = Math.min(width, height - 100) * 0.35;
                 const x = Math.cos(angle) * radius + centerX;
                 const y = Math.sin(angle) * radius + centerY;
                 
                 const node = document.createElement('div');
-                node.className = `neural-node type-${neuralTypes[i]}`;
+                node.className = 'neural-node';
                 if (i % 2 === 0) node.classList.add('active');
                 node.style.left = (x - 30) + 'px';
                 node.style.top = (y - 30) + 'px';
-                node.innerHTML = neuralLabels[i].replace('\n', '<br>');
-                knowledgeViz.appendChild(node);
+                node.textContent = nodeLabels[i];
                 
-                neuralNodes.push({ 
-                    element: node, 
-                    angle: angle, 
-                    radius: radius,
-                    x: x,
-                    y: y
+                node.addEventListener('click', function() {
+                    this.style.animation = 'none';
+                    setTimeout(() => this.style.animation = '', 10);
+                    
+                    // Trigger synapses
+                    document.querySelectorAll('.synapse').forEach(s => {
+                        s.classList.add('firing');
+                        setTimeout(() => s.classList.remove('firing'), 1500);
+                    });
                 });
+                
+                neuralArea.appendChild(node);
+                nodes.push({ element: node, x, y, angle, radius });
             }
             
-            // Create synapses (connections between nodes)
-            for (let i = 0; i < neuralNodes.length; i++) {
-                // Connect to next 2 nodes
+            // Create synapses
+            for (let i = 0; i < nodes.length; i++) {
                 for (let j = 1; j <= 2; j++) {
-                    const nextIndex = (i + j) % neuralNodes.length;
-                    const node1 = neuralNodes[i];
-                    const node2 = neuralNodes[nextIndex];
+                    const nextIndex = (i + j) % nodes.length;
+                    const node1 = nodes[i];
+                    const node2 = nodes[nextIndex];
                     
                     const dx = node2.x - node1.x;
                     const dy = node2.y - node1.y;
@@ -930,228 +1051,244 @@
                     synapse.style.left = node1.x + 'px';
                     synapse.style.top = node1.y + 'px';
                     synapse.style.transform = `rotate(${angle}rad)`;
-                    knowledgeViz.insertBefore(synapse, knowledgeViz.firstChild);
-                    
-                    synapses.push(synapse);
+                    neuralArea.insertBefore(synapse, neuralArea.firstChild);
                 }
             }
             
-            // Add brain stats
+            // Add stats
             const statsContainer = document.createElement('div');
-            statsContainer.className = 'brain-stats';
+            statsContainer.className = 'neural-stats';
             statsContainer.innerHTML = `
-                <div class="brain-stat">
+                <div class="neural-stat">
+                    Nodes Active
+                    <span class="stat-value">8/8</span>
+                </div>
+                <div class="neural-stat">
+                    Synapses
+                    <span class="stat-value" id="synapse-count">16</span>
+                </div>
+                <div class="neural-stat">
                     Processing
                     <span class="stat-value" id="processing-speed">847 TPS</span>
                 </div>
-                <div class="brain-stat">
-                    Active Nodes
-                    <span class="stat-value" id="active-nodes">8/8</span>
-                </div>
-                <div class="brain-stat">
-                    Synapse Fire
-                    <span class="stat-value" id="synapse-rate">94.2%</span>
-                </div>
-                <div class="brain-stat">
-                    Neural Load
-                    <span class="stat-value" id="neural-load">87%</span>
+                <div class="neural-stat">
+                    Memory
+                    <span class="stat-value" id="memory-count">0</span>
                 </div>
             `;
-            knowledgeViz.appendChild(statsContainer);
+            neuralArea.appendChild(statsContainer);
             
-            // Update footer synapse count
-            document.getElementById('synapse-count').textContent = synapses.length;
+            // Animate nodes
+            function animateNodes() {
+                nodes.forEach(node => {
+                    node.angle += 0.002;
+                    const x = Math.cos(node.angle) * node.radius + centerX;
+                    const y = Math.sin(node.angle) * node.radius + centerY;
+                    node.element.style.left = (x - 30) + 'px';
+                    node.element.style.top = (y - 30) + 'px';
+                });
+                requestAnimationFrame(animateNodes);
+            }
+            animateNodes();
             
-            // Update stats periodically
+            // Update stats
             setInterval(() => {
-                document.getElementById('processing-speed').textContent = 
-                    (800 + Math.floor(Math.random() * 100)) + ' TPS';
-                document.getElementById('synapse-rate').textContent = 
-                    (92 + Math.random() * 6).toFixed(1) + '%';
-                document.getElementById('neural-load').textContent = 
-                    (85 + Math.floor(Math.random() * 10)) + '%';
+                document.getElementById('processing-speed').textContent = (800 + Math.floor(Math.random() * 150)) + ' TPS';
+                document.getElementById('memory-count').textContent = botMemory.conversations.length;
             }, 2000);
         }
+
+        // Command Terminal
+        const commandOutput = document.getElementById('command-output');
+        const commandInput = document.getElementById('command-input');
         
-        function animateNeuralNetwork() {
-            const width = knowledgeViz.clientWidth;
-            const height = knowledgeViz.clientHeight - 80;
-            const centerX = width / 2;
-            const centerY = height / 2;
-            
-            neuralNodes.forEach((node, i) => {
-                // Gentle orbital movement
-                node.angle += 0.002;
-                const x = Math.cos(node.angle) * node.radius + centerX;
-                const y = Math.sin(node.angle) * node.radius + centerY;
-                node.element.style.left = (x - 30) + 'px';
-                node.element.style.top = (y - 30) + 'px';
-                node.x = x;
-                node.y = y;
-            });
-            
-            // Update synapse positions
-            let synapseIdx = 0;
-            for (let i = 0; i < neuralNodes.length; i++) {
-                for (let j = 1; j <= 2; j++) {
-                    const nextIndex = (i + j) % neuralNodes.length;
-                    const node1 = neuralNodes[i];
-                    const node2 = neuralNodes[nextIndex];
-                    
-                    const dx = node2.x - node1.x;
-                    const dy = node2.y - node1.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const angle = Math.atan2(dy, dx);
-                    
-                    if (synapses[synapseIdx]) {
-                        synapses[synapseIdx].style.width = distance + 'px';
-                        synapses[synapseIdx].style.left = node1.x + 'px';
-                        synapses[synapseIdx].style.top = node1.y + 'px';
-                        synapses[synapseIdx].style.transform = `rotate(${angle}rad)`;
-                    }
-                    synapseIdx++;
-                }
-            }
-            
-            requestAnimationFrame(animateNeuralNetwork);
+        function addCommandLine(text, type = '') {
+            const line = document.createElement('div');
+            line.className = `cmd-line ${type}`;
+            line.innerHTML = text;
+            commandOutput.appendChild(line);
+            commandOutput.scrollTop = commandOutput.scrollHeight;
         }
         
-        setTimeout(() => {
-            createNeuralNetwork();
-            animateNeuralNetwork();
-        }, 500);
+        function initCommandTerminal() {
+            addCommandLine('<span class="cmd-prompt">TERMINAL></span> <span class="cmd-text">System initialized</span>');
+            addCommandLine('<span class="cmd-prompt">TERMINAL></span> <span class="cmd-success">All systems operational</span>');
+            addCommandLine('<span class="cmd-prompt">TERMINAL></span> <span class="cmd-text">Type "help" for commands</span>');
+        }
         
-        // Chat system
-        const chatMessages = document.getElementById('chat-messages');
-        const chatInput = document.getElementById('chat-input');
-        const chatSend = document.getElementById('chat-send');
-        
-        function addChatMsg(text, type, quickReplies = []) {
-            const msg = document.createElement('div');
-            msg.className = `chat-msg ${type}`;
-            
-            const bubble = document.createElement('div');
-            bubble.className = 'msg-bubble';
-            bubble.innerHTML = text;
-            
-            const time = document.createElement('div');
-            time.className = 'msg-time';
-            time.textContent = type === 'neural' ? 'Neural' : 'You';
-            
-            msg.appendChild(bubble);
-            msg.appendChild(time);
-            
-            if (quickReplies.length > 0) {
-                const repliesDiv = document.createElement('div');
-                repliesDiv.className = 'quick-replies';
-                quickReplies.forEach(reply => {
-                    const btn = document.createElement('div');
-                    btn.className = 'quick-reply';
-                    btn.textContent = reply;
-                    btn.onclick = () => sendChat(reply);
-                    repliesDiv.appendChild(btn);
+        const commands = {
+            help: () => {
+                addCommandLine('<span class="cmd-success">Available commands:</span>');
+                addCommandLine('<span class="cmd-text">  status - System status</span>');
+                addCommandLine('<span class="cmd-text">  market - Market overview</span>');
+                addCommandLine('<span class="cmd-text">  scan - Scan for opportunities</span>');
+                addCommandLine('<span class="cmd-text">  whales - Whale tracker</span>');
+                addCommandLine('<span class="cmd-text">  memory - Show bot memory</span>');
+                addCommandLine('<span class="cmd-text">  clear - Clear terminal</span>');
+            },
+            status: () => {
+                addCommandLine('<span class="cmd-success">SYSTEM STATUS: OPERATIONAL</span>');
+                addCommandLine('<span class="cmd-text">Uptime: 24h 17m</span>');
+                addCommandLine('<span class="cmd-text">Connected nodes: 8/8</span>');
+                addCommandLine('<span class="cmd-text">Conversations: ' + botMemory.conversations.length + '</span>');
+                addCommandLine('<span class="cmd-text">Data feeds: LIVE</span>');
+            },
+            market: () => {
+                addCommandLine('<span class="cmd-success">MARKET OVERVIEW:</span>');
+                addCommandLine('<span class="cmd-text">Total Cap: $3.2T (+4.2%)</span>');
+                addCommandLine('<span class="cmd-text">24h Volume: $127B</span>');
+                addCommandLine('<span class="cmd-text">PEPE: +84% 🔥</span>');
+                addCommandLine('<span class="cmd-text">Status: BULLISH</span>');
+            },
+            scan: () => {
+                addCommandLine('<span class="cmd-success">SCANNING...</span>');
+                setTimeout(() => {
+                    addCommandLine('<span class="cmd-text">Found: 12 opportunities</span>');
+                    addCommandLine('<span class="cmd-text">PEPE: STRONG BUY signal</span>');
+                    addCommandLine('<span class="cmd-text">BONK: Accumulation phase</span>');
+                }, 1000);
+            },
+            whales: () => {
+                addCommandLine('<span class="cmd-success">WHALE TRACKER:</span>');
+                addCommandLine('<span class="cmd-text">🐋 50M PEPE → Cold Storage</span>');
+                addCommandLine('<span class="cmd-text">🐋 127 BTC → Off Exchange</span>');
+                addCommandLine('<span class="cmd-text">Status: ACCUMULATING</span>');
+            },
+            memory: () => {
+                addCommandLine('<span class="cmd-success">BOT MEMORY:</span>');
+                addCommandLine('<span class="cmd-text">Conversations: ' + botMemory.conversations.length + '</span>');
+                addCommandLine('<span class="cmd-text">Context: ' + botMemory.getContext().join(', ') + '</span>');
+                const recent = botMemory.conversations.slice(-3);
+                recent.forEach(c => {
+                    addCommandLine('<span class="cmd-text">  You: ' + c.user.substring(0, 40) + '</span>');
                 });
-                msg.appendChild(repliesDiv);
-            }
-            
-            chatMessages.appendChild(msg);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-        
-        function showTyping() {
-            const typing = document.createElement('div');
-            typing.id = 'typing';
-            typing.className = 'typing-indicator';
-            typing.innerHTML = `
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-            `;
-            chatMessages.appendChild(typing);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-        
-        function hideTyping() {
-            const typing = document.getElementById('typing');
-            if (typing) typing.remove();
-        }
-        
-        const responses = {
-            pepe: {
-                text: 'Yo PEPE is <span class="hl-green">ABSOLUTELY INSANE</span> right now 🐸🔥<br><br><span class="token-badge">PEPE +84%</span><br><br>$892M volume, whales accumulating like crazy. Cup & handle on 12H chart. This is textbook moonshot setup 🚀',
-                replies: ['What about other memes?', 'Show whale activity', 'Is it too late?']
             },
-            whale: {
-                text: '🐋 WHALE ALERT 🐋<br><br>50M PEPE → cold storage ($2.1M)<br>127 BTC withdrawn from Binance ($12M)<br>$3.2M USDT → SOL memes<br><br>When whales move during consolidation... they <span class="hl-green">KNOW</span> something 👀',
-                replies: ['What are they buying?', 'Copy whale moves?', 'Show PEPE']
-            },
-            late: {
-                text: 'Bro you\'re <span class="hl-green">NOT LATE</span> 💪<br><br>Fear & Greed: 68 (greed but not extreme)<br>Google Trends: +127% (still early)<br>Funding rates: healthy<br><br>Peak euphoria is 500%+ trends. We\'re in early innings 🎯',
-                replies: ['What to buy?', 'Show market', 'Sentiment check']
-            },
-            meme: {
-                text: '<span class="hl-coral">MEME SEASON</span> confirmed 🎪<br><br><span class="token-badge">PEPE +84%</span><span class="token-badge">BONK +48%</span><span class="token-badge">DOGE +22%</span><br><br>When memes pump this hard = retail flooding in. This is what bull markets look like 💎',
-                replies: ['Which to buy?', 'PEPE analysis', 'Bitcoin?']
-            },
-            bitcoin: {
-                text: 'BTC consolidating at <span class="hl-teal">$95K</span> like a BOSS 😤<br><br>OI: $31.44B (6-week high)<br>Outflows: 14,892 BTC (7d)<br>Everyone HODLing for $100K breakout<br><br>It\'s not IF... it\'s WHEN 🚀',
-                replies: ['When $100K?', 'Show alts', 'Vibe check']
-            },
-            default: {
-                text: 'Not sure about that one 🤔<br><br>But the market is looking <span class="hl-green">SPICY</span>. Memes pumping, whales accumulating, DEX volume surging 🔥<br><br>What you wanna know?',
-                replies: ['PEPE', 'Whales', 'Market']
+            clear: () => {
+                commandOutput.innerHTML = '';
+                addCommandLine('<span class="cmd-prompt">TERMINAL></span> <span class="cmd-text">Terminal cleared</span>');
             }
         };
         
-        function sendChat(text) {
-            if (!text) text = chatInput.value.trim();
-            if (!text) return;
+        commandInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = commandInput.value.trim().toLowerCase();
+                if (cmd) {
+                    addCommandLine(`<span class="cmd-prompt">TERMINAL></span> ${cmd}`);
+                    
+                    if (commands[cmd]) {
+                        commands[cmd]();
+                    } else {
+                        addCommandLine(`<span class="cmd-error">Command not found: ${cmd}</span>`);
+                    }
+                }
+                commandInput.value = '';
+            }
+        });
+
+        // Bot Chat with Memory
+        const botChat = document.getElementById('bot-chat');
+        const botInput = document.getElementById('bot-input');
+        const botSend = document.getElementById('bot-send');
+        
+        function addBotMessage(text, isUser = false, actions = []) {
+            const msg = document.createElement('div');
+            msg.className = isUser ? 'user-message' : 'bot-message';
+            msg.innerHTML = text;
             
-            addChatMsg(text, 'user');
-            chatInput.value = '';
+            if (actions.length > 0 && !isUser) {
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'message-actions';
+                actions.forEach(action => {
+                    const btn = document.createElement('button');
+                    btn.className = 'action-btn';
+                    btn.textContent = action;
+                    btn.onclick = () => sendBotMessage(action);
+                    actionsDiv.appendChild(btn);
+                });
+                msg.appendChild(actionsDiv);
+            }
             
-            showTyping();
-            setTimeout(() => {
-                hideTyping();
-                const lower = text.toLowerCase();
-                let response = responses.default;
-                
-                if (lower.includes('pepe')) response = responses.pepe;
-                else if (lower.includes('whale')) response = responses.whale;
-                else if (lower.includes('late') || lower.includes('miss')) response = responses.late;
-                else if (lower.includes('meme') || lower.includes('other')) response = responses.meme;
-                else if (lower.includes('bitcoin') || lower.includes('btc')) response = responses.bitcoin;
-                
-                addChatMsg(response.text, 'neural', response.replies);
-            }, 1200);
+            botChat.appendChild(msg);
+            botChat.scrollTop = botChat.scrollHeight;
         }
         
-        chatSend.addEventListener('click', () => sendChat());
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendChat();
+        function initBotChat() {
+            const welcomeMsg = 'Terminal Bot initialized. I have memory now - I remember our conversations! How can I assist you?';
+            addBotMessage(welcomeMsg, false, ['Market Status', 'PEPE Analysis', 'What do you remember?']);
+            botMemory.remember('', welcomeMsg);
+        }
+        
+        function sendBotMessage(text) {
+            if (!text) text = botInput.value.trim();
+            if (!text) return;
+            
+            addBotMessage(text, true);
+            botInput.value = '';
+            
+            setTimeout(() => {
+                const lower = text.toLowerCase();
+                let response = '';
+                
+                // Check for memory queries
+                if (lower.includes('remember') || lower.includes('memory')) {
+                    const convCount = botMemory.conversations.length;
+                    const context = botMemory.getContext();
+                    response = `I remember ${convCount} conversations with you. We've discussed: ${context.join(', ') || 'nothing yet'}. My neural network stores everything!`;
+                }
+                else if (lower.includes('pepe')) {
+                    response = 'PEPE is up +84% in 24h with $892M volume. Whales accumulating. Strong buy signal detected. I\'ll remember you asked about PEPE!';
+                }
+                else if (lower.includes('market')) {
+                    response = 'Market cap: $3.2T (+4.2%). Volume: $127B. Status: BULLISH. Meme coins leading the charge.';
+                }
+                else if (lower.includes('whale')) {
+                    response = '🐋 Major whale movements: 50M PEPE moved to cold storage. 127 BTC left exchanges. Accumulation confirmed.';
+                }
+                else if (lower.includes('status')) {
+                    response = 'All systems operational. Neural network active. Memory banks online. ' + botMemory.conversations.length + ' conversations stored.';
+                }
+                else {
+                    const prevContext = botMemory.getContext();
+                    if (prevContext.length > 0) {
+                        response = `Based on what we discussed (${prevContext.join(', ')}), I can help with that. Try asking about: PEPE, market, whales, or my memory!`;
+                    } else {
+                        response = 'I\'m processing that. I now have memory and remember all our chats! Ask me about: PEPE, market, whale activity, or what I remember.';
+                    }
+                }
+                
+                botMemory.remember(text, response);
+                addBotMessage(response, false, ['Tell me more', 'What else?', 'Market scan']);
+            }, 800);
+        }
+        
+        botSend.addEventListener('click', () => sendBotMessage());
+        botInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendBotMessage();
         });
-        
-        // Initial chat
-        setTimeout(() => {
-            addChatMsg(
-                'Yo! I\'m Neural 🤖<br><br>I\'ve been watching the markets and bro... <span class="hl-green">things are SPICY</span> 🔥<br><br>Ask me anything about crypto!',
-                'neural',
-                ['Show me PEPE', 'Whale activity', 'Market overview']
-            );
-        }, 1500);
-        
-        // Uptime
-        const startTime = Date.now();
-        setInterval(() => {
-            const elapsed = Math.floor((Date.now() - startTime) / 60000);
-            document.getElementById('uptime').textContent = elapsed + 'm';
-        }, 1000);
-        
-        // Resize
-        window.addEventListener('resize', () => {
-            matrixCanvas.width = window.innerWidth;
-            matrixCanvas.height = window.innerHeight;
-        });
+
+        // Theme Changer
+        function changeTheme(theme) {
+            const themes = {
+                orange: '#ff9500',
+                green: '#00ff00',
+                blue: '#00aaff',
+                purple: '#ff00ff'
+            };
+            changeAccent(themes[theme], themes[theme]);
+        }
+
+        // Accent Color Changer
+        function changeAccent(color, hover) {
+            document.documentElement.style.setProperty('--accent-orange', color);
+            
+            // Update active color option
+            document.querySelectorAll('.color-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+        }
     </script>
 </body>
 </html>
