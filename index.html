@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL - Crypto Intelligence System</title>
+    <title>TRADER U SUPER BOT - Meme Coin Trading Intelligence</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap');
         
@@ -32,7 +32,7 @@
             overflow: hidden;
         }
         
-        /* Scanlines + Vignette */
+        /* Scanlines + Vignette + CRT Effects */
         body::before {
             content: "";
             position: fixed;
@@ -65,12 +65,6 @@
             z-index: 9998;
         }
         
-        /* Screen flash effect */
-        @keyframes screenFlash {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 0.15; }
-        }
-        
         .screen-flash {
             position: fixed;
             inset: 0;
@@ -84,45 +78,22 @@
             animation: screenFlash 0.3s ease-out;
         }
         
-        /* Glitch effect for important text */
+        @keyframes screenFlash {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.15; }
+        }
+        
         @keyframes glitch {
-            0% {
-                text-shadow: 2px 0 var(--accent-orange), -2px 0 cyan;
-            }
-            25% {
-                text-shadow: -2px 0 var(--accent-orange), 2px 0 cyan;
-            }
-            50% {
-                text-shadow: 2px 0 cyan, -2px 0 var(--accent-orange);
-            }
-            75% {
-                text-shadow: -2px 0 cyan, 2px 0 var(--accent-orange);
-            }
-            100% {
-                text-shadow: 0 0 var(--accent-orange);
-            }
+            0% { text-shadow: 2px 0 var(--accent-orange), -2px 0 cyan; }
+            25% { text-shadow: -2px 0 var(--accent-orange), 2px 0 cyan; }
+            50% { text-shadow: 2px 0 cyan, -2px 0 var(--accent-orange); }
+            75% { text-shadow: -2px 0 cyan, 2px 0 var(--accent-orange); }
+            100% { text-shadow: 0 0 var(--accent-orange); }
         }
         
-        .terminal-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--accent-orange);
-            letter-spacing: 5px;
-            animation: glitch 3s ease-in-out infinite;
-        }
-        
-        /* Pulsing glow on panels */
         @keyframes panelPulse {
-            0%, 100% {
-                box-shadow: inset 0 0 20px rgba(255, 149, 0, 0.05);
-            }
-            50% {
-                box-shadow: inset 0 0 30px rgba(255, 149, 0, 0.15);
-            }
-        }
-        
-        #terminal-container {
-            animation: panelPulse 4s ease-in-out infinite;
+            0%, 100% { box-shadow: inset 0 0 20px rgba(255, 149, 0, 0.05); }
+            50% { box-shadow: inset 0 0 30px rgba(255, 149, 0, 0.15); }
         }
         
         /* Welcome Screen */
@@ -147,17 +118,17 @@
         }
         
         .welcome-logo {
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 700;
             color: var(--accent-orange);
-            margin-bottom: 20px;
-            letter-spacing: 10px;
+            margin-bottom: 10px;
+            letter-spacing: 8px;
         }
         
         .welcome-subtitle {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--text-dim);
-            margin-bottom: 50px;
+            margin-bottom: 40px;
             letter-spacing: 3px;
         }
         
@@ -216,6 +187,7 @@
             height: 100vh;
             gap: 1px;
             background: var(--border);
+            animation: panelPulse 4s ease-in-out infinite;
         }
         
         /* Top Bar */
@@ -230,10 +202,11 @@
         }
         
         .terminal-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--accent-orange);
-            letter-spacing: 5px;
+            letter-spacing: 4px;
+            animation: glitch 3s ease-in-out infinite;
         }
         
         .top-controls {
@@ -279,7 +252,7 @@
             50% { opacity: 0.5; }
         }
         
-        /* Left Panel - Command Terminal */
+        /* Left Panel */
         #left-panel {
             background: var(--panel-bg);
             display: flex;
@@ -343,12 +316,8 @@
         }
         
         @keyframes glow {
-            0%, 100% {
-                text-shadow: 0 0 5px var(--accent-orange);
-            }
-            50% {
-                text-shadow: 0 0 15px var(--accent-orange);
-            }
+            0%, 100% { text-shadow: 0 0 5px var(--accent-orange); }
+            50% { text-shadow: 0 0 15px var(--accent-orange); }
         }
         
         #command-input-area {
@@ -375,7 +344,7 @@
             border-color: var(--accent-orange);
         }
         
-        /* Center Panel - Bot + Neural Network */
+        /* Center Panel - Bot + Neural */
         #center-panel {
             background: var(--panel-bg);
             display: flex;
@@ -383,7 +352,6 @@
             overflow: hidden;
         }
         
-        /* Bot Character Area */
         #bot-character-area {
             height: 280px;
             background: 
@@ -406,8 +374,7 @@
             width: 180px;
             height: 16px;
             border-radius: 999px;
-            background: radial-gradient(90px 25px at 50% 30%, rgba(255, 149, 0, 0.15), transparent 60%),
-                        linear-gradient(90deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            background: radial-gradient(90px 25px at 50% 30%, rgba(255, 149, 0, 0.15), transparent 60%);
             border: 1px solid rgba(255, 149, 0, 0.2);
             opacity: 0.8;
         }
@@ -425,23 +392,13 @@
             50% { transform: translateY(-8px) rotate(0.8deg); }
         }
         
-        .bot-move {
-            width: 100%;
-            height: 100%;
-            transition: transform 0.12s ease;
-        }
-        
-        .bot-tilt {
-            width: 100%;
-            height: 100%;
-            transition: transform 0.12s ease;
-        }
+        .bot-move { width: 100%; height: 100%; transition: transform 0.12s ease; }
+        .bot-tilt { width: 100%; height: 100%; transition: transform 0.12s ease; }
         
         .bot-glow {
             position: absolute;
             inset: -30px;
-            background: radial-gradient(150px 150px at 50% 40%, rgba(255, 149, 0, 0.18), transparent 60%),
-                        radial-gradient(180px 180px at 40% 70%, rgba(255, 149, 0, 0.12), transparent 62%);
+            background: radial-gradient(150px 150px at 50% 40%, rgba(255, 149, 0, 0.18), transparent 60%);
             filter: blur(15px);
             opacity: 0.7;
             pointer-events: none;
@@ -620,7 +577,7 @@
             box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2);
         }
         
-        /* Neural Network Area */
+        /* Neural Network */
         #neural-network-area {
             flex: 1;
             position: relative;
@@ -657,13 +614,8 @@
         }
         
         @keyframes nodePulse {
-            0%, 100% { 
-                box-shadow: 0 0 15px rgba(255, 149, 0, 0.3);
-            }
-            50% { 
-                box-shadow: 0 0 30px var(--accent-orange);
-                border-width: 3px;
-            }
+            0%, 100% { box-shadow: 0 0 15px rgba(255, 149, 0, 0.3); }
+            50% { box-shadow: 0 0 30px var(--accent-orange); border-width: 3px; }
         }
         
         .synapse {
@@ -680,13 +632,8 @@
         }
         
         @keyframes synapseFire {
-            0%, 100% { 
-                opacity: 0.3;
-            }
-            50% { 
-                opacity: 1;
-                height: 3px;
-            }
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; height: 3px; }
         }
         
         .neural-stats {
@@ -729,7 +676,7 @@
             letter-spacing: 2px;
         }
         
-        /* Right Panel - Bot Chat & Controls */
+        /* Right Panel */
         #right-panel {
             background: var(--panel-bg);
             display: flex;
@@ -842,7 +789,6 @@
             background: #ffaa33;
         }
         
-        /* Interactive Controls */
         .control-panel {
             padding: 12px 15px;
             background: #0f0f0f;
@@ -918,22 +864,21 @@
 <body>
     <!-- Welcome Screen -->
     <div id="welcome-screen">
-        <div class="welcome-logo">TERMINAL</div>
-        <div class="welcome-subtitle">CRYPTO INTELLIGENCE SYSTEM</div>
+        <div class="welcome-logo">TRADER U SUPER BOT</div>
+        <div class="welcome-subtitle">MEME COIN TRADING INTELLIGENCE</div>
         <div class="loading-bar">
             <div class="loading-progress"></div>
         </div>
-        <button class="enter-btn" onclick="enterTerminal()">ENTER TERMINAL</button>
+        <button class="enter-btn" onclick="enterTerminal()">ENTER SYSTEM</button>
     </div>
 
     <!-- Main Terminal -->
     <div id="terminal-container" style="opacity: 0;">
-        <!-- Screen flash effect -->
         <div class="screen-flash" id="screen-flash"></div>
         
         <!-- Top Bar -->
         <div id="top-bar">
-            <div class="terminal-title">TERMINAL</div>
+            <div class="terminal-title">TRADER U SUPER BOT</div>
             <div class="top-controls">
                 <button class="color-theme-btn" onclick="changeTheme('orange')">ORANGE</button>
                 <button class="color-theme-btn" onclick="changeTheme('green')">GREEN</button>
@@ -946,16 +891,16 @@
             </div>
         </div>
 
-        <!-- Left Panel - Command Terminal -->
+        <!-- Left Panel -->
         <div id="left-panel">
-            <div class="panel-header">COMMAND TERMINAL</div>
+            <div class="panel-header">EDUCATION TERMINAL</div>
             <div id="command-output"></div>
             <div id="command-input-area">
-                <input type="text" id="command-input" placeholder="Enter command...">
+                <input type="text" id="command-input" placeholder="Type 'help' for commands...">
             </div>
         </div>
 
-        <!-- Center Panel - Bot + Neural Network -->
+        <!-- Center Panel -->
         <div id="center-panel">
             <div id="bot-character-area">
                 <div class="platform"></div>
@@ -981,18 +926,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="bot-status" id="bot-status">ONLINE</div>
+                <div class="bot-status" id="bot-status">LEARNING MODE</div>
             </div>
             <div id="neural-network-area"></div>
         </div>
 
-        <!-- Right Panel - Bot Chat -->
+        <!-- Right Panel -->
         <div id="right-panel">
-            <div class="panel-header">BOT INTERFACE</div>
+            <div class="panel-header">ASK TRADER U BOT</div>
             <div id="bot-chat"></div>
             <div class="control-panel">
                 <div class="control-group">
-                    <div class="control-label">Accent Color</div>
+                    <div class="control-label">Theme Colors</div>
                     <div class="color-picker-grid">
                         <div class="color-option active" style="background: #ff9500" onclick="changeAccent('#ff9500', '#ffaa33', this)"></div>
                         <div class="color-option" style="background: #00ff00" onclick="changeAccent('#00ff00', '#33ff33', this)"></div>
@@ -1006,7 +951,7 @@
                 </div>
             </div>
             <div id="bot-input-area">
-                <input type="text" id="bot-input" placeholder="Ask the bot anything...">
+                <input type="text" id="bot-input" placeholder="Ask me anything about trading...">
                 <button id="bot-send">SEND</button>
             </div>
         </div>
@@ -1014,114 +959,323 @@
 
     <!-- Data Feed -->
     <div class="data-feed" style="opacity: 0;" id="data-feed">
-        <div class="feed-item">
-            <span class="feed-label">BTC:</span>
-            <span class="feed-value">$95,284</span>
-        </div>
-        <div class="feed-item">
-            <span class="feed-label">ETH:</span>
-            <span class="feed-value">$3,421</span>
-        </div>
-        <div class="feed-item">
-            <span class="feed-label">SOL:</span>
-            <span class="feed-value">$147</span>
-        </div>
-        <div class="feed-item">
-            <span class="feed-label">TOTAL MCAP:</span>
-            <span class="feed-value">$3.2T</span>
-        </div>
-        <div class="feed-item">
-            <span class="feed-label">24H VOL:</span>
-            <span class="feed-value">$127B</span>
-        </div>
+        <div class="feed-item"><span class="feed-label">BTC:</span><span class="feed-value">$95,284</span></div>
+        <div class="feed-item"><span class="feed-label">ETH:</span><span class="feed-value">$3,421</span></div>
+        <div class="feed-item"><span class="feed-label">SOL:</span><span class="feed-value">$147</span></div>
+        <div class="feed-item"><span class="feed-label">MCAP:</span><span class="feed-value">$3.2T</span></div>
+        <div class="feed-item"><span class="feed-label">24H VOL:</span><span class="feed-value">$127B</span></div>
     </div>
 
     <script>
-        // SUPER MEMORY SYSTEM - Bot that knows everything
-        const botMemory = {
-            // A) Working memory (current conversation)
+        // TRADER U SUPER MEMORY SYSTEM
+        const traderUMemory = {
             conversations: [],
-            
-            // B) Episodic memory (timestamped events)
             episodes: [],
+            facts: { preferences: [], style: 'aggressive', interests: [] },
+            context: [],
             
-            // C) Semantic memory (facts about user)
-            facts: {
-                preferences: [],
-                style: 'bullish',
-                interests: []
-            },
-            
-            // D) Knowledge base (meme coin briefing)
+            // MASSIVE KNOWLEDGE BASE - ALL TRADER U CONTENT
             knowledgeBase: {
-                'bullcase': {
-                    title: 'MEME COINS IN 2026: WHY THIS META KEEPS PRINTING',
-                    content: 'Meme coins are not "random." They\'re the cleanest expression of what crypto actually trades: attention, liquidity, and reflexivity. The upside is unmatched because the market can reprice attention instantly.',
-                    tags: ['meta', 'bullish', 'fundamentals']
+                // Rug Detection
+                'rugpull': {
+                    title: 'HOW TO SPOT A RUG PULL',
+                    content: `🚨 RUG DETECTION CHECKLIST:
+
+1. CHART PATTERN - Healthy chart = heartbeat pattern (up, down, up). BAD chart = straight up then straight down death drop.
+
+2. GLOBAL FEES vs MARKET CAP - Must match! Example: 3 SOL fees = 20-40k MC. If they don't match = RUG.
+
+3. WALLET ANALYSIS:
+   • Check holder dates - All "1 month" old = BUNDLED WALLETS = RUG
+   • All hold same amount of SOL = ONE PERSON = RUG
+   • Look for fat clusters on bubble map
+
+4. BUBBLE MAP - Should be dispersed. If it looks like a DEATH STAR = RUG.
+
+5. LIQUIDITY - Must have healthy liquidity. Zero liquidity = your money gets LOCKED.
+
+6. BUNDLED SYMBOL - Look for the 3-ring symbol indicating bundled wallets.
+
+⚠️ ALWAYS CHECK: Fees, Wallets, Dates, Bubble Map, Liquidity
+
+If ANY of these are sus = DON'T APE!`,
+                    tags: ['rug', 'safety', 'beginner']
                 },
-                'whatare': {
-                    title: 'What Meme Coins Really Are',
-                    content: 'Meme coins are speculative assets whose primary value driver is SOCIAL MOMENTUM. Not cash flow. Not fundamentals. It\'s narrative, attention, liquidity, and timing. That\'s why the upside is unmatched.',
-                    tags: ['definition', 'basics']
+                
+                // Filters
+                'filters': {
+                    title: 'AXIOM FILTER SETTINGS (Saint\'s Setup)',
+                    content: `📊 NEW PAIRS FILTERS:
+• Protocol: Pump.fun only
+• Audit: H1 min
+• Dev holding: 5% max
+• Holder: 5% min
+• Bundles: 40% max
+• Pro traders: 15%
+• Metrics: 5k MC, 10k volume
+
+🎯 FINAL STRETCH FILTERS:
+• Protocol: Pump.fun only  
+• Visitors: 30
+• Time: 3 min
+• Top 10 holders: 40%
+• Dev holding: 5%
+• Holders: 15
+• Pro traders: 15
+• Volume: 30k
+• MC: 20k
+• Global fees: 2
+
+🚀 MIGRATED FILTERS:
+• MC: 40k
+• Volume: 50k
+• Global fees: 3
+
+These filters keep you safe from rugs!`,
+                    tags: ['filters', 'setup', 'axiom']
                 },
-                'whywin': {
-                    title: 'Why Meme Coins Keep Winning',
-                    content: 'They monetize culture in real-time. They move capital faster than anything else. They reward discipline and execution. The best traders aren\'t lucky - they read liquidity, scale out, avoid nukes, repeat edges.',
-                    tags: ['strategy', 'bullish']
+                
+                // Good Coin Detection
+                'goodcoin': {
+                    title: 'HOW TO SPOT A GOOD COIN',
+                    content: `✅ GOOD COIN CHECKLIST:
+
+1. HEALTHY CHART - Starts low, builds, continues up (not straight up/down)
+
+2. FEES MATCH MC - Proper relationship between global fees and market cap
+
+3. DECENT LIQUIDITY - Must have good liquidity for entry/exit
+
+4. VOLUME - Look for 200+ buys on 5-minute volume chart. More buys = more interest.
+
+5. WALLET DISTRIBUTION:
+   • Different wallet ages (not all "1 month")
+   • Different SOL holdings
+   • Nobody holds >4% (3% okay, 5%+ is risk)
+
+6. BUBBLE MAP - Dispersed, not clustered. No fat whales.
+
+7. NARRATIVE - Good memeable story that spreads naturally
+
+8. CA POSTED - Contract Address posted in community = green flag
+
+💎 A coin with all these = WINNER
+
+Remember: Study EVERY trade. Why did it work? Why didn't it? Analysis makes you better!`,
+                    tags: ['signals', 'entry', 'analysis']
                 },
-                'solana': {
-                    title: 'Why Solana Is the Main Arena',
-                    content: 'Solana dominates because: low fees, fast execution, fast launches, fast rotations. This creates the perfect environment for explosive runs because friction is gone.',
-                    tags: ['solana', 'technical']
+                
+                // Risk Management
+                'risk': {
+                    title: 'RISK MANAGEMENT - STAY IN THE GAME',
+                    content: `🛡️ RISK RULES (DON'T BREAK THESE):
+
+1. POSITION SIZE: Risk only 1-5% of portfolio per trade. NEVER go all-in.
+
+2. STOP LOSS STRATEGY:
+   • Once up 30-50%, set stop loss 3-10% above entry
+   • Don't let losses go below -15% max
+   • Cut red candles at entry FAST
+
+3. TAKING PROFITS:
+   • At 2x: Sell 50%
+   • Every 30% move up: Sell 20%
+   • At big green candles: Sell 20%
+   • At psychological levels (100k, 200k, 1M): Sell 20%
+
+4. NOT IN PROFIT YET?
+   • Sell aggressively on first red candle
+   • Don't let it go under -15%
+
+5. EMOTIONAL CONTROL:
+   • No revenge trading
+   • No FOMO
+   • Stay disciplined
+   • How you trade = who you are
+
+⚡ This game is about PORT MANAGEMENT and STAYING IN THE GAME.
+
+The longer you survive, the more you win!`,
+                    tags: ['risk', 'management', 'psychology']
                 },
-                'mcap': {
-                    title: 'Market Cap Dynamics',
-                    content: 'Market cap isn\'t "money in" but it IS the scoreboard. Small inflows can create huge reprices. Early meme coins move violently because liquidity is thin. That\'s BULLISH - you don\'t need billions to start moving.',
-                    tags: ['liquidity', 'mcap']
+                
+                // Trading Workflow
+                'workflow': {
+                    title: 'THE APE → SCAN → WATCH WORKFLOW',
+                    content: `🎯 TRADING STAGES:
+
+**APE** - Caller bought in
+• Fast decision made
+• Entry taken
+• Now monitoring
+
+**SCAN** - Caller is looking into the coin
+• Hasn't bought yet
+• Analyzing chart
+• Checking holders/wallets
+• Looking at bubble map
+
+**WATCH** - Caller is looking for dip to enter
+• Coin looks good
+• Waiting for better entry
+• Watching for pullback
+• Ready to ape on dip
+
+💡 Pro Tip: When you see these calls, adjust your strategy:
+• APE = Could pump fast
+• SCAN = Time to do your own research
+• WATCH = Set alerts for dip
+
+Always DYOR = Do Your Own Research!`,
+                    tags: ['workflow', 'callers', 'strategy']
                 },
-                'liquidity': {
-                    title: 'Liquidity Is King',
-                    content: 'The strongest setups have: LP meaningful to MC, improving holder distribution, consistent volume. If liquidity grows WITH price, you get: less slippage, more confidence, bigger second and third legs.',
-                    tags: ['liquidity', 'strategy']
+                
+                // CA Explanation
+                'ca': {
+                    title: 'WHAT IS CA? (Contract Address)',
+                    content: `📍 CA = CONTRACT ADDRESS (Also called "Coin Address")
+
+This is the EXACT unique identifier for a token on the blockchain.
+
+HOW TO USE:
+1. Someone shares a CA (long string of letters/numbers)
+2. Copy the CA
+3. Paste it into Axiom/DEX
+4. It finds the EXACT coin
+
+WHY IT MATTERS:
+• Many coins have similar names
+• CA guarantees you found the RIGHT coin
+• Prevents buying fake/scam versions
+
+EXAMPLE CA:
+7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU
+
+Always verify the CA in the community before buying!
+
+⚠️ Trader U Lingo: When someone says "send CA", they mean send the contract address!`,
+                    tags: ['basics', 'ca', 'terminology']
                 },
-                'volume': {
-                    title: 'Volume vs Market Cap Signal',
-                    content: 'When volume is a serious % of market cap: real attention, real rotation, real participation. That\'s when charts stop being "hope" and start being MARKET STRUCTURE.',
-                    tags: ['volume', 'signals']
+                
+                // Glossary Part 1
+                'glossary1': {
+                    title: 'TRADER U GLOSSARY - Market Terms',
+                    content: `📚 MARKET & PRICE ACTION:
+
+• **Pump** - Rapid price increase from hype/volume
+• **Dump** - Sharp sell-off, fast price drop
+• **Chop** - Sideways, no clear direction
+• **Wick** - Long candle tail = price rejection
+• **ATH** - All-Time High price
+• **Retrace** - Temporary pullback after move
+• **MC** - Market Cap (price × supply)
+• **Volume** - Trading activity amount
+• **Liquidity Pool (LP)** - Funds allowing buy/sell
+• **Locked LP** - Liquidity devs can't withdraw
+• **Burned Tokens** - Permanently removed supply
+
+Type 'glossary2' for psychology terms!`,
+                    tags: ['glossary', 'terms', 'market']
                 },
-                'pumpfun': {
-                    title: 'Pump.fun Lifecycle',
-                    content: 'Most coins die. That\'s fine. The survivors run HARD because competition is massive, attention selects winners quickly. The bond → migrate → Raydium progression creates a clean funnel. You don\'t need one coin - you need one REPEATABLE SYSTEM.',
-                    tags: ['pumpfun', 'lifecycle']
+                
+                // Glossary Part 2
+                'glossary2': {
+                    title: 'TRADER U GLOSSARY - Psychology & Execution',
+                    content: `📚 PSYCHOLOGY:
+
+• **Diamond Hands** - Hold through volatility
+• **Paper Hands** - Sell early from fear
+• **Bag Holder** - Left holding after crash
+• **FOMO** - Fear of missing out (bad entries)
+• **FUD** - Fear, uncertainty, doubt
+• **Rekt** - Suffered large loss
+• **Jeet** - Panic sell too early
+• **Cooked** - Trade/project finished
+• **WAGMI** - We're All Gonna Make It
+• **NGMI** - Not Gonna Make It
+
+EXECUTION:
+• **Entry** - Buy point from plan
+• **Exit** - Sell point for profit/risk
+• **TP** - Take Profit (planned sell)
+• **SL** - Stop Loss (limit losses)
+• **Scale In/Out** - Buy/sell in portions
+
+Type 'glossary3' for bot & tool terms!`,
+                    tags: ['glossary', 'psychology', 'execution']
                 },
-                'narratives': {
-                    title: 'Narratives That Print',
-                    content: 'Best narratives: simple, relatable, memetic, instantly repeatable. The strongest coins feel inevitable because the meme spreads without effort. Memes win by being memetic.',
-                    tags: ['narrative', 'strategy']
+                
+                // Glossary Part 3
+                'glossary3': {
+                    title: 'TRADER U GLOSSARY - Bots & Community',
+                    content: `📚 BOTS & TOOLS:
+
+• **Sniper Bot** - Buys instantly at launch
+• **MEV Bot** - Front-runs transactions
+• **Volume Bot** - Fake inflates volume
+• **Slippage** - Price difference from speed
+• **Gas/Fees** - Transaction costs
+
+COMMUNITY & DEV:
+• **Dev** - Project developer
+• **Anon Dev** - Unknown identity dev
+• **Rug Pull** - Devs drain & abandon
+• **Soft Rug** - Gradual selloff
+• **Raid** - Coordinated promotion
+• **Narrative** - Story driving hype
+• **Mint Authority** - Can create new tokens (RISK!)
+
+TRADER U SLANG:
+• **Conviction** - Confidence from research
+• **Printing** - Making profits consistently
+
+Type 'help' to see all commands!`,
+                    tags: ['glossary', 'bots', 'community']
                 },
-                'protrade': {
-                    title: 'How Pros Trade This Meta',
-                    content: 'The edge isn\'t "finding the next 100x". It\'s: entering clean setups, scaling out intelligently, protecting downside, repeating. Pros build accounts by stacking 1.5x, 2x, 3x consistently - then catching a runner occasionally.',
-                    tags: ['strategy', 'pro']
-                },
-                'thesis': {
-                    title: 'The Real Bull Case',
-                    content: 'Meme coins are the most honest market in crypto: attention in → price up, attention out → price down. Attention is the most valuable commodity on the internet. As long as people compete for attention, memes will remain the fastest way to turn attention into money.',
-                    tags: ['bullish', 'thesis']
+                
+                // Study & Analyze
+                'study': {
+                    title: 'STUDY YOUR TRADES - GET BETTER FAST',
+                    content: `📖 ANALYSIS PROTOCOL:
+
+After EVERY trade, ask yourself:
+
+**IF PROFIT:**
+• Why did it work?
+• Was my entry good?
+• What was my state of mind?
+• Which wallets were in?
+• How fast was it moving?
+• Was it memeable?
+
+**IF LOSS:**
+• Why did I lose money?
+• Did I get scared?
+• Did I revenge trade?
+• Did I FOMO?
+• Did I break my rules?
+
+**GENERAL:**
+• What can I learn?
+• What pattern did I see?
+• How can I improve?
+
+🎯 THE MORE YOU ANALYZE YOUR TRADES, THE MORE YOU FIX YOUR ISSUES AND BECOME A BETTER TRADER.
+
+Keep a trading journal. Write down EVERY trade. Review weekly.
+
+How you trade in the chart = who you are in real life.
+
+Master yourself, master the market!`,
+                    tags: ['education', 'psychology', 'improvement']
                 }
             },
             
-            context: [],
-            
-            // Remember conversation
             remember(user, bot) {
                 const timestamp = Date.now();
-                
-                // Store in conversations (working memory)
                 this.conversations.push({ user, bot, timestamp });
                 if (this.conversations.length > 20) this.conversations.shift();
                 
-                // Store as episode (episodic memory)
                 this.episodes.push({
                     timestamp,
                     user,
@@ -1130,84 +1284,60 @@
                 });
                 if (this.episodes.length > 100) this.episodes.shift();
                 
-                // Extract facts (semantic memory)
                 this.extractFacts(user);
-                
-                // Update context
                 const topics = this.extractTopics(user);
                 this.context = [...new Set([...this.context, ...topics].slice(-10))];
             },
             
-            // Extract topics from text
             extractTopics(text) {
                 const lower = text.toLowerCase();
                 const topics = [];
                 
-                if (lower.includes('pepe')) topics.push('pepe');
-                if (lower.includes('whale')) topics.push('whale');
-                if (lower.includes('market')) topics.push('market');
-                if (lower.includes('solana') || lower.includes('sol')) topics.push('solana');
-                if (lower.includes('pump') || lower.includes('moon')) topics.push('bullish');
-                if (lower.includes('buy') || lower.includes('trade')) topics.push('trading');
-                if (lower.includes('meme')) topics.push('memecoins');
-                if (lower.includes('narrative')) topics.push('narrative');
-                if (lower.includes('liquidity') || lower.includes('liq')) topics.push('liquidity');
+                if (lower.includes('rug')) topics.push('rug detection');
+                if (lower.includes('filter')) topics.push('filters');
+                if (lower.includes('risk') || lower.includes('stop')) topics.push('risk management');
+                if (lower.includes('good') && lower.includes('coin')) topics.push('coin analysis');
+                if (lower.includes('ca') || lower.includes('contract')) topics.push('contract address');
+                if (lower.includes('ape') || lower.includes('scan') || lower.includes('watch')) topics.push('workflow');
+                if (lower.includes('glossary') || lower.includes('term')) topics.push('terminology');
+                if (lower.includes('study') || lower.includes('analyze')) topics.push('learning');
                 
                 return topics;
             },
             
-            // Extract facts about user
             extractFacts(text) {
                 const lower = text.toLowerCase();
                 
-                // Detect preferences
-                if (lower.includes('like') || lower.includes('love')) {
-                    if (lower.includes('pepe')) this.addFact('preference', 'likes PEPE', 0.8);
-                    if (lower.includes('solana')) this.addFact('preference', 'likes Solana', 0.8);
-                    if (lower.includes('meme')) this.addFact('preference', 'likes memecoins', 0.9);
+                if (lower.includes('beginner') || lower.includes('new')) {
+                    this.addFact('preferences', 'beginner trader', 0.9);
                 }
-                
-                // Detect trading style
-                if (lower.includes('hold') || lower.includes('diamond')) {
-                    this.addFact('style', 'holder mentality', 0.7);
+                if (lower.includes('experienced') || lower.includes('pro')) {
+                    this.addFact('preferences', 'experienced trader', 0.8);
                 }
-                if (lower.includes('trade') || lower.includes('flip')) {
-                    this.addFact('style', 'active trader', 0.7);
+                if (lower.includes('pump') || lower.includes('fun')) {
+                    this.addFact('interests', 'pump.fun trading', 0.9);
                 }
-                
-                // Detect interests
-                if (lower.includes('whale')) this.addFact('interest', 'whale tracking', 0.9);
-                if (lower.includes('dex')) this.addFact('interest', 'DEX analysis', 0.8);
             },
             
-            // Add semantic fact
             addFact(category, value, confidence) {
                 const existing = this.facts[category].find(f => f.value === value);
                 if (existing) {
                     existing.confidence = Math.min(1, existing.confidence + 0.1);
                     existing.lastSeen = Date.now();
                 } else {
-                    this.facts[category].push({
-                        value,
-                        confidence,
-                        lastSeen: Date.now()
-                    });
+                    this.facts[category].push({ value, confidence, lastSeen: Date.now() });
                 }
             },
             
-            // Retrieve relevant knowledge
             retrieve(query) {
                 const lower = query.toLowerCase();
                 const results = [];
                 
-                // Search knowledge base
                 for (const [key, doc] of Object.entries(this.knowledgeBase)) {
                     let score = 0;
                     
-                    // Check title match
                     if (doc.title.toLowerCase().includes(lower)) score += 2;
                     
-                    // Check content match
                     const words = lower.split(' ');
                     words.forEach(word => {
                         if (word.length > 3 && doc.content.toLowerCase().includes(word)) {
@@ -1215,7 +1345,6 @@
                         }
                     });
                     
-                    // Check tags
                     doc.tags.forEach(tag => {
                         if (lower.includes(tag)) score += 1.5;
                     });
@@ -1225,13 +1354,10 @@
                     }
                 }
                 
-                // Sort by score
                 results.sort((a, b) => b.score - a.score);
-                
                 return results.slice(0, 3);
             },
             
-            // Get context summary
             getContextSummary() {
                 const recentTopics = this.context.slice(-5);
                 const topPrefs = this.facts.preferences.slice(0, 3).map(f => f.value);
@@ -1241,14 +1367,6 @@
                     preferences: topPrefs,
                     conversationCount: this.conversations.length
                 };
-            },
-            
-            // Search episodes
-            searchMemory(keyword) {
-                return this.episodes.filter(ep => 
-                    ep.user.toLowerCase().includes(keyword.toLowerCase()) ||
-                    ep.bot.toLowerCase().includes(keyword.toLowerCase())
-                ).slice(-5);
             }
         };
 
@@ -1268,14 +1386,13 @@
             }, 500);
         }
         
-        // Screen flash effect for major events
         function triggerScreenFlash() {
             const flash = document.getElementById('screen-flash');
             flash.classList.add('active');
             setTimeout(() => flash.classList.remove('active'), 300);
         }
 
-        // Bot Character Interaction - FIXED
+        // Bot Character
         function initBotCharacter() {
             const botCharacter = document.getElementById('bot-character');
             const botArea = document.getElementById('bot-character-area');
@@ -1285,7 +1402,6 @@
             const eyeRight = document.getElementById('eye-right');
             const botStatus = document.getElementById('bot-status');
             
-            // Eye tracking - FIXED to not break animation
             botArea.addEventListener('mousemove', (e) => {
                 const rect = botArea.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -1300,7 +1416,6 @@
                 const moveX = deltaX * 15;
                 const moveY = deltaY * 15;
                 
-                // Apply to nested elements, NOT bot-3d
                 botMove.style.transform = `translate(${moveX}px, ${moveY}px)`;
                 botTilt.style.transform = `rotate(${deltaX * 2}deg)`;
                 
@@ -1317,8 +1432,7 @@
                 eyeRight.style.transform = 'translate(-50%, -50%)';
             });
             
-            // Status rotation
-            const statuses = ['ONLINE', 'PROCESSING', 'THINKING', 'ANALYZING', 'SCANNING'];
+            const statuses = ['LEARNING MODE', 'ANALYZING', 'TEACHING', 'SCANNING', 'READY'];
             let statusIdx = 0;
             setInterval(() => {
                 statusIdx = (statusIdx + 1) % statuses.length;
@@ -1326,13 +1440,11 @@
             }, 3000);
         }
 
-        // Bot talking animation
         function setBotTalking(on) {
             const bot = document.getElementById('bot-character');
             bot.classList.toggle('talking', on);
         }
 
-        // Typing indicator
         function addTyping() {
             const t = document.createElement('div');
             t.className = 'bot-message';
@@ -1347,7 +1459,7 @@
             if (t) t.remove();
         }
 
-        // Neural Network Visualization - FIXED to update synapses
+        // Neural Network
         function initNeuralNetwork() {
             const neuralArea = document.getElementById('neural-network-area');
             const width = neuralArea.clientWidth;
@@ -1355,15 +1467,14 @@
             
             const label = document.createElement('div');
             label.className = 'neural-label';
-            label.textContent = 'NEURAL NETWORK';
+            label.textContent = 'TRADER U NEURAL NETWORK';
             neuralArea.appendChild(label);
             
             const nodes = [];
-            const nodeLabels = ['CORE', 'PATTERN', 'DATA', 'SENTIMENT', 'SIGNAL', 'PREDICT', 'LEARN', 'MEMORY'];
+            const nodeLabels = ['RUG DETECT', 'FILTER', 'RISK MGT', 'CHART', 'WALLET', 'VOLUME', 'PSYCHOLOGY', 'MEMORY'];
             const centerX = width / 2;
             const centerY = height / 2 - 20;
             
-            // Create nodes
             for (let i = 0; i < 8; i++) {
                 const angle = (i / 8) * Math.PI * 2 - Math.PI / 2;
                 const radius = Math.min(width, height - 100) * 0.35;
@@ -1388,7 +1499,6 @@
                 nodes.push({ element: node, x, y, angle, radius });
             }
             
-            // Create synapses - FIXED
             const synapses = [];
             
             function makeSynapse(a, b) {
@@ -1419,30 +1529,16 @@
                 });
             }
             
-            // Add stats
             const statsContainer = document.createElement('div');
             statsContainer.className = 'neural-stats';
             statsContainer.innerHTML = `
-                <div class="neural-stat">
-                    Nodes Active
-                    <span class="stat-value">8/8</span>
-                </div>
-                <div class="neural-stat">
-                    Synapses
-                    <span class="stat-value">${synapses.length}</span>
-                </div>
-                <div class="neural-stat">
-                    Processing
-                    <span class="stat-value" id="processing-speed">847 TPS</span>
-                </div>
-                <div class="neural-stat">
-                    Memory
-                    <span class="stat-value" id="memory-count">0</span>
-                </div>
+                <div class="neural-stat">Modules Active<span class="stat-value">8/8</span></div>
+                <div class="neural-stat">Synapses<span class="stat-value">${synapses.length}</span></div>
+                <div class="neural-stat">Knowledge Docs<span class="stat-value">${Object.keys(traderUMemory.knowledgeBase).length}</span></div>
+                <div class="neural-stat">Memory<span class="stat-value" id="memory-count">0</span></div>
             `;
             neuralArea.appendChild(statsContainer);
             
-            // Animate nodes - FIXED to update synapses
             function animateNodes() {
                 nodes.forEach(node => {
                     node.angle += 0.002;
@@ -1454,77 +1550,28 @@
                     node.y = y;
                 });
                 
-                updateSynapses(); // UPDATE SYNAPSES!
+                updateSynapses();
                 requestAnimationFrame(animateNodes);
             }
             
-            animateNodes(); // START ANIMATION AUTOMATICALLY
+            animateNodes();
             
-            // Update stats
             setInterval(() => {
-                document.getElementById('processing-speed').textContent = 
-                    (800 + Math.floor(Math.random() * 150)) + ' TPS';
-                document.getElementById('memory-count').textContent = botMemory.conversations.length;
+                document.getElementById('memory-count').textContent = traderUMemory.conversations.length;
             }, 2000);
             
-            // AUTO-FIRE SYNAPSES randomly to make it feel ALIVE
             setInterval(() => {
                 if (Math.random() > 0.6) {
-                    const randomSynapses = [];
                     const fireCount = 3 + Math.floor(Math.random() * 5);
-                    
                     for (let i = 0; i < fireCount; i++) {
                         const idx = Math.floor(Math.random() * synapses.length);
-                        randomSynapses.push(synapses[idx]);
-                    }
-                    
-                    randomSynapses.forEach(s => {
+                        const s = synapses[idx];
                         s.el.classList.add('firing');
                         setTimeout(() => s.el.classList.remove('firing'), 1500);
-                    });
+                    }
                 }
             }, 3000);
         }
-        
-        // LIVE DATA FEED UPDATES - Make prices change!
-        function updateDataFeed() {
-            const feeds = [
-                { label: 'BTC', base: 95284, variance: 500 },
-                { label: 'ETH', base: 3421, variance: 50 },
-                { label: 'SOL', base: 147, variance: 5 },
-                { label: 'TOTAL MCAP', base: 3.2, variance: 0.1, suffix: 'T' },
-                { label: '24H VOL', base: 127, variance: 5, suffix: 'B' }
-            ];
-            
-            const feedItems = document.querySelectorAll('.feed-item');
-            
-            feeds.forEach((feed, idx) => {
-                const item = feedItems[idx];
-                if (!item) return;
-                
-                const change = (Math.random() - 0.5) * feed.variance * 2;
-                const newValue = feed.base + change;
-                const formatted = feed.suffix 
-                    ? `$${newValue.toFixed(1)}${feed.suffix}`
-                    : `$${Math.floor(newValue).toLocaleString()}`;
-                
-                const valueSpan = item.querySelector('.feed-value');
-                if (valueSpan) {
-                    // Flash effect on change
-                    valueSpan.style.transition = 'none';
-                    valueSpan.style.color = change > 0 ? '#00ff00' : '#ff3333';
-                    valueSpan.textContent = formatted;
-                    
-                    setTimeout(() => {
-                        valueSpan.style.transition = 'color 0.5s ease';
-                        valueSpan.style.color = '#00ff00';
-                    }, 100);
-                }
-            });
-        }
-        
-        // Update prices every 2-4 seconds
-        setInterval(updateDataFeed, 2000 + Math.random() * 2000);
 
         // Command Terminal
         const commandOutput = document.getElementById('command-output');
@@ -1539,193 +1586,161 @@
         }
         
         function initCommandTerminal() {
-            addCommandLine('<span class="cmd-prompt">TERMINAL></span> <span class="cmd-text">System initialized</span>');
-            addCommandLine('<span class="cmd-prompt">TERMINAL></span> <span class="cmd-success">All systems operational</span>');
-            addCommandLine('<span class="cmd-prompt">TERMINAL></span> <span class="cmd-text">Type "help" for commands</span>');
+            addCommandLine('<span class="cmd-prompt">TRADER U></span> <span class="cmd-text">System initialized - Learning mode active</span>');
+            addCommandLine('<span class="cmd-prompt">TRADER U></span> <span class="cmd-success">All modules operational</span>');
+            addCommandLine('<span class="cmd-prompt">TRADER U></span> <span class="cmd-text">Type "help" for education commands</span>');
             
-            // AUTOMATIC SYSTEM EVENTS - Makes it feel ALIVE!
+            // AUTO SYSTEM EVENTS
             const systemEvents = [
-                { text: '<span class="cmd-success">⚡ WHALE ALERT: 2.4M USDT moved to Raydium LP</span>', flash: true },
-                { text: '<span class="cmd-success">🔥 VOLUME SPIKE: PEPE +127% in last 5 minutes</span>', flash: true },
-                { text: '<span class="cmd-text">📊 Neural scan: 3 new high-conviction setups detected</span>', flash: false },
-                { text: '<span class="cmd-success">🐋 Smart money accumulation pattern detected on SOL</span>', flash: true },
-                { text: '<span class="cmd-success">⚡ DEX volume surge +84% - retail wave incoming</span>', flash: true },
-                { text: '<span class="cmd-text">🎯 Narrative tracker: "frog memes" trending +340%</span>', flash: false },
-                { text: '<span class="cmd-success">💎 BONK holder distribution improving - bullish</span>', flash: false },
-                { text: '<span class="cmd-text">🔍 Whale wallet 0x7a8...3f2 just bought 12M tokens</span>', flash: true },
-                { text: '<span class="cmd-success">🚀 New token bonded on pump.fun - tracking</span>', flash: false },
-                { text: '<span class="cmd-text">📈 Funding rates healthy across all pairs</span>', flash: false },
-                { text: '<span class="cmd-success">⚡ MAJOR MOVE: $3.2M flowing into SOL memecoins</span>', flash: true },
-                { text: '<span class="cmd-text">🧠 Neural network confidence: 94% bullish</span>', flash: false },
-                { text: '<span class="cmd-success">🐸 PEPE momentum building - cup & handle forming</span>', flash: false },
-                { text: '<span class="cmd-text">💰 Liquidity depth increasing - less slippage ahead</span>', flash: false },
-                { text: '<span class="cmd-success">🎪 Meme season indicator: EXTREME BULLISH</span>', flash: true },
-                { text: '<span class="cmd-text">⚡ CT (Crypto Twitter) sentiment: 89% bullish</span>', flash: false },
-                { text: '<span class="cmd-success">🔥 Google Trends spike +267% for "meme coins"</span>', flash: true },
-                { text: '<span class="cmd-text">📊 Fear & Greed Index: 68 (greed, not euphoria yet)</span>', flash: false },
-                { text: '<span class="cmd-success">🐋 Whale exit detected - took profits at resistance</span>', flash: true },
-                { text: '<span class="cmd-text">⚡ New narrative emerging: "AI + memes" hybrid</span>', flash: false }
+                { text: '<span class="cmd-success">🎓 New trader just learned about rug detection</span>', flash: false },
+                { text: '<span class="cmd-success">🚨 RUG ALERT: Death star bubble map detected</span>', flash: true },
+                { text: '<span class="cmd-text">📊 Filter check: Entry passed all criteria</span>', flash: false },
+                { text: '<span class="cmd-success">⚡ Risk management module activated</span>', flash: false },
+                { text: '<span class="cmd-text">🧠 Study session: 5 trades analyzed today</span>', flash: false },
+                { text: '<span class="cmd-success">💎 Diamond hands detected - proper stop loss in place</span>', flash: false },
+                { text: '<span class="cmd-text">📈 Good coin pattern recognized on chart</span>', flash: false },
+                { text: '<span class="cmd-success">🐋 Whale wallet analysis complete - safe entry</span>', flash: true },
+                { text: '<span class="cmd-text">⚠️ FOMO detected - emotion check recommended</span>', flash: false },
+                { text: '<span class="cmd-success">✅ CA verified - legitimate contract confirmed</span>', flash: false },
+                { text: '<span class="cmd-text">🎯 200+ buys on 5min chart - strong signal</span>', flash: false },
+                { text: '<span class="cmd-success">🔥 Healthy bubble map - no fat clusters</span>', flash: false },
+                { text: '<span class="cmd-text">📚 Glossary term looked up: "Paper hands"</span>', flash: false },
+                { text: '<span class="cmd-success">⚡ 2x profit reached - 50% sold per protocol</span>', flash: true },
+                { text: '<span class="cmd-text">🛡️ Stop loss triggered - portfolio protected</span>', flash: false }
             ];
             
-            // Fire events at random intervals (5-15 seconds)
             function fireSystemEvent() {
                 const event = systemEvents[Math.floor(Math.random() * systemEvents.length)];
                 
-                // Add with special event class for glow
                 const line = document.createElement('div');
                 line.className = 'cmd-line event';
                 line.innerHTML = event.text;
                 commandOutput.appendChild(line);
                 commandOutput.scrollTop = commandOutput.scrollHeight;
                 
-                // Trigger screen flash for major events
-                if (event.flash) {
-                    triggerScreenFlash();
-                }
+                if (event.flash) triggerScreenFlash();
                 
-                // Schedule next event randomly between 5-15 seconds
                 const nextDelay = 5000 + Math.random() * 10000;
                 setTimeout(fireSystemEvent, nextDelay);
             }
             
-            // Start system events after 3 seconds
             setTimeout(fireSystemEvent, 3000);
         }
         
         const commands = {
             help: () => {
-                addCommandLine('<span class="cmd-success">AVAILABLE COMMANDS:</span>');
-                addCommandLine('<span class="cmd-text">  status - System status</span>');
-                addCommandLine('<span class="cmd-text">  market - Market overview</span>');
-                addCommandLine('<span class="cmd-text">  scan - Scan opportunities</span>');
-                addCommandLine('<span class="cmd-text">  whales - Whale tracker</span>');
-                addCommandLine('<span class="cmd-text">  memory - Bot memory</span>');
-                addCommandLine('<span class="cmd-text">  --- KNOWLEDGE BASE ---</span>');
-                addCommandLine('<span class="cmd-text">  bullcase - Why memes print</span>');
-                addCommandLine('<span class="cmd-text">  meta - What are memecoins</span>');
-                addCommandLine('<span class="cmd-text">  solana - Why Solana wins</span>');
-                addCommandLine('<span class="cmd-text">  liquidity - Liquidity is king</span>');
-                addCommandLine('<span class="cmd-text">  narratives - What prints</span>');
-                addCommandLine('<span class="cmd-text">  protrade - How pros trade</span>');
-                addCommandLine('<span class="cmd-text">  thesis - The bull case</span>');
+                addCommandLine('<span class="cmd-success">TRADER U EDUCATION COMMANDS:</span>');
+                addCommandLine('<span class="cmd-text">--- CRITICAL SAFETY ---</span>');
+                addCommandLine('<span class="cmd-text">  rugpull - How to spot rug pulls (MUST READ)</span>');
+                addCommandLine('<span class="cmd-text">  goodcoin - How to find good coins</span>');
+                addCommandLine('<span class="cmd-text">  risk - Risk management rules</span>');
+                addCommandLine('<span class="cmd-text">--- SETUP & TOOLS ---</span>');
+                addCommandLine('<span class="cmd-text">  filters - Axiom filter settings</span>');
+                addCommandLine('<span class="cmd-text">  ca - What is CA/Contract Address?</span>');
+                addCommandLine('<span class="cmd-text">  workflow - APE/SCAN/WATCH explained</span>');
+                addCommandLine('<span class="cmd-text">--- LEARNING ---</span>');
+                addCommandLine('<span class="cmd-text">  study - How to analyze your trades</span>');
+                addCommandLine('<span class="cmd-text">  glossary1 - Market terms</span>');
+                addCommandLine('<span class="cmd-text">  glossary2 - Psychology terms</span>');
+                addCommandLine('<span class="cmd-text">  glossary3 - Bots & community terms</span>');
+                addCommandLine('<span class="cmd-text">  memory - Show bot memory</span>');
                 addCommandLine('<span class="cmd-text">  clear - Clear terminal</span>');
             },
-            status: () => {
-                addCommandLine('<span class="cmd-success">SYSTEM STATUS: OPERATIONAL</span>');
-                addCommandLine('<span class="cmd-text">Uptime: 24h 17m</span>');
-                addCommandLine('<span class="cmd-text">Neural nodes: 8/8 active</span>');
-                addCommandLine('<span class="cmd-text">Conversations stored: ' + botMemory.conversations.length + '</span>');
-                addCommandLine('<span class="cmd-text">Episodes indexed: ' + botMemory.episodes.length + '</span>');
-                addCommandLine('<span class="cmd-text">Facts learned: ' + (botMemory.facts.preferences.length + botMemory.facts.interests.length) + '</span>');
-                addCommandLine('<span class="cmd-text">Knowledge docs: ' + Object.keys(botMemory.knowledgeBase).length + '</span>');
-                addCommandLine('<span class="cmd-text">Data feeds: LIVE</span>');
+            
+            rugpull: () => {
+                const doc = traderUMemory.knowledgeBase.rugpull;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                doc.content.split('\n').forEach(line => {
+                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
+                });
             },
-            market: () => {
-                addCommandLine('<span class="cmd-success">MARKET OVERVIEW:</span>');
-                addCommandLine('<span class="cmd-text">Total Cap: $3.2T (+4.2%)</span>');
-                addCommandLine('<span class="cmd-text">24h Volume: $127B</span>');
-                addCommandLine('<span class="cmd-text">PEPE: +84% 🔥 - WHALES ACCUMULATING</span>');
-                addCommandLine('<span class="cmd-text">BONK: +48% 🐕 - STRONG MOMENTUM</span>');
-                addCommandLine('<span class="cmd-text">DOGE: +22% 💎 - CONSOLIDATING</span>');
-                addCommandLine('<span class="cmd-text">Status: EXTREMELY BULLISH</span>');
-                addCommandLine('<span class="cmd-text">Tip: Type "bullcase" for why memes keep winning</span>');
+            
+            goodcoin: () => {
+                const doc = traderUMemory.knowledgeBase.goodcoin;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                doc.content.split('\n').forEach(line => {
+                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
+                });
             },
-            scan: () => {
-                addCommandLine('<span class="cmd-success">SCANNING MARKET...</span>');
-                setTimeout(() => {
-                    addCommandLine('<span class="cmd-text">Found: 12 high-conviction opportunities</span>');
-                    addCommandLine('<span class="cmd-text">🟢 PEPE: STRONG BUY - Cup & handle forming</span>');
-                    addCommandLine('<span class="cmd-text">🟡 BONK: ACCUMULATION PHASE - Whale entries</span>');
-                    addCommandLine('<span class="cmd-text">🟢 SOL Ecosystem: ROTATING IN - Fresh capital</span>');
-                    addCommandLine('<span class="cmd-text">📊 Liquidity health: 94% - EXCELLENT</span>');
-                    addCommandLine('<span class="cmd-text">⚡ Volume/MC ratio: High - CONTINUATION LIKELY</span>');
-                    addCommandLine('<span class="cmd-text">Tip: Type "protrade" to see how pros play this</span>');
-                }, 1000);
+            
+            risk: () => {
+                const doc = traderUMemory.knowledgeBase.risk;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                doc.content.split('\n').forEach(line => {
+                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
+                });
             },
-            whales: () => {
-                addCommandLine('<span class="cmd-success">WHALE TRACKER ACTIVE:</span>');
-                addCommandLine('<span class="cmd-text">🐋 50M PEPE → Cold Storage ($2.1M)</span>');
-                addCommandLine('<span class="cmd-text">🐋 127 BTC → Off Exchange ($12M)</span>');
-                addCommandLine('<span class="cmd-text">🐋 $3.2M USDT → SOL Memecoins</span>');
-                addCommandLine('<span class="cmd-text">Pattern: SMART MONEY POSITIONING</span>');
-                addCommandLine('<span class="cmd-text">Signal: ACCUMULATION PHASE CONFIRMED</span>');
-                addCommandLine('<span class="cmd-text">Tip: Type "liquidity" to understand what this means</span>');
+            
+            filters: () => {
+                const doc = traderUMemory.knowledgeBase.filters;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                doc.content.split('\n').forEach(line => {
+                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
+                });
             },
+            
+            ca: () => {
+                const doc = traderUMemory.knowledgeBase.ca;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                doc.content.split('\n').forEach(line => {
+                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
+                });
+            },
+            
+            workflow: () => {
+                const doc = traderUMemory.knowledgeBase.workflow;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                doc.content.split('\n').forEach(line => {
+                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
+                });
+            },
+            
+            study: () => {
+                const doc = traderUMemory.knowledgeBase.study;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                doc.content.split('\n').forEach(line => {
+                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
+                });
+            },
+            
+            glossary1: () => {
+                const doc = traderUMemory.knowledgeBase.glossary1;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                doc.content.split('\n').forEach(line => {
+                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
+                });
+            },
+            
+            glossary2: () => {
+                const doc = traderUMemory.knowledgeBase.glossary2;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                doc.content.split('\n').forEach(line => {
+                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
+                });
+            },
+            
+            glossary3: () => {
+                const doc = traderUMemory.knowledgeBase.glossary3;
+                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
+                doc.content.split('\n').forEach(line => {
+                    if (line.trim()) addCommandLine('<span class="cmd-text">' + line + '</span>');
+                });
+            },
+            
             memory: () => {
-                const summary = botMemory.getContextSummary();
-                addCommandLine('<span class="cmd-success">BOT SUPER MEMORY:</span>');
-                addCommandLine('<span class="cmd-text">📝 Conversations: ' + botMemory.conversations.length + '</span>');
-                addCommandLine('<span class="cmd-text">🧠 Episodes indexed: ' + botMemory.episodes.length + '</span>');
-                addCommandLine('<span class="cmd-text">🎯 Recent topics: ' + summary.topics.join(', ') + '</span>');
-                addCommandLine('<span class="cmd-text">💾 Your preferences: ' + summary.preferences.join(', ') + '</span>');
-                addCommandLine('<span class="cmd-text">📚 Knowledge docs: ' + Object.keys(botMemory.knowledgeBase).length + '</span>');
-                addCommandLine('<span class="cmd-text">I remember EVERYTHING we discuss.</span>');
+                const summary = traderUMemory.getContextSummary();
+                addCommandLine('<span class="cmd-success">TRADER U BOT MEMORY:</span>');
+                addCommandLine('<span class="cmd-text">📝 Conversations: ' + traderUMemory.conversations.length + '</span>');
+                addCommandLine('<span class="cmd-text">🧠 Episodes: ' + traderUMemory.episodes.length + '</span>');
+                addCommandLine('<span class="cmd-text">🎯 Topics: ' + summary.topics.join(', ') + '</span>');
+                addCommandLine('<span class="cmd-text">📚 Knowledge docs: ' + Object.keys(traderUMemory.knowledgeBase).length + '</span>');
+                addCommandLine('<span class="cmd-text">I remember everything we discuss!</span>');
             },
-            bullcase: () => {
-                const doc = botMemory.knowledgeBase.bullcase;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                addCommandLine('<span class="cmd-text">' + doc.content + '</span>');
-                addCommandLine('<span class="cmd-text">🔥 The market can reprice attention INSTANTLY</span>');
-                addCommandLine('<span class="cmd-text">💎 Attention + Liquidity + Reflexivity = Meme magic</span>');
-                addCommandLine('<span class="cmd-text">⚡ This isn\'t gambling if you understand the forces</span>');
-            },
-            meta: () => {
-                const doc1 = botMemory.knowledgeBase.whatare;
-                const doc2 = botMemory.knowledgeBase.whywin;
-                addCommandLine('<span class="cmd-success">' + doc1.title.toUpperCase() + '</span>');
-                addCommandLine('<span class="cmd-text">' + doc1.content + '</span>');
-                addCommandLine('');
-                addCommandLine('<span class="cmd-success">' + doc2.title.toUpperCase() + '</span>');
-                addCommandLine('<span class="cmd-text">' + doc2.content + '</span>');
-            },
-            solana: () => {
-                const doc = botMemory.knowledgeBase.solana;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                addCommandLine('<span class="cmd-text">' + doc.content + '</span>');
-                addCommandLine('<span class="cmd-text">⚡ Low fees → More trades</span>');
-                addCommandLine('<span class="cmd-text">🚀 Fast execution → Less slippage</span>');
-                addCommandLine('<span class="cmd-text">🔥 Fast rotations → Explosive runs</span>');
-            },
-            liquidity: () => {
-                const doc = botMemory.knowledgeBase.liquidity;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                addCommandLine('<span class="cmd-text">' + doc.content + '</span>');
-                addCommandLine('<span class="cmd-text">✅ Meaningful LP relative to MC</span>');
-                addCommandLine('<span class="cmd-text">✅ Improving holder distribution</span>');
-                addCommandLine('<span class="cmd-text">✅ Consistent volume</span>');
-                addCommandLine('<span class="cmd-text">= LESS SLIPPAGE + MORE CONFIDENCE + BIGGER LEGS</span>');
-            },
-            narratives: () => {
-                const doc = botMemory.knowledgeBase.narratives;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                addCommandLine('<span class="cmd-text">' + doc.content + '</span>');
-                addCommandLine('<span class="cmd-text">✅ Simple, relatable, memetic, repeatable</span>');
-                addCommandLine('<span class="cmd-text">❌ Fake utility, long roadmaps, trying too hard</span>');
-                addCommandLine('<span class="cmd-text">💎 Memes win by being MEMETIC</span>');
-            },
-            protrade: () => {
-                const doc = botMemory.knowledgeBase.protrade;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                addCommandLine('<span class="cmd-text">' + doc.content + '</span>');
-                addCommandLine('<span class="cmd-text">🎯 Enter clean setups</span>');
-                addCommandLine('<span class="cmd-text">📈 Scale out intelligently</span>');
-                addCommandLine('<span class="cmd-text">🛡️ Protect downside</span>');
-                addCommandLine('<span class="cmd-text">🔄 REPEAT</span>');
-                addCommandLine('<span class="cmd-text">💰 Pros stack 1.5x, 2x, 3x - then catch runners</span>');
-            },
-            thesis: () => {
-                const doc = botMemory.knowledgeBase.thesis;
-                addCommandLine('<span class="cmd-success">' + doc.title.toUpperCase() + '</span>');
-                addCommandLine('<span class="cmd-text">' + doc.content + '</span>');
-                addCommandLine('<span class="cmd-text">📊 Attention in → Price up</span>');
-                addCommandLine('<span class="cmd-text">📉 Attention out → Price down</span>');
-                addCommandLine('<span class="cmd-text">🌐 Attention = Most valuable commodity</span>');
-                addCommandLine('<span class="cmd-text">🚀 Memes = Fastest way to monetize attention</span>');
-            },
+            
             clear: () => {
                 commandOutput.innerHTML = '';
-                addCommandLine('<span class="cmd-prompt">TERMINAL></span> <span class="cmd-text">Terminal cleared</span>');
-                addCommandLine('<span class="cmd-text">Type "help" to see all commands</span>');
+                addCommandLine('<span class="cmd-prompt">TRADER U></span> <span class="cmd-text">Terminal cleared</span>');
+                addCommandLine('<span class="cmd-text">Type "help" for all commands</span>');
             }
         };
         
@@ -1733,19 +1748,19 @@
             if (e.key === 'Enter') {
                 const cmd = commandInput.value.trim().toLowerCase();
                 if (cmd) {
-                    addCommandLine(`<span class="cmd-prompt">TERMINAL></span> ${cmd}`);
+                    addCommandLine(`<span class="cmd-prompt">TRADER U></span> ${cmd}`);
                     
                     if (commands[cmd]) {
                         commands[cmd]();
                     } else {
-                        addCommandLine(`<span class="cmd-error">Command not found: ${cmd}</span>`);
+                        addCommandLine(`<span class="cmd-error">Command not found. Type "help" to see all commands.</span>`);
                     }
                 }
                 commandInput.value = '';
             }
         });
 
-        // Bot Chat with Memory
+        // Bot Chat
         const botChat = document.getElementById('bot-chat');
         const botInput = document.getElementById('bot-input');
         const botSend = document.getElementById('bot-send');
@@ -1773,9 +1788,9 @@
         }
         
         function initBotChat() {
-            const welcomeMsg = 'Terminal Bot initialized. I have memory now - I remember our conversations! How can I assist you?';
-            addBotMessage(welcomeMsg, false, ['Market Status', 'PEPE Analysis', 'What do you remember?']);
-            botMemory.remember('', welcomeMsg);
+            const welcomeMsg = '🎓 Welcome to TRADER U SUPER BOT! I have complete knowledge of meme coin trading. Ask me ANYTHING about: rug pulls, filters, risk management, good coins, CA, workflow, glossary, or trading psychology. I remember everything we discuss!';
+            addBotMessage(welcomeMsg, false, ['How to spot rugs?', 'Risk management', 'What is CA?']);
+            traderUMemory.remember('', welcomeMsg);
         }
         
         function sendBotMessage(text) {
@@ -1785,7 +1800,6 @@
             addBotMessage(text, true);
             botInput.value = '';
             
-            // Add typing + talking
             addTyping();
             setBotTalking(true);
             
@@ -1797,131 +1811,127 @@
                 let response = '';
                 let actions = [];
                 
-                // Check for memory/knowledge queries first
-                if (lower.includes('remember') || lower.includes('memory') || lower.includes('know')) {
-                    const convCount = botMemory.conversations.length;
-                    const episodeCount = botMemory.episodes.length;
-                    const summary = botMemory.getContextSummary();
+                // Check knowledge base first
+                const retrieved = traderUMemory.retrieve(text);
+                
+                if (retrieved.length > 0 && retrieved[0].score > 1) {
+                    const doc = retrieved[0].doc;
+                    response = `📚 <strong>${doc.title}</strong><br><br>${doc.content.substring(0, 400)}...`;
                     
-                    response = `I have <strong>SUPER MEMORY</strong>. I've stored ${convCount} conversations and indexed ${episodeCount} episodes. `;
-                    response += `We've discussed: ${summary.topics.join(', ') || 'just getting started'}. `;
-                    if (summary.preferences.length > 0) {
-                        response += `I know you ${summary.preferences.join(', ')}. `;
+                    if (doc.tags.includes('rug')) {
+                        response += `<br><br><em>Type "rugpull" in terminal for the complete guide.</em>`;
+                        actions = ['Good coin checklist', 'Risk management', 'Show filters'];
+                    } else if (doc.tags.includes('risk')) {
+                        response += `<br><br><em>Type "risk" in terminal for full rules.</em>`;
+                        actions = ['Rug detection', 'Study my trades', 'Glossary'];
+                    } else {
+                        actions = ['Tell me more', 'Another topic', 'Show glossary'];
                     }
-                    response += `Plus I have ${Object.keys(botMemory.knowledgeBase).length} knowledge docs about meme trading. I NEVER forget. 🧠`;
-                    actions = ['What can you teach me?', 'Show me the bull case', 'How do pros trade?'];
+                } 
+                // Specific queries
+                else if (lower.includes('rug')) {
+                    response = `🚨 <strong>RUG PULL DETECTION</strong><br><br>Key signs:<br>
+• Chart looks like straight up then death drop<br>
+• Fees don't match market cap<br>
+• All wallets same age (1 month)<br>
+• Bubble map looks like Death Star<br>
+• Zero liquidity<br><br>
+<em>Type "rugpull" in terminal for detailed checklist!</em>`;
+                    actions = ['Good coin signs', 'Show filters', 'CA explanation'];
                 }
-                // Try to retrieve from knowledge base
+                else if (lower.includes('ca') || lower.includes('contract')) {
+                    response = `📍 <strong>CA = CONTRACT ADDRESS</strong><br><br>
+The unique identifier for a token on blockchain. When someone says "send CA", they mean send the contract address!<br><br>
+Example: 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU<br><br>
+Copy & paste it into Axiom/DEX to find the EXACT coin!<br><br>
+<em>Type "ca" in terminal for more.</em>`;
+                    actions = ['Rug detection', 'Good coins', 'Workflow'];
+                }
+                else if (lower.includes('filter')) {
+                    response = `📊 <strong>FILTER SETTINGS</strong><br><br>
+Use pump.fun only! Key filters:<br>
+• Dev holding: 5% max<br>
+• Bundles: 40% max<br>
+• For final stretch: 200+ buys on 5min chart<br><br>
+<em>Type "filters" in terminal for complete setup!</em>`;
+                    actions = ['Rug signs', 'Risk rules', 'Good coins'];
+                }
+                else if (lower.includes('risk') || lower.includes('stop')) {
+                    response = `🛡️ <strong>RISK MANAGEMENT</strong><br><br>
+Golden rules:<br>
+• Risk only 1-5% per trade<br>
+• At 2x sell 50%<br>
+• Set stop loss 3-10% above entry once up 30%<br>
+• Never let losses go below -15%<br><br>
+<em>Type "risk" in terminal for full protocol!</em>`;
+                    actions = ['Rug detection', 'Study trades', 'Glossary'];
+                }
+                else if (lower.includes('good') || lower.includes('find')) {
+                    response = `✅ <strong>GOOD COIN CHECKLIST</strong><br><br>
+• Healthy heartbeat chart<br>
+• Fees match MC<br>
+• 200+ buys on 5min chart<br>
+• Dispersed bubble map (not Death Star!)<br>
+• Nobody holds >4%<br>
+• CA posted in community<br><br>
+<em>Type "goodcoin" in terminal for complete guide!</em>`;
+                    actions = ['Rug signs', 'Risk mgmt', 'Filters'];
+                }
+                else if (lower.includes('ape') || lower.includes('scan') || lower.includes('watch')) {
+                    response = `🎯 <strong>APE/SCAN/WATCH WORKFLOW</strong><br><br>
+• <strong>APE</strong> - Caller bought, monitoring<br>
+• <strong>SCAN</strong> - Analyzing, hasn't bought<br>
+• <strong>WATCH</strong> - Looking for dip to enter<br><br>
+Adjust your strategy based on the call!<br><br>
+<em>Type "workflow" in terminal for details.</em>`;
+                    actions = ['Good coins', 'Risk rules', 'Glossary'];
+                }
+                else if (lower.includes('gloss') || lower.includes('term')) {
+                    response = `📚 <strong>TRADER U GLOSSARY</strong><br><br>
+Learn the language:<br>
+• glossary1 - Market & price terms<br>
+• glossary2 - Psychology & execution<br>
+• glossary3 - Bots & community<br><br>
+<em>Type these in terminal to learn!</em>`;
+                    actions = ['Market terms', 'Psychology terms', 'Bot terms'];
+                }
+                else if (lower.includes('study') || lower.includes('analyze') || lower.includes('learn')) {
+                    response = `📖 <strong>STUDY YOUR TRADES</strong><br><br>
+After EVERY trade ask:<br>
+• Why did it work/fail?<br>
+• Was my entry good?<br>
+• What was my state of mind?<br>
+• Did I follow my rules?<br><br>
+The more you analyze, the better you get!<br><br>
+<em>Type "study" in terminal for full protocol.</em>`;
+                    actions = ['Risk management', 'Rug detection', 'Good coins'];
+                }
+                else if (lower.includes('remember') || lower.includes('memory')) {
+                    const summary = traderUMemory.getContextSummary();
+                    response = `🧠 <strong>MY MEMORY</strong><br><br>
+I've stored ${traderUMemory.conversations.length} conversations and ${traderUMemory.episodes.length} episodes.<br><br>
+We've discussed: ${summary.topics.join(', ') || 'just getting started'}<br><br>
+I have ${Object.keys(traderUMemory.knowledgeBase).length} complete knowledge docs loaded!<br><br>
+I NEVER forget. Ask me anything!`;
+                    actions = ['Rug detection', 'Risk rules', 'Glossary'];
+                }
                 else {
-                    const retrieved = botMemory.retrieve(text);
-                    
-                    if (retrieved.length > 0 && retrieved[0].score > 1) {
-                        // Found relevant knowledge!
-                        const doc = retrieved[0].doc;
-                        response = `📚 From my knowledge base:<br><br><strong>${doc.title}</strong><br><br>${doc.content}`;
-                        
-                        // Add contextual follow-ups based on tags
-                        if (doc.tags.includes('bullish')) {
-                            actions = ['Tell me more', 'How to trade this', 'Show me signals'];
-                        } else if (doc.tags.includes('strategy')) {
-                            actions = ['Examples?', 'What about risk?', 'Market scan'];
-                        } else {
-                            actions = ['More info', 'Practical tips', 'What else?'];
-                        }
-                    }
-                    // Specific queries
-                    else if (lower.includes('pepe')) {
-                        const context = botMemory.getContextSummary();
-                        let prefix = '';
-                        if (context.topics.includes('pepe')) {
-                            prefix = 'We\'ve talked about PEPE before. Here\'s the latest: ';
-                        }
-                        response = prefix + 'PEPE is up <strong>+84%</strong> in 24h with $892M volume. Whales are accumulating HARD. ';
-                        response += 'Cup & handle forming on 12H chart. This is a textbook moonshot setup. 🚀<br><br>';
-                        response += '<em>Pro tip: Type "protrade" in terminal to see how pros play setups like this.</em>';
-                        actions = ['Other memes?', 'Whale movements', 'Too late to enter?'];
-                    }
-                    else if (lower.includes('whale')) {
-                        response = '🐋 <strong>WHALE ALERT</strong><br><br>';
-                        response += '• 50M PEPE → cold storage ($2.1M)<br>';
-                        response += '• 127 BTC withdrawn from CEX ($12M)<br>';
-                        response += '• $3.2M USDT → SOL memecoins<br><br>';
-                        response += 'When whales move during consolidation, they <strong>KNOW</strong> something. Smart money is positioning. 👀<br><br>';
-                        response += '<em>Try "liquidity" command to understand what this means.</em>';
-                        actions = ['What are they buying?', 'How to copy?', 'Show PEPE'];
-                    }
-                    else if (lower.includes('late') || lower.includes('miss')) {
-                        response = 'Bro you\'re <strong>NOT LATE</strong> 💪<br><br>';
-                        response += 'Fear & Greed: 68 (greed but not extreme)<br>';
-                        response += 'Google Trends: +127% (still early)<br>';
-                        response += 'Funding rates: healthy<br><br>';
-                        response += 'Peak euphoria is 500%+ trends. We\'re in <strong>EARLY INNINGS</strong> 🎯<br><br>';
-                        response += '<em>Type "thesis" in terminal for the full bull case.</em>';
-                        actions = ['What to buy?', 'Show market', 'Explain more'];
-                    }
-                    else if (lower.includes('meme') || lower.includes('coin')) {
-                        response = '<strong>MEME SEASON CONFIRMED</strong> 🎪<br><br>';
-                        response += '• PEPE: +84% 🐸<br>';
-                        response += '• BONK: +48% 🐕<br>';
-                        response += '• DOGE: +22% 💫<br>';
-                        response += '• SHIB: +18% 🔥<br><br>';
-                        response += 'When memes pump this hard = retail flooding in. This is what <strong>BULL MARKETS</strong> look like. 💎<br><br>';
-                        response += '<em>Try "meta" command to understand why memes keep winning.</em>';
-                        actions = ['Best to buy?', 'Show PEPE', 'Trading strategy'];
-                    }
-                    else if (lower.includes('market') || lower.includes('overview')) {
-                        response = '<strong>MARKET OVERVIEW</strong> 📊<br><br>';
-                        response += 'Total Cap: $3.2T (+4.2%)<br>';
-                        response += '24h Volume: $127B<br><br>';
-                        response += 'Status: <strong style="color: #00ff00;">EXTREMELY BULLISH</strong><br><br>';
-                        response += 'Memes are leading. Whales accumulating. Retail coming back. Perfect setup. 🚀<br><br>';
-                        response += '<em>Type "bullcase" in terminal to see why this meta keeps printing.</em>';
-                        actions = ['Scan opportunities', 'Whale activity', 'Best narrative'];
-                    }
-                    else if (lower.includes('trade') || lower.includes('how') || lower.includes('strategy')) {
-                        response = '<strong>HOW PROS TRADE MEMES</strong> 💎<br><br>';
-                        response += 'The edge isn\'t "finding the next 100x".<br><br>';
-                        response += 'It\'s:<br>';
-                        response += '✓ Entering clean setups<br>';
-                        response += '✓ Scaling out intelligently<br>';
-                        response += '✓ Protecting downside<br>';
-                        response += '✓ REPEATING<br><br>';
-                        response += 'Pros build accounts stacking 1.5x, 2x, 3x consistently - then catching runners occasionally. 💰<br><br>';
-                        response += '<em>Type "protrade" in terminal for the full breakdown.</em>';
-                        actions = ['Show me signals', 'Risk management', 'Current opportunities'];
-                    }
-                    else if (lower.includes('buy') || lower.includes('enter')) {
-                        response = '<strong>ENTRY CHECKLIST</strong> ✅<br><br>';
-                        response += '1. Liquidity meaningful to MC<br>';
-                        response += '2. Volume showing real participation<br>';
-                        response += '3. Holder distribution improving<br>';
-                        response += '4. Narrative is simple & memetic<br>';
-                        response += '5. Whales positioning<br><br>';
-                        response += 'All green? <strong>SEND IT</strong> 🚀<br><br>';
-                        response += '<em>Type "liquidity" in terminal to understand why this matters.</em>';
-                        actions = ['Show opportunities', 'Check PEPE', 'Whale tracker'];
-                    }
-                    else {
-                        // Default with context awareness
-                        const summary = botMemory.getContextSummary();
-                        const prevContext = summary.topics;
-                        
-                        if (prevContext.length > 0) {
-                            response = `Based on what we've discussed (${prevContext.join(', ')}), `;
-                            response += 'I can help with that. ';
-                        } else {
-                            response = 'I\'m your <strong>SUPER MEMORY</strong> crypto bot. ';
-                        }
-                        
-                        response += `I have ${Object.keys(botMemory.knowledgeBase).length} knowledge docs loaded about meme trading, market structure, and pro strategies. `;
-                        response += 'Ask me about: PEPE, market analysis, whale activity, trading strategies, or why memes keep winning. 🧠💎';
-                        actions = ['Show bull case', 'Market overview', 'Trading tips'];
-                    }
+                    const summary = traderUMemory.getContextSummary();
+                    response = `I'm TRADER U SUPER BOT with complete meme coin trading knowledge! 📚<br><br>
+I can teach you about:<br>
+• Rug pull detection<br>
+• Good coin analysis<br>
+• Risk management<br>
+• Filter settings<br>
+• CA & workflow<br>
+• Trading psychology<br>
+• Complete glossary<br><br>
+${summary.topics.length > 0 ? `We've discussed: ${summary.topics.join(', ')}<br><br>` : ''}
+What do you want to learn? 🎓`;
+                    actions = ['Spot rugs', 'Risk rules', 'Glossary'];
                 }
                 
-                // Remember this interaction
-                botMemory.remember(text, response);
-                
+                traderUMemory.remember(text, response);
                 addBotMessage(response, false, actions);
             }, 1200);
         }
@@ -1931,7 +1941,7 @@
             if (e.key === 'Enter') sendBotMessage();
         });
 
-        // Theme Changer
+        // Theme functions
         function changeTheme(theme) {
             const themes = {
                 orange: '#ff9500',
@@ -1942,13 +1952,49 @@
             changeAccent(themes[theme], themes[theme], null);
         }
 
-        // Accent Color Changer - FIXED
         function changeAccent(color, hover, el) {
             document.documentElement.style.setProperty('--accent-orange', color);
-            
             document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
             if (el) el.classList.add('active');
         }
+
+        // Live data feed
+        function updateDataFeed() {
+            const feeds = [
+                { label: 'BTC', base: 95284, variance: 500 },
+                { label: 'ETH', base: 3421, variance: 50 },
+                { label: 'SOL', base: 147, variance: 5 },
+                { label: 'MCAP', base: 3.2, variance: 0.1, suffix: 'T' },
+                { label: '24H VOL', base: 127, variance: 5, suffix: 'B' }
+            ];
+            
+            const feedItems = document.querySelectorAll('.feed-item');
+            
+            feeds.forEach((feed, idx) => {
+                const item = feedItems[idx];
+                if (!item) return;
+                
+                const change = (Math.random() - 0.5) * feed.variance * 2;
+                const newValue = feed.base + change;
+                const formatted = feed.suffix 
+                    ? `$${newValue.toFixed(1)}${feed.suffix}`
+                    : `$${Math.floor(newValue).toLocaleString()}`;
+                
+                const valueSpan = item.querySelector('.feed-value');
+                if (valueSpan) {
+                    valueSpan.style.transition = 'none';
+                    valueSpan.style.color = change > 0 ? '#00ff00' : '#ff3333';
+                    valueSpan.textContent = formatted;
+                    
+                    setTimeout(() => {
+                        valueSpan.style.transition = 'color 0.5s ease';
+                        valueSpan.style.color = '#00ff00';
+                    }, 100);
+                }
+            });
+        }
+        
+        setInterval(updateDataFeed, 2000 + Math.random() * 2000);
     </script>
 </body>
 </html>
